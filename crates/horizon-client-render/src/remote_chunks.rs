@@ -1,4 +1,3 @@
-//! Server chunk packets decoded into the client's existing chunk representation.
 use crate::chunk::{BIOME_STRATEGY, Chunk, ColumnLayout, Light, Section, block_strategy};
 use horizon_core::paletted::{PalettedContainer, Strategy};
 use horizon_protocol::{

@@ -20,7 +20,7 @@ client parity, offline browser worlds, and in-X execution remain unfinished.
 | Shared world URL | End-to-end verified locally and through private Tailscale HTTPS/WSS in Chrome | A second browser opens the world URL and joins the intended world. |
 | X embedding | In progress; source research only | Confirm the current supported integration and, if available, run the actual game inside X. A shared URL does not establish this. |
 | Native regressions | Locally tested for current shared changes | Run the checks relevant to each shared engine change. |
-| Review and synchronization | In progress; checkpoint pushed, parent review outstanding | Inspect the real diff, obtain independent review, and push coherent tested commits to a dedicated fork branch. |
+| Review and synchronization | Pushed checkpoints; parent runtime check passed; cross-family review blocked by Claude rate limit | Inspect the real diff, obtain independent review, and push coherent tested commits to a dedicated fork branch. |
 
 Compilation, a blank canvas, a triangle, a network echo, and a different voxel
 game do not satisfy the gameplay requirements. A partial checkpoint keeps every
@@ -277,3 +277,30 @@ The temporary persistence-test server and bridge were stopped after their checks
 The user-facing HTTP server (PID 55502, 8766), original bridge (PID 88366, 8767),
 and native world (PID 88504, 25575) remain running. Parent-owned ports 8491,
 8492, 18766, and 18767 were left untouched.
+
+## Parent review checkpoint
+
+The parent reran two-client gameplay through the Tailscale HTTPS/WSS address.
+[The new receipt](../.audit/parent-play-browser.json) records movement observed
+by the other player, a placed block observed by both clients, reconnect to that
+edit, and breaking observed by both clients. The rendered capture was inspected
+locally. This run reports no browser or shader errors.
+
+The shader review found a suppressed WebGPU diagnostic. Removing the suppression
+made Chrome reject implicit glint sampling after nonuniform control flow, while
+the native Naga validator still passed. The shader now computes gradients before
+discard and uses explicit-gradient sampling. The browser compiler reports no
+diagnostics, and all 19 selected native graphics tests pass, including HLSL
+translation. The rebuilt game passed the two-client Tailscale check.
+
+The gameplay check now waits for the importer to become visible before selecting
+resources. Its previous cold-start race could select the hidden file input before
+WebAssembly startup installed the event handler. A nearby-target assertion also
+replaces the fixed aiming delay.
+
+Comment review removed ten narrative lines and two suppressions, including the
+shader suppression and a redundant deprecation allowance. Two function-level
+deprecation allowances remain in browser window startup. Migration to winit's
+current application lifecycle remains open; no runtime failure was reproduced
+for that concern. Claude's independent review attempt failed with a rate limit.
+Neither the parent check nor the remaining Codex review is a cross-family verdict.

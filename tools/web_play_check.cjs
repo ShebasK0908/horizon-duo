@@ -13,6 +13,7 @@ async function main() {
   page.on('pageerror',e=>logs.push({name,type:'pageerror',text:e.stack||String(e)}));
   const url=new URL(base);url.searchParams.set('name',name);
   await page.goto(url.href);
+  await page.getByLabel('Prepared resources').waitFor({state:'visible'});
   await page.getByLabel('Prepared resources').setInputFiles(bundle);
   await page.waitForFunction(()=>Number(document.body.dataset.horizonWorldDrawn)>0 && document.body.dataset.horizonPosition,{},{timeout:90000});
   return page;
@@ -36,8 +37,13 @@ async function main() {
   await a.keyboard.down('ArrowDown');
   await a.waitForFunction(()=>JSON.parse(document.body.dataset.horizonTarget)!==null,{},{timeout:15000});
   await a.keyboard.up('ArrowDown');
-  // Look farther down so the intended block is near the player, inside both clients' columns.
-  await a.keyboard.down('ArrowDown');await a.waitForTimeout(350);await a.keyboard.up('ArrowDown');
+  await a.keyboard.down('ArrowDown');
+  await a.waitForFunction(()=>{
+   const target=JSON.parse(document.body.dataset.horizonTarget);
+   const position=document.body.dataset.horizonPosition.split(',').map(Number);
+   return target && Math.hypot(target[0][0]+0.5-position[0],target[0][2]+0.5-position[2])<=2.5;
+  },{},{timeout:15000});
+  await a.keyboard.up('ArrowDown');
   const target=(await read(a)).target;
   if(!target)throw new Error('No block outline under the crosshair');
   const placed=target[0].map((n,i)=>n+target[1][i]);
@@ -49,11 +55,11 @@ async function main() {
   evidence.placement={pos:placed,a:await read(a),b:await read(b)};
   await a.waitForFunction(()=>document.body.dataset.horizonMeshPending==='0',{},{timeout:60000});
   await a.screenshot({path:output+'/placed.png'});
-  // Reconnect the same world URL, importing the owned bytes again.
-  await a.reload();await a.getByLabel('Prepared resources').setInputFiles(bundle);
+  await a.reload();
+  await a.getByLabel('Prepared resources').waitFor({state:'visible'});
+  await a.getByLabel('Prepared resources').setInputFiles(bundle);
   await a.waitForFunction(()=>Number(document.body.dataset.horizonWorldDrawn)>0,{},{timeout:90000});
   await a.locator('#horizon-canvas').click();
-  // The server persists orientation along with the player. It may already be looking at the edit.
   await a.waitForFunction(pos=>{const target=JSON.parse(document.body.dataset.horizonTarget);return target && target[0].every((n,i)=>n===pos[i]);},placed,{timeout:15000});
   evidence.reconnect=await read(a);
   await a.keyboard.press('r');

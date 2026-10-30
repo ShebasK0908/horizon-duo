@@ -223,9 +223,12 @@ fn crumbling_uv(uv: vec2<f32>, packed_origin: vec2<f32>, sprite_size: vec2<f32>,
     return (origin + local + vec2(0.5)) / size;
 }
 // CRUMBLING_UV_END
-// Material selectors are flat within each primitive.
-@diagnostic(off, derivative_uniformity)
 @fragment fn fs_entity(in: Out, @builtin(front_facing) front: bool) -> @location(0) vec4<f32> {
+    let glint_dx = dpdx(in.glint_uv);
+    let glint_dy = dpdy(in.glint_uv);
+    let armor_uv = armor_glint_uv(in.glint_uv);
+    let armor_dx = dpdx(armor_uv);
+    let armor_dy = dpdy(armor_uv);
     var uv = in.uv;
     if in.overlay == 6u { uv.y = in.wrap.x + fract(in.uv.y) * in.wrap.y; }
     if in.overlay == 11u || in.overlay == 12u {
@@ -255,12 +258,12 @@ fn crumbling_uv(uv: vec2<f32>, packed_origin: vec2<f32>, sprite_size: vec2<f32>,
         // 33: a translucent item with the glint.
         // Enchantment glint: item.fsh's GLINT path, sampled from
         // enchanted_glint_item at the `GLINT_TEXTURING` UV.
-        color = glint_over(color, textureSample(glint_tex, glint_sampler, in.glint_uv));
+        color = glint_over(color, textureSampleGrad(glint_tex, glint_sampler, in.glint_uv, glint_dx, glint_dy));
     } else if in.overlay == 36u {
         // Enchanted armour (mobs::render::ARMOR_GLINT): enchanted_glint_armor at the scrolling model UV.
         color = glint_over(
             color,
-            textureSample(glint_armor_tex, glint_sampler, armor_glint_uv(in.glint_uv)),
+            textureSampleGrad(glint_armor_tex, glint_sampler, armor_uv, armor_dx, armor_dy),
         );
     }
     let f = max(linear_fog(in.spherical, globals.fog.x, globals.fog.y),

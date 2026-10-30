@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""Build the Horizon WebAssembly browser client."""
 import os
 from pathlib import Path
 import shutil

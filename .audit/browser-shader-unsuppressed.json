@@ -1,0 +1,17 @@
+[
+  {
+    "type": "error",
+    "line": 263,
+    "message": "'textureSample' must only be called from uniform control flow"
+  },
+  {
+    "type": "info",
+    "line": 245,
+    "message": "control flow depends on possibly non-uniform value"
+  },
+  {
+    "type": "info",
+    "line": 245,
+    "message": "parameter 'in' of 'fs_entity' may be non-uniform"
+  }
+]

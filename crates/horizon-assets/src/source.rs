@@ -1,4 +1,3 @@
-//! Immutable resource bytes shared by native files and browser imports.
 use std::{borrow::Cow, collections::BTreeMap, io, path::Path};
 
 pub trait ResourceSource: Sync {

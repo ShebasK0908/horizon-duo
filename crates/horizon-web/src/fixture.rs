@@ -23,7 +23,6 @@ struct RenderFixture {
 }
 
 #[wasm_bindgen]
-#[allow(deprecated)]
 pub async fn run_render_fixture() -> Result<(), JsValue> {
     run_fixture(None, mesh()).await
 }

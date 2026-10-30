@@ -1,0 +1,29 @@
+   Compiling horizon-protocol v0.1.0 (/Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon-web/crates/horizon-protocol)
+   Compiling horizon-assets v0.1.0 (/Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon-web/crates/horizon-assets)
+   Compiling horizon-command v0.1.0 (/Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon-web/crates/horizon-command)
+   Compiling horizon-client-render v0.1.0 (/Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon-web/crates/horizon-client-render)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.07s
+     Running unittests src/lib.rs (target/debug/deps/horizon_client_render-8c06bea72e1ca509)
+
+running 19 tests
+test gfx::tests::drawable_size_skips_minimized_and_oversized_windows ... ok
+test gfx::tests::far_faces_a_hair_apart_keep_their_depth_order ... ok
+test gfx::tests::cracks_multiply_instead_of_covering_the_block ... ok
+test gfx::tests::gl_sprite_arrays_are_neither_2d_textures_nor_cube_maps ... ok
+test gfx::tests::selection_outline_uses_vanilla_pixel_width ... ok
+test gfx::tests::selection_outline_has_vanilla_perspective_layering ... ok
+test gfx::tests::terrain_attributes_follow_the_terrain_vertex ... ok
+test gfx::tests::indirect_draws_are_validated_only_in_debug_builds_and_on_directx_12 ... ok
+test gfx::tests::the_second_try_at_a_backend_shows_nonconformant_adapters ... ok
+test gfx::tests::auto_tries_vulkan_then_directx_12_then_opengl ... ok
+test gfx::tests::the_projection_center_follows_the_view_bob ... ok
+test gfx::tests::a_colour_managed_wayland_surface_still_gets_8_bit ... ok
+test gfx::tests::hdr_screenshots_keep_every_10_bit_step ... ok
+test gfx::tests::surface_is_8_bit_and_not_srgb ... ok
+test gfx::tests::selection_outline_preserves_shape_edges_without_inflation ... ok
+test gfx::tests::special_material_batches_preserve_quad_order_and_offsets ... ok
+test gfx::tests::shader_globals_match_the_rust_layout ... ok
+test gfx::tests::entity_shader_validates_with_its_overlay_constants ... ok
+test gfx::tests::shaders_translate_to_hlsl_for_directx_12 ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 624 filtered out; finished in 0.08s

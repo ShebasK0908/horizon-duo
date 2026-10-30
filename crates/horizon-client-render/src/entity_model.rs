@@ -1,4 +1,3 @@
-//! Prepared entity models and ModelPart geometry shared by native and browser rendering.
 use crate::mesher::Vertex;
 pub const ARMOR_GLINT: u32 = 36;
 use serde_json::Value;

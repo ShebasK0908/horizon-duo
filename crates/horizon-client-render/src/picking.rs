@@ -1,4 +1,3 @@
-//! Block outline picking shared by native and browser input.
 use crate::{
     blocks::{BlockFacts, Fluid, RenderShape},
     world::World,

@@ -1,4 +1,3 @@
-//! Incremental client protocol state over a byte-stream transport.
 use crate::{
     Error, Result,
     buf::{Reader, Writer},
