@@ -1,13 +1,8 @@
 //! Shared nearest-sampled sprite array for block and item textures.
 use crate::Result;
 use horizon_assets::animation::{AnimationClip, AnimationMetadata};
-use std::{
-    collections::BTreeMap,
-    fs::{self, File},
-    io::BufReader,
-    path::Path,
-    sync::Arc,
-};
+use horizon_assets::source::{NativeResources, ResourceSource};
+use std::{collections::BTreeMap, path::Path, sync::Arc};
 
 #[derive(Clone)]
 pub struct SpriteAnimation {
@@ -197,10 +192,13 @@ impl Sprites {
     /// or does not load (a resource pack's filter or a broken file) becomes
     /// vanilla's missing texture, as in a stitched atlas.
     pub fn insert(&mut self, root: &Path, name: &str) -> Result<u32> {
+        self.insert_from(&NativeResources(root), name)
+    }
+    pub fn insert_from(&mut self, source: &dyn ResourceSource, name: &str) -> Result<u32> {
         if let Some(layer) = self.layers.get(name) {
             return Ok(*layer);
         }
-        match self.load(root, name) {
+        match self.load(source, name) {
             Ok(layer) => Ok(layer),
             Err(e) => {
                 // `MissingTextureAtlasSprite.getLocation()`: vanilla models name the
@@ -230,12 +228,12 @@ impl Sprites {
             }
         }
     }
-    fn load(&mut self, root: &Path, name: &str) -> Result<u32> {
+    fn load(&mut self, source: &dyn ResourceSource, name: &str) -> Result<u32> {
         let cached = self.disk.as_ref().and_then(|d| d.get(name)).cloned();
         let decoded = match cached {
             Some(decoded) => decoded,
             None => {
-                let decoded = Self::decode(root, name)?;
+                let decoded = Self::decode(source, name)?;
                 if let Some(disk) = &mut self.disk {
                     disk.insert(name, decoded.clone());
                 }
@@ -245,13 +243,13 @@ impl Sprites {
         self.register(name, decoded)
     }
     /// Read and decode one texture and its `.mcmeta`.
-    fn decode(root: &Path, name: &str) -> Result<crate::sprite_cache::Decoded> {
+    fn decode(source: &dyn ResourceSource, name: &str) -> Result<crate::sprite_cache::Decoded> {
         let (namespace, path) = name.split_once(':').ok_or("invalid sprite identifier")?;
-        let path = root.join(format!("assets/{namespace}/textures/{path}.png"));
-        let metadata = match fs::read_to_string(path.with_extension("png.mcmeta")) {
+        let path = format!("assets/{namespace}/textures/{path}.png");
+        let metadata = match source.read(&format!("{path}.mcmeta")) {
             Ok(text) => Some(serde_json::from_str::<
                 BTreeMap<String, Box<serde_json::value::RawValue>>,
-            >(&text)?),
+            >(std::str::from_utf8(&text)?)?),
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => None,
             Err(error) => return Err(error.into()),
         };
@@ -263,7 +261,7 @@ impl Sprites {
             .as_deref()
             .map(AnimationMetadata::from_json)
             .transpose()?;
-        let mut decoder = png::Decoder::new(BufReader::new(File::open(path)?));
+        let mut decoder = png::Decoder::new(std::io::Cursor::new(source.read(&path)?));
         decoder.set_transformations(png::Transformations::EXPAND | png::Transformations::STRIP_16);
         let mut reader = decoder.read_info()?;
         let mut bytes = vec![
@@ -451,6 +449,7 @@ pub(crate) fn sprite_mipmap_limit(requested: u32, size: u32, minimum: u32, avail
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::fs::{self, File};
     #[test]
     fn mipmap_option_keeps_real_16px_reductions() {
         for levels in 0..=4 {

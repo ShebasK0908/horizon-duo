@@ -449,6 +449,9 @@ struct Worker {
 
 impl Worker {
     fn spawn(min_y: i32, sections: i32) -> Option<Self> {
+        if cfg!(target_arch = "wasm32") {
+            return None;
+        }
         let (jobs, job_rx) = mpsc::channel::<Job>();
         let (done_tx, done) = mpsc::channel();
         std::thread::Builder::new()
@@ -1198,7 +1201,7 @@ mod tests {
         let mut graph = Graph::default();
         let mut best = f64::MAX;
         for _ in 0..12 {
-            let started = std::time::Instant::now();
+            let started = crate::time::Instant::now();
             graph.search(&o.columns, camera, 34, &mut vis, &mut queue);
             best = best.min(started.elapsed().as_secs_f64() * 1000.0);
         }

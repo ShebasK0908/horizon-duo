@@ -330,6 +330,7 @@ impl Arena {
 
 /// `create_buffer` with an out-of-memory failure returned instead of raised
 /// (raised errors are fatal).
+#[cfg(not(target_arch = "wasm32"))]
 fn try_create(device: &wgpu::Device, size: u64, usage: wgpu::BufferUsages) -> Option<wgpu::Buffer> {
     let scope = device.push_error_scope(wgpu::ErrorFilter::OutOfMemory);
     let buffer = device.create_buffer(&wgpu::BufferDescriptor {
@@ -342,6 +343,15 @@ fn try_create(device: &wgpu::Device, size: u64, usage: wgpu::BufferUsages) -> Op
     pollster::block_on(scope.pop()).is_none().then_some(buffer)
 }
 
+#[cfg(target_arch = "wasm32")]
+fn try_create(device: &wgpu::Device, size: u64, usage: wgpu::BufferUsages) -> Option<wgpu::Buffer> {
+    Some(device.create_buffer(&wgpu::BufferDescriptor {
+        label: Some("Section buffer arena"),
+        size,
+        usage,
+        mapped_at_creation: false,
+    }))
+}
 #[cfg(test)]
 mod tests {
     use super::*;

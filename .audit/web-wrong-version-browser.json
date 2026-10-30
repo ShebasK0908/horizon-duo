@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "result": {
+    "frames": null,
+    "quads": null,
+    "webgpu": true,
+    "error": "resources do not match Horizon's pinned data version"
+  },
+  "logs": [
+    {
+      "type": "error",
+      "text": "resources do not match Horizon's pinned data version"
+    }
+  ]
+}

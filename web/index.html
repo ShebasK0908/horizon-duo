@@ -1,0 +1,23 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>Horizon browser renderer validation</title>
+<style>body{margin:0;background:#15202a;color:#eee;font:16px system-ui}header{padding:16px}canvas{display:block;width:960px;height:640px;max-width:100%}#error{color:#faa}</style>
+<header>Horizon renderer validation. Original synthetic mesh. Gameplay and multiplayer are not connected.</header>
+<label id="import" hidden>Import your prepared Horizon resources (.zip) <input type="file" accept=".zip" aria-label="Prepared resources"></label>
+<pre id="error"></pre>
+<script type="module">
+import init, {run_render_fixture, run_owned_resources} from './pkg/horizon_web.js';
+const fail = error => {document.querySelector('#error').textContent=String(error); console.error(error);};
+await init();
+if (new URLSearchParams(location.search).has('owned')) {
+    document.querySelector('header').textContent='Horizon owned-resource rendering validation. Gameplay and multiplayer are not connected.';
+    document.querySelector('#import').hidden=false;
+    document.querySelector('input').addEventListener('change', async event => {
+        try {await run_owned_resources(new Uint8Array(await event.target.files[0].arrayBuffer()));}
+        catch(error) {fail(error);}
+    }, {once:true});
+} else {
+    try {await run_render_fixture();} catch(error) {fail(error);}
+}
+</script>

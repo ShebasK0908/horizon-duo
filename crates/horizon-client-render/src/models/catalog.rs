@@ -2,6 +2,7 @@
 //! once and share its geometry across positions. Resource failure recovery and
 //! resource-pack reloads remain separate work.
 use crate::{Result, sprites::Sprites};
+use horizon_assets::source::{NativeResources, ResourceSource};
 use horizon_assets::{
     bake::{BlockModelTransform, ModelQuad, bake_block_model},
     blockstate::{
@@ -92,6 +93,23 @@ impl StateModels {
         facts: &BTreeMap<String, Value>,
         models: &crate::model_library::ParsedModels,
     ) -> Result<Self> {
+        Self::from_source(
+            &NativeResources(root),
+            registry,
+            blocks,
+            sprites,
+            facts,
+            models,
+        )
+    }
+    pub(crate) fn from_source(
+        source: &dyn ResourceSource,
+        registry: &BlockRegistry,
+        blocks: &[&str],
+        sprites: &mut Sprites,
+        facts: &BTreeMap<String, Value>,
+        models: &crate::model_library::ParsedModels,
+    ) -> Result<Self> {
         let mut choices = Vec::new();
         let mut states = vec![None; registry.len()];
         let mut variants = BTreeSet::new();
@@ -147,17 +165,19 @@ impl StateModels {
             // Vanilla's BlockStateModelLoader: a definition that does not
             // read or bind is logged and its block gets no model; the other
             // blocks still load.
-            let loaded = fs::read_to_string(
-                root.join(format!("assets/{namespace}/blockstates/{path}.json")),
-            )
-            .map_err(|e| e.to_string())
-            .and_then(|text| BlockStateDefinition::from_json(&text).map_err(|e| e.to_string()))
-            .and_then(|definition| {
-                let bound = definition
-                    .bind(&schema, &possible)
-                    .map_err(|e| e.to_string())?;
-                Ok((definition, bound))
-            });
+            let loaded = source
+                .read(&format!("assets/{namespace}/blockstates/{path}.json"))
+                .map_err(|e| e.to_string())
+                .and_then(|text| {
+                    let text = std::str::from_utf8(&text).map_err(|e| e.to_string())?;
+                    BlockStateDefinition::from_json(text).map_err(|e| e.to_string())
+                })
+                .and_then(|definition| {
+                    let bound = definition
+                        .bind(&schema, &possible)
+                        .map_err(|e| e.to_string())?;
+                    Ok((definition, bound))
+                });
             let (definition, bound) = match loaded {
                 Ok(loaded) => loaded,
                 Err(e) => {
@@ -212,11 +232,11 @@ impl StateModels {
             choices.push(CompiledChoices::new(&definition)?);
         }
         let names: Vec<String> = variants.iter().map(|(name, _, _)| name.clone()).collect();
-        let library = match models.block_library(root, names.clone()) {
+        let library = match models.block_library_from(source, names.clone()) {
             Ok(library) => library,
             Err(e) => {
                 log::warn!("Horizon: block models incomplete ({e}); using the missing model");
-                models.block_library_or_missing(root, names)?
+                models.block_library_or_missing_from(source, names)?
             }
         };
         let mut baked = Vec::with_capacity(variants.len());
@@ -225,13 +245,13 @@ impl StateModels {
             let model = library.resolve(&name)?;
             let particle = model
                 .material("particle")?
-                .map(|material| sprites.insert(root, &material.sprite))
+                .map(|material| sprites.insert_from(source, &material.sprite))
                 .transpose()?;
             let faces: Vec<BakedFace> =
                 bake_block_model(&model, BlockModelTransform::new(turns, lock))?
                     .into_iter()
                     .map(|quad| {
-                        let layer = sprites.insert(root, &quad.material.sprite)?;
+                        let layer = sprites.insert_from(source, &quad.material.sprite)?;
                         Ok(BakedFace {
                             translucent: quad.material.force_translucent
                                 || sprites.translucent[layer as usize],

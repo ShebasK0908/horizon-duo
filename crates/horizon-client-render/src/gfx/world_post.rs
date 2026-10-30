@@ -75,7 +75,7 @@ pub struct Post {
 }
 
 impl Post {
-    pub fn new(device: &wgpu::Device, format: wgpu::TextureFormat) -> Self {
+    pub async fn new_async(device: &wgpu::Device, format: wgpu::TextureFormat) -> Self {
         let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some("Horizon post"),
             source: wgpu::ShaderSource::Wgsl(include_str!("../world_post.wgsl").into()),
@@ -205,8 +205,8 @@ impl Post {
                 multiview_mask: None,
                 cache: None,
             });
-            let internal = pollster::block_on(internal.pop());
-            match internal.or(pollster::block_on(validation.pop())) {
+            let internal = internal.pop().await;
+            match internal.or(validation.pop().await) {
                 None => {
                     let uniform = device.create_buffer(&wgpu::BufferDescriptor {
                         label: Some("Horizon TAA"),
@@ -557,7 +557,7 @@ mod tests {
         let Some((device, _)) = test_device() else {
             return;
         };
-        let post = Post::new(&device, wgpu::TextureFormat::Rgba8Unorm);
+        let post = pollster::block_on(Post::new_async(&device, wgpu::TextureFormat::Rgba8Unorm));
         // Copy and FXAA pipelines always compile; TAA compiles if supported by backend.
         let _ = post.supports_taa();
     }

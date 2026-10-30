@@ -13,3 +13,5 @@ pub mod palette;
 pub mod resolve;
 
 pub use json::DecodeError;
+
+pub mod source;

@@ -223,6 +223,8 @@ fn crumbling_uv(uv: vec2<f32>, packed_origin: vec2<f32>, sprite_size: vec2<f32>,
     return (origin + local + vec2(0.5)) / size;
 }
 // CRUMBLING_UV_END
+// Material selectors are flat within each primitive.
+@diagnostic(off, derivative_uniformity)
 @fragment fn fs_entity(in: Out, @builtin(front_facing) front: bool) -> @location(0) vec4<f32> {
     var uv = in.uv;
     if in.overlay == 6u { uv.y = in.wrap.x + fract(in.uv.y) * in.wrap.y; }
@@ -287,7 +289,8 @@ fn crumbling_uv(uv: vec2<f32>, packed_origin: vec2<f32>, sprite_size: vec2<f32>,
 // way terrain.wgsl marks a light source's, drawn again after the entities with
 // only alpha written, so its colour stays as blended.
 @fragment fn fs_hdr_mark(in: Out) -> @location(0) vec4<f32> {
-    if in.tier == 0u || textureSample(atlas, atlas_sampler, in.uv).a < 0.1 { discard; }
+    let alpha = textureSample(atlas, atlas_sampler, in.uv).a;
+    if in.tier == 0u || alpha < 0.1 { discard; }
     return vec4(0.0, 0.0, 0.0, 0.7 * f32(4u - min(in.tier, 4u)) / 4.0);
 }
 
@@ -369,7 +372,7 @@ fn weather_double_plus_float(base: vec2<u32>, delta: f32) -> f32 {
     }
     let e = max(be, de);
     // Leading significand bit at 61, with room for addition and guard bits.
-    var a = vec2(base.x << 9u, ((base.y & 0xfffffu) | 0x100000u) << 9u | (base.x >> 23u));
+    var a = vec2(base.x << 9u, (((base.y & 0xfffffu) | 0x100000u) << 9u) | (base.x >> 23u));
     var b = vec2(0u, dm << 6u);
     a = weather_shr_jam(a, u32(e - be));
     b = weather_shr_jam(b, u32(e - de));

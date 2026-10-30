@@ -78,7 +78,7 @@ impl SpriteAnimator {
     /// `textures` are the sprite arrays, `split` layers each, `size` pixels
     /// wide; `animations` hold their frames at that size. `compute`: whether
     /// the device says it runs compute shaders writing storage textures.
-    pub fn new(
+    pub async fn new_async(
         device: &wgpu::Device,
         animations: &[SpriteAnimation],
         size: u32,
@@ -87,7 +87,11 @@ impl SpriteAnimator {
         split: u32,
         compute: bool,
     ) -> Self {
-        let pipeline = if compute { pipeline(device) } else { None };
+        let pipeline = if compute {
+            pipeline(device).await
+        } else {
+            None
+        };
         let limits = device.limits();
         let limit = if pipeline.is_some() {
             limits
@@ -371,7 +375,7 @@ impl SpriteAnimator {
 /// creation with a silent placeholder and reports its invalidity only when
 /// the layout is asked for — inside the scopes that error is caught, outside
 /// them it is uncaptured and panics (#3866).
-fn pipeline(device: &wgpu::Device) -> Option<(wgpu::ComputePipeline, wgpu::BindGroupLayout)> {
+async fn pipeline(device: &wgpu::Device) -> Option<(wgpu::ComputePipeline, wgpu::BindGroupLayout)> {
     let validation = device.push_error_scope(wgpu::ErrorFilter::Validation);
     let internal = device.push_error_scope(wgpu::ErrorFilter::Internal);
     let module = device.create_shader_module(wgpu::ShaderModuleDescriptor {
@@ -387,8 +391,8 @@ fn pipeline(device: &wgpu::Device) -> Option<(wgpu::ComputePipeline, wgpu::BindG
         cache: None,
     });
     let layout = pipeline.get_bind_group_layout(0);
-    let internal = pollster::block_on(internal.pop());
-    match internal.or(pollster::block_on(validation.pop())) {
+    let internal = internal.pop().await;
+    match internal.or(validation.pop().await) {
         None => Some((pipeline, layout)),
         Some(e) => {
             log::warn!("Horizon renderer: animated sprites drawn on the CPU ({e})");
@@ -820,8 +824,15 @@ mod tests {
                 })
             })
             .collect();
-        let mut animator =
-            SpriteAnimator::new(&device, &animations, size, &mips, &textures, split, compute);
+        let mut animator = pollster::block_on(SpriteAnimator::new_async(
+            &device,
+            &animations,
+            size,
+            &mips,
+            &textures,
+            split,
+            compute,
+        ));
         let mut uploads = Uploads::new(&device);
         let mut writes = Vec::new();
         for tick in [0, 0, 1, 2, 3, 4, 7, 7, 12, 30] {

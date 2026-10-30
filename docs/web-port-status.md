@@ -2,22 +2,23 @@
 
 The goal is real Horizon gameplay in a browser through WebAssembly and WebGPU,
 with multiplayer, durable worlds, and a world URL that can be shared on X.
+Browser rendering and owned-resource import have been verified in Chrome.
 No playable browser build has been verified yet.
 
 ## Scope ledger
 
 | Item | State | Acceptance evidence |
 | --- | --- | --- |
-| Build and rendering | Not started | Build WebAssembly and display actual Horizon world meshes through its renderer in a real browser. |
-| Owned game resources | Not started | Import a matching player-owned resource bundle, validate its version, and render its models and textures. |
+| Build and rendering | In progress | Build WebAssembly and display actual Horizon world meshes through its renderer in a real browser. |
+| Owned game resources | Browser verified for models and textures | Import a matching player-owned resource bundle, validate its version, and render its models and textures. |
 | Player interaction | Not started | Move in the real world and place and break blocks through existing Horizon gameplay rules. |
 | Durable world | Not started | Reload and reconnect after an edit and observe that edit in the same world. |
 | Offline browser world | Not started | Create, edit, save, and reopen a world without a remote game server. This follows the remote-first milestone. |
 | Multiplayer | Not started | Two browser clients join one Horizon server, see each other, and observe the same block edits. |
 | Shared world URL | Not started | A second browser opens the world URL and joins the intended world. |
-| X embedding | Not started | Confirm the current supported integration and, if available, run the actual game inside X. A shared URL does not establish this. |
-| Native regressions | Not started | Run the checks relevant to each shared engine change. |
-| Review and synchronization | Not started | Inspect the real diff, obtain independent review, and push coherent tested commits to a dedicated fork branch. |
+| X embedding | Source research only; live test outstanding | Confirm the current supported integration and, if available, run the actual game inside X. A shared URL does not establish this. |
+| Native regressions | Local tests passed for rendering checkpoint | Run the checks relevant to each shared engine change. |
+| Review and synchronization | Awaiting independent review | Inspect the real diff, obtain independent review, and push coherent tested commits to a dedicated fork branch. |
 
 Compilation, a blank canvas, a triangle, a network echo, and a different voxel
 game do not satisfy the gameplay requirements. A partial checkpoint keeps every
@@ -92,3 +93,59 @@ not claim that issue or open a competing upstream pull request.
 
 Claude research tasks failed with rate limits. Their absence is not an
 independent review pass. Implementation and review status stay separate.
+
+## Implementation checkpoint
+
+The first unit enables WebGPU on the existing renderer dependency graph.
+Its test is an original synthetic `SectionMesh` rendered by `Renderer` in a browser.
+This unit does not establish gameplay, imported resources, or multiplayer.
+
+## Run the rendering checks
+
+Install the WebAssembly target with `rustup target add wasm32-unknown-unknown`.
+Install `wasm-bindgen-cli` version 0.2.129, matching `Cargo.lock`, into `.local/web-tools`.
+Run `python3 tools/build_web.py`, then serve `web/` on localhost.
+The default page draws an original synthetic mesh through Horizon's `Renderer`.
+The page is renderer validation and has no gameplay session.
+
+Package your own prepared resources with
+`python3 tools/web_resources.py PATH_TO_PREPARED_RESOURCES .local/browser-resources.zip`.
+Open `/?owned` and import the archive to check real model decoding and textures.
+Resource files stay on the player's computer. The import checks the preparation
+schema, Minecraft version, and data version before reading the block registry.
+The browser input clipboard currently retains text inside the app only.
+Native file loading, native clipboard integration, Vulkan HDR, and the native
+allocator remain available on native targets.
+
+Run `HORIZON_PLAYWRIGHT=PATH_TO_PLAYWRIGHT node tools/web_render_check.cjs` against
+`http://127.0.0.1:8766`. Set `HORIZON_WEB_BUNDLE` to test the owned import and
+`HORIZON_WEB_PROOF` to a fresh local output directory. Set
+`HORIZON_WEB_EXPECT_ERROR` to check an expected import failure.
+The check requires rendered frames, nonempty mesh geometry, and no browser
+shader-validation errors. The capture is inspected separately.
+
+The rendering checkpoint passed 51 input tests, 124 protocol tests, 4 thread
+helper tests, 11 asset tests, and 627 renderer tests. Sixteen renderer tests were
+ignored by their existing definitions. Strict Clippy encounters the unchanged
+`manual_range_contains` lint in `horizon-world/src/worldgen/aquifer/noise_based.rs:466`.
+The selected libraries pass with that one lint suppressed. Full workspace and
+vanilla parity verification remain outstanding.
+
+The public synthetic capture and browser result are in
+[the rendering evidence](../.audit/web-render-browser.json) and
+[the capture](../.audit/web-render-browser.png). The owned-model result is in
+[the owned-resource evidence](../.audit/web-owned-browser.json).
+A [wrong-version import](../.audit/web-wrong-version-browser.json) was rejected in Chrome.
+Owned textures and their captures remain under ignored `.local/` paths.
+
+## X integration evidence
+
+The old official Player Card documentation URL currently redirects to
+[X's general developer overview](https://docs.x.com/overview).
+It does not establish current game-embedding support.
+[Rosebud's October 10, 2026 engineering report](https://lab.rosebud.ai/engineering/making-rosebud-games-playable-in-x-posts)
+describes real games in Player Card iframes, HTTPS player URLs, framing headers,
+and client-dependent inline playback. This is first-party implementation evidence
+for Rosebud, not a verified Horizon integration or a current X support contract.
+Horizon still needs a hosted HTTPS build and an authorized real-post check.
+No deployment or post was performed. Share links and in-X play remain separate.

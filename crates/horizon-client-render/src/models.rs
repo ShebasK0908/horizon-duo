@@ -5,6 +5,7 @@ use crate::{Result, sprites::Sprites};
 pub use catalog::StateModels;
 use catalog::descriptor;
 pub use cube::CubeStyle;
+use horizon_assets::source::{NativeResources, ResourceSource};
 use horizon_core::position::BlockPos;
 use horizon_world::registry::{BlockRegistry, BlockStateId};
 use serde_json::{Value, json};
@@ -69,15 +70,22 @@ pub(crate) fn prepare_with_models(
     sprites: &mut Sprites,
     models: &crate::model_library::ParsedModels,
 ) -> Result<PreparedModels> {
+    prepare_from(&NativeResources(root), registry, sprites, models)
+}
+pub(crate) fn prepare_from(
+    source: &dyn ResourceSource,
+    registry: &BlockRegistry,
+    sprites: &mut Sprites,
+    models: &crate::model_library::ParsedModels,
+) -> Result<PreparedModels> {
     let facts: std::collections::BTreeMap<String, Value> =
-        serde_json::from_slice(&std::fs::read(root.join("model-states.json"))?)?;
+        serde_json::from_slice(&source.read("model-states.json")?)?;
     let blocks: Vec<&str> = facts
         .keys()
         .filter(|name| registry.default_state(name).is_some())
         .map(|name| name.strip_prefix("minecraft:").unwrap_or(name))
         .collect();
-    let catalog =
-        StateModels::from_facts_with_models(root, registry, &blocks, sprites, &facts, models)?;
+    let catalog = StateModels::from_source(source, registry, &blocks, sprites, &facts, models)?;
     let mut placements = Vec::new();
     let mut states = Vec::new();
     for (index, (name, properties)) in GALLERY.iter().enumerate() {

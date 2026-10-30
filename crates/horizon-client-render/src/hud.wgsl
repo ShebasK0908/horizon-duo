@@ -29,15 +29,19 @@ struct Out {
     return out;
 }
 @fragment fn fs_main(in: Out) -> @location(0) vec4<f32> {
+    let uv_dx = dpdx(in.uv);
+    let uv_dy = dpdy(in.uv);
+    let glint_dx = dpdx(in.glint_uv);
+    let glint_dy = dpdy(in.glint_uv);
     // u >= 2: the GLINT_TEXTURING sample over the item, masked by the item's
     // texture alpha (item.fsh's ALPHA_CUTOUT and GLINT path).
     if in.uv.x >= 2.0 {
-        let mask = textureSample(atlas, atlas_sampler, in.uv - vec2(2.0, 0.0)).a;
+        let mask = textureSampleGrad(atlas, atlas_sampler, in.uv - vec2(2.0, 0.0), uv_dx, uv_dy).a;
         if mask < 0.1 { discard; }
-        let glint = hud.size.w * textureSample(glint_tex, glint_sampler, in.glint_uv);
+        let glint = hud.size.w * textureSampleGrad(glint_tex, glint_sampler, in.glint_uv, glint_dx, glint_dy);
         return vec4(glint.rgb * glint.rgb, mask);
     }
-    let c = textureSample(atlas, atlas_sampler, in.uv) * in.color;
+    let c = textureSampleGrad(atlas, atlas_sampler, in.uv, uv_dx, uv_dy) * in.color;
     if c.a < 0.004 { discard; }
     return c;
 }

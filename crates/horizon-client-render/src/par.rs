@@ -7,6 +7,9 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 /// Threads take the next item as they finish one, so a run of slow items
 /// doesn't hold back the others.
 pub fn par_map<T: Sync, R: Send>(items: &[T], f: impl Fn(&T) -> R + Sync) -> Vec<R> {
+    if cfg!(target_arch = "wasm32") {
+        return items.iter().map(f).collect();
+    }
     let threads = std::thread::available_parallelism()
         .map_or(1, |n| n.get())
         .min(items.len());

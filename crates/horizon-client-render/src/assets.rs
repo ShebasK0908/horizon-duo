@@ -1,4 +1,5 @@
 use crate::Result;
+use horizon_assets::source::{NativeResources, ResourceSource};
 use horizon_world::{
     DATA_VERSION,
     heightmap::HeightmapState,
@@ -6,13 +7,7 @@ use horizon_world::{
     worldgen::{tags::TagDefinitions, terrain::TerrainBlockStates},
 };
 use serde_json::Value;
-use std::{
-    collections::BTreeSet,
-    fs::File,
-    io::{self, BufReader},
-    path::Path,
-    sync::Arc,
-};
+use std::{collections::BTreeSet, io, path::Path, sync::Arc};
 
 pub const MATERIALS: [&str; 6] = ["bedrock", "dirt", "stone", "sand", "oak_planks", "bricks"];
 #[derive(Clone, Copy)]
@@ -102,16 +97,16 @@ fn invalid(message: &str) -> io::Error {
 }
 impl Assets {
     pub fn load(root: &Path) -> Result<Self> {
-        let manifest: Value = serde_json::from_reader(BufReader::new(File::open(
-            root.join("horizon-resources.json"),
-        )?))?;
+        Self::load_from(&NativeResources(root))
+    }
+    pub fn load_from(source: &dyn ResourceSource) -> Result<Self> {
+        let manifest: Value = serde_json::from_slice(&source.read("horizon-resources.json")?)?;
         if manifest["data_version"].as_i64() != Some(i64::from(DATA_VERSION)) {
             return Err(invalid("resources do not match Horizon's pinned data version").into());
         }
         let (registry, flags) =
-            BlockRegistry::from_facts_json_with_flags(File::open(root.join("facts.json"))?)?;
-        let bundle: Value =
-            serde_json::from_reader(BufReader::new(File::open(root.join("block-tags.json"))?))?;
+            BlockRegistry::from_facts_json_with_flags(source.read("facts.json")?.as_ref())?;
+        let bundle: Value = serde_json::from_slice(&source.read("block-tags.json")?)?;
         let mut definitions = TagDefinitions::default();
         for (name, text) in bundle
             .as_object()
@@ -204,15 +199,30 @@ impl RenderAssets {
         Self::load_with(root, assets, true)
     }
     fn load_with(root: &Path, assets: &Assets, draws: bool) -> Result<Self> {
+        Self::load_source(
+            &NativeResources(root),
+            assets,
+            draws,
+            crate::sprites::Sprites::with_disk_cache(root),
+        )
+    }
+    pub fn load_from(source: &dyn ResourceSource, assets: &Assets) -> Result<Self> {
+        Self::load_source(source, assets, true, crate::sprites::Sprites::default())
+    }
+    fn load_source(
+        source: &dyn ResourceSource,
+        assets: &Assets,
+        draws: bool,
+        mut sprites: crate::sprites::Sprites,
+    ) -> Result<Self> {
         let registry = assets.registry;
-        let mut sprites = crate::sprites::Sprites::with_disk_cache(root);
         for name in MATERIALS {
-            sprites.insert(root, &format!("minecraft:block/{name}"))?;
+            sprites.insert_from(source, &format!("minecraft:block/{name}"))?;
         }
-        let parsed = crate::model_library::ParsedModels::load(root);
+        let parsed = crate::model_library::ParsedModels::load_from(source);
         // A server draws no block: its models (about 24 MB baked) stay empty.
         let models = if draws {
-            crate::models::prepare_with_models(root, registry, &mut sprites, &parsed)?
+            crate::models::prepare_from(source, registry, &mut sprites, &parsed)?
         } else {
             crate::models::PreparedModels::default()
         };
@@ -226,10 +236,10 @@ impl RenderAssets {
             "lava_still",
             "lava_flow",
         ] {
-            sprites.insert(root, &format!("minecraft:block/{name}"))?;
+            sprites.insert_from(source, &format!("minecraft:block/{name}"))?;
         }
         for stage in 0..10 {
-            sprites.insert(root, &format!("minecraft:block/destroy_stage_{stage}"))?;
+            sprites.insert_from(source, &format!("minecraft:block/destroy_stage_{stage}"))?;
         }
         sprites.save_disk_cache();
         if draws {

@@ -1,6 +1,7 @@
 //! GPU renderer for streamed terrain sections, sky, block outline and HUD.
 //! Section origins are supplied relative to the camera each frame so large
 //! world coordinates keep full precision.
+use crate::time::Instant;
 use crate::{
     Result,
     environment::Sky,
@@ -11,7 +12,7 @@ use crate::{
     sprites::SpriteAnimation,
 };
 use glam::{DVec3, Mat4, Vec3, Vec4};
-use std::{collections::HashMap, path::PathBuf, sync::Arc, time::Instant};
+use std::{collections::HashMap, path::PathBuf, sync::Arc};
 use wgpu::util::DeviceExt;
 use winit::window::Window;
 
@@ -220,16 +221,16 @@ struct SectionGpu {
     /// When it began to fade in over the far terrain it replaces, which
     /// stays whole behind it until then: a section new where far tiles are
     /// drawn. Meshed again, it stays as it was.
-    fading: Option<std::time::Instant>,
+    fading: Option<crate::time::Instant>,
     /// When it began to fade out, its column gone over far terrain that
     /// stays behind it (`Renderer::leave_section`); released once it has.
-    leaving: Option<std::time::Instant>,
+    leaving: Option<crate::time::Instant>,
 }
 impl SectionGpu {
     /// Its fade code this frame (`lod::fade_code`), 0 once whole. `retiring`:
     /// its column has left the render distance, far terrain is coming in
     /// under it (`lod::HELD`).
-    fn fade(&self, now: std::time::Instant, retiring: bool) -> u32 {
+    fn fade(&self, now: crate::time::Instant, retiring: bool) -> u32 {
         match self.leaving {
             Some(since) => lod::fade_out_code(since, 0, now),
             None if retiring => lod::HELD,
@@ -545,7 +546,7 @@ pub struct Renderer {
     /// Removed sections of `lod_cutout` columns, released once tiles cover them.
     lod_retiring: crate::fast_hash::FxHashSet<SectionKey>,
     /// Removed sections fading out over far terrain (`leave_section`).
-    lod_leaving: Vec<(SectionKey, std::time::Instant)>,
+    lod_leaving: Vec<(SectionKey, crate::time::Instant)>,
     /// Finished tile meshes `upload_lods` has yet to upload.
     lod_pending: Option<lod::Pending>,
     detail_columns: crate::fast_hash::FxHashMap<(i32, i32), SectionMask>,
@@ -881,6 +882,9 @@ impl wgpu::rwh::HasDisplayHandle for WindowDisplay {
 /// the renderer's start (#746). macOS has Metal only.
 fn backend_order(api: GraphicsApi, os: &str, wgpu_backend: bool) -> Vec<wgpu::Backends> {
     use wgpu::Backends;
+    if cfg!(target_arch = "wasm32") {
+        return vec![Backends::BROWSER_WEBGPU];
+    }
     if os == "macos" || wgpu_backend {
         return vec![Backends::default()];
     }
@@ -1112,12 +1116,12 @@ async fn open_backend(
         required_limits: limits,
         ..Default::default()
     };
-    #[cfg(not(target_os = "macos"))]
+    #[cfg(all(not(target_os = "macos"), not(target_arch = "wasm32")))]
     let opened = match info.backend {
         wgpu::Backend::Vulkan => horizon_hdr::open_vulkan_device(&adapter, &desc),
         _ => None,
     };
-    #[cfg(target_os = "macos")]
+    #[cfg(any(target_os = "macos", target_arch = "wasm32"))]
     let opened = None;
     let opened = match opened {
         Some(opened) => opened,
@@ -1641,7 +1645,7 @@ impl Renderer {
                 )
             })
             .collect();
-        let animations = animate::SpriteAnimator::new(
+        let animations = animate::SpriteAnimator::new_async(
             &device,
             animations,
             sprite_size,
@@ -1649,7 +1653,8 @@ impl Renderer {
             &sprite_textures,
             split,
             animate::SpriteAnimator::compute(&adapter, &device),
-        );
+        )
+        .await;
         let sprite_unused = device
             .create_texture(&wgpu::TextureDescriptor {
                 label: Some("Block sprites (unused)"),
@@ -2698,7 +2703,8 @@ impl Renderer {
                 cull
             });
         let depth = Self::depth(&device, &config, cull.as_ref());
-        let world_post = world_post::Post::new(&device, config.format.remove_srgb_suffix());
+        let world_post =
+            world_post::Post::new_async(&device, config.format.remove_srgb_suffix()).await;
         let uploads = upload::Uploads::new(&device);
         let section_uploads = upload::Uploads::with_chunk(&device, SECTION_UPLOAD_CHUNK);
         let stars = stars::Stars::new(&device, config.format.remove_srgb_suffix());
@@ -3135,7 +3141,7 @@ impl Renderer {
         }
         let fading = match self.sections.find(key) {
             Some(old) => old.fading,
-            None => (!self.lods.is_empty()).then(std::time::Instant::now),
+            None => (!self.lods.is_empty()).then(crate::time::Instant::now),
         };
         self.release_section(key);
         let section = self
@@ -3372,7 +3378,7 @@ impl Renderer {
     /// away at once, the column's detail dropped to the far terrain's in one
     /// frame.
     fn leave_section(&mut self, key: SectionKey) {
-        let now = std::time::Instant::now();
+        let now = crate::time::Instant::now();
         if let Some(section) = self.sections.find_mut(key)
             && section.leaving.is_none()
         {
@@ -3381,7 +3387,7 @@ impl Renderer {
         }
     }
     /// Releases the sections that have faded out (`leave_section`).
-    fn release_left(&mut self, now: std::time::Instant) {
+    fn release_left(&mut self, now: crate::time::Instant) {
         let mut done = Vec::new();
         self.lod_leaving.retain(|&(key, since)| {
             let left = now.saturating_duration_since(since) >= lod::FADE;
@@ -4160,7 +4166,7 @@ impl Renderer {
                 &mut visible,
             )
         });
-        let now = std::time::Instant::now();
+        let now = crate::time::Instant::now();
         let mut visible_lods = std::mem::take(&mut self.visible_lods);
         visible_lods.clear();
         if frame.title {
@@ -6538,8 +6544,8 @@ impl DisplayWatch {
 /// held that long, and only the one they settled on is logged.
 struct DisplayLog {
     last: String,
-    at: Option<std::time::Instant>,
-    pending: Option<(String, std::time::Instant)>,
+    at: Option<crate::time::Instant>,
+    pending: Option<(String, crate::time::Instant)>,
 }
 static DISPLAY_LOG: std::sync::Mutex<DisplayLog> = std::sync::Mutex::new(DisplayLog {
     last: String::new(),
@@ -6550,7 +6556,7 @@ const DISPLAY_LOG_QUIET: std::time::Duration = std::time::Duration::from_secs(1)
 // Only Wayland's HDR reports call it so far.
 #[cfg(target_os = "linux")]
 fn log_display(line: String) {
-    let now = std::time::Instant::now();
+    let now = crate::time::Instant::now();
     let mut log = DISPLAY_LOG
         .lock()
         .unwrap_or_else(std::sync::PoisonError::into_inner);
@@ -6566,7 +6572,7 @@ fn log_display(line: String) {
 /// Logs a change [`log_display`] held back, once the values have held for
 /// [`DISPLAY_LOG_QUIET`].
 fn flush_display_log() {
-    let now = std::time::Instant::now();
+    let now = crate::time::Instant::now();
     let mut log = DISPLAY_LOG
         .lock()
         .unwrap_or_else(std::sync::PoisonError::into_inner);

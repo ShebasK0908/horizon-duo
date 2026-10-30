@@ -36,7 +36,7 @@ pub struct NativeFrame {
     /// Group 3 of the stages that read only the frame (the sky).
     pub layout: wgpu::BindGroupLayout,
     pub group: wgpu::BindGroup,
-    start: std::time::Instant,
+    start: crate::time::Instant,
     frames: u32,
 }
 
@@ -78,7 +78,7 @@ impl NativeFrame {
             buffer,
             layout,
             group,
-            start: std::time::Instant::now(),
+            start: crate::time::Instant::now(),
             frames: 0,
         }
     }

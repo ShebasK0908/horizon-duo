@@ -121,3 +121,8 @@ pub use horizon_items::enchant;
 pub use horizon_items::item_data;
 pub use horizon_items::items;
 pub use horizon_items::random_sequences;
+
+#[cfg(not(target_arch = "wasm32"))]
+pub use std::time;
+#[cfg(target_arch = "wasm32")]
+pub use web_time as time;

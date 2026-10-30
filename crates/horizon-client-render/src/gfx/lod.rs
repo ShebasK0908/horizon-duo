@@ -1,13 +1,14 @@
 //! Far meshes share the terrain arena and passes, with their actual bounds
 //! rather than the 16³ boxes used by the near-section residency walk.
 use super::{Frustum, Renderer, SectionGpu};
+use crate::time::Instant;
 use crate::{
     fast_hash::{FxHashMap, FxHashSet},
     lod::{MAX_LEVEL, TileKey},
     mesher::SectionMesh,
 };
 use glam::{DVec3, Vec3};
-use std::time::{Duration, Instant};
+use std::time::Duration;
 
 /// Finished tile meshes not uploaded yet, the tiles they replace (removed
 /// once every mesh is in) and the columns they leave out.
