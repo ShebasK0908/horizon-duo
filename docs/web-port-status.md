@@ -3,7 +3,9 @@
 The goal is real Horizon gameplay in a browser through WebAssembly and WebGPU,
 with multiplayer, durable worlds, and a world URL that can be shared on X.
 Browser rendering and owned-resource import have been verified in Chrome.
-No playable browser build has been verified yet.
+Creative movement, block placement and breaking, two-client convergence, and
+server-backed persistence have now been verified locally in Chrome. Full native
+client parity, offline browser worlds, and in-X execution remain unfinished.
 
 ## Scope ledger
 
@@ -11,11 +13,11 @@ No playable browser build has been verified yet.
 | --- | --- | --- |
 | Build and rendering | End-to-end verified on local Chrome WebGPU | Build WebAssembly and display actual Horizon world meshes through its renderer in a real browser. |
 | Owned game resources | End-to-end verified for local import | Import a matching player-owned resource bundle, validate its version, and render its models and textures. |
-| Player interaction | Not started | Move in the real world and place and break blocks through existing Horizon gameplay rules. |
-| Durable world | Not started | Reload and reconnect after an edit and observe that edit in the same world. |
+| Player interaction | End-to-end verified for creative movement, placement and breaking | Move in the real world and place and break blocks through existing Horizon gameplay rules. |
+| Durable world | End-to-end verified for server-backed reconnect and process restart | Reload and reconnect after an edit and observe that edit in the same world. |
 | Offline browser world | Not started | Create, edit, save, and reopen a world without a remote game server. This follows the remote-first milestone. |
-| Multiplayer | In progress; stationary server session only | Two browser clients join one Horizon server, see each other, and observe the same block edits. |
-| Shared world URL | In progress; query routes to a configured world | A second browser opens the world URL and joins the intended world. |
+| Multiplayer | End-to-end verified for two local browser clients | Two browser clients join one Horizon server, see each other, and observe the same block edits. |
+| Shared world URL | End-to-end verified locally; private Tailscale runtime exposed by parent | A second browser opens the world URL and joins the intended world. |
 | X embedding | In progress; source research only | Confirm the current supported integration and, if available, run the actual game inside X. A shared URL does not establish this. |
 | Native regressions | Locally tested for current shared changes | Run the checks relevant to each shared engine change. |
 | Review and synchronization | In progress; checkpoint pushed, parent review outstanding | Inspect the real diff, obtain independent review, and push coherent tested commits to a dedicated fork branch. |
@@ -156,7 +158,8 @@ The browser now joins an actual native Horizon dedicated server through a bounde
 WebSocket bridge and renders server chunks. `ChunkFormat` moved from the private
 `Game` module into `horizon-client-render::remote_chunks`. Both clients use that
 same decoder. The browser uses the existing `Mesher`, `World`, and `Renderer`.
-This is a stationary world client. It has no player movement or block input yet.
+This checkpoint established a stationary world client; the gameplay checkpoint
+below adds input and peer rendering.
 
 `horizon-protocol::client_session` owns incremental framing, compression, optional
 offline encryption, login, configuration, and play. Online account authentication,
@@ -183,5 +186,78 @@ were [rejected with HTTP 403](../.audit/bridge-origin-check.json).
 The native client compiles, its two remote chunk-decoder tests pass, and the
 shared protocol and renderer library suites pass. Two new session tests cover
 fragmented/coalesced frames across compression and state changes, plus malformed
-frame closure. Movement, authoritative block interactions, peer rendering,
-reconnection after edits, and offline worlds remain unfinished.
+frame closure. The following checkpoint verifies movement, block interactions, peers, and server
+persistence. Offline worlds remain unfinished.
+
+## Browser gameplay checkpoint
+
+`horizon-client-physics` now owns the existing player motion, fluid, sprint,
+pose, hunger, health, and landing bindings. Native `horizon-client` reexports
+those modules under their old paths. A small `SavedMotion` value separates
+player loading from the native world's file representation; the native save
+round-trip test still runs against `Level`. This extraction avoids maintaining
+a second set of browser movement rules.
+
+The browser feeds keyboard input into the same `MotionWorld` simulation and
+uses the existing `PositionSender` to send motion to the authoritative server.
+The shared block ray picker selects actual outline shapes. Creative placement
+uses `SetCreativeModeSlot` and `UseItemOn`; breaking uses `PlayerAction`. The
+browser waits for authoritative block updates. The server retains the original
+placement, collision, and destruction rules.
+
+Remote players use the existing prepared player model and model renderer,
+textured with the player's imported default skin. Network motion uses the
+existing stepped interpolation and quantized relative-position codecs. Custom
+skins, animated poses, inventory screens, survival mining progression, item
+entities, mobs, audiovisual events, and full native UI parity are not yet
+implemented in the browser shell. These limits matter even though the verified
+creative loop is playable.
+
+[The two-client browser result](../.audit/web-play-browser.json) records a peer
+movement observed by the other browser, 288 prepared model vertices, placement
+of state 3830 at `[0,-60,2]` in both clients, reconnect loading the same block,
+and the break update reaching both clients. The original-resource captures
+remain private under `.local/web-play-proof-2/`; the inspected `peer.png` shows
+the imported player model in the actual server world.
+
+A separate disposable server on port 25576 was stopped cleanly and restarted
+against the same world. The browser read the diamond block state 6865 at
+`[0,-60,2]` from the restarted server's chunks. See the
+[write result](../.audit/web-persistence-write.json),
+[read result](../.audit/web-persistence-read.json), and
+[server receipt](../.audit/web-persistence-server.txt).
+This proves server-backed persistence, not an offline browser save.
+
+Run `HORIZON_PLAYWRIGHT=PATH_TO_PLAYWRIGHT node tools/web_play_check.cjs` with the
+HTTP server, configured bridge, and native test server running. Set
+`HORIZON_WEB_URL`, `HORIZON_WEB_BUNDLE`, and a fresh `HORIZON_WEB_PROOF` directory
+as needed. For persistence, start a separate server with `--port 25576`, bridge
+8768 to it, run `tools/web_persistence_check.cjs`, type `stop` in that server,
+resume its printed test directory with `--resume`, and run the same check with
+`HORIZON_WEB_PERSIST_MODE=read`. Each server start creates fresh environment homes.
+
+The shared suites passed 39 physics tests with the actual staged resources,
+627 renderer tests (16 existing ignored tests), and 126 protocol tests. The
+native saved-attribute round trip passes with the resources present. Native mob
+model and related tests pass 187 cases (6 existing ignored tests). The native
+client binary checks successfully. Scoped WebAssembly Clippy passes with the
+previously recorded unchanged aquifer lint suppressed. These checks do not
+constitute full workspace or vanilla parity verification.
+
+## Private Tailscale runtime
+
+The parent configured and verified a tailnet-only runtime at
+`https://tests-mac-studio.tail935cc1.ts.net:8491/?world=webproof&bridge=wss%3A%2F%2Ftests-mac-studio.tail935cc1.ts.net%3A8492&name=TailPlayer`.
+Port 8491 proxies the existing HTTP server on 8766. Port 8492 proxies a separate
+bridge on 18767, restricted to world `webproof`, upstream 25575, and the exact
+origin `https://tests-mac-studio.tail935cc1.ts.net:8491`. The original bridge on
+8767 is unchanged. Neither new Tailscale port uses Funnel.
+
+The parent reports HTTP 200 for the page and WebAssembly, WSS 101 for the
+allowed origin, 403 for a wrong origin, and matching SHA-256 for the private
+`/resources.zip` download. The download proxies 18766 through a temporary
+symlink to `.local/web-owned/play-resources.zip`, so regenerated bundles update
+that download. This is parent-supplied runtime evidence; the implementation
+checks above used local Chrome. Phone input and mobile WebGPU have not been
+verified. The native world and these runtime services remain running for user
+testing. This is not a public HTTPS deployment or an X embed test.

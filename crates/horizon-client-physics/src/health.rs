@@ -5,6 +5,7 @@ use crate::{
     Result,
     motion::{MotionEvent, PlayerMotion},
 };
+use horizon_assets::source::{NativeResources, ResourceSource};
 use horizon_world::{
     attributes::live::LiveAttributes,
     block_landing::LandingDamage,
@@ -21,7 +22,7 @@ use horizon_world::{
     server_player_damage::ServerDamageEnvironment,
     synced_floats::{FloatValue, Observer, SyncedFloats},
 };
-use std::{fs, io, path::Path};
+use std::{io, path::Path};
 pub(crate) type Attributes = LiveAttributes<Box<dyn FnMut() -> i32>>;
 pub(crate) type State = HurtState<DamageTypeId>;
 
@@ -32,8 +33,11 @@ pub struct HealthResources {
 }
 impl HealthResources {
     pub fn load(root: &Path) -> Result<Self> {
+        Self::load_from(&NativeResources(root))
+    }
+    pub fn load_from(source: &dyn ResourceSource) -> Result<Self> {
         let read = |name: &str| -> Result<serde_json::Value> {
-            Ok(serde_json::from_slice(&fs::read(root.join(name))?)?)
+            Ok(serde_json::from_slice(&source.read(name)?)?)
         };
         let ids = read("player-float-ids.json")?;
         let id = |name: &str| -> Result<u8> {

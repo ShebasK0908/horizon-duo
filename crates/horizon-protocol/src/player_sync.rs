@@ -1,6 +1,6 @@
 //! LocalPlayer.sendPosition and PositionMoveRotation.calculateAbsolute.
+use crate::packets::play::{self, PlayerPosition, Serverbound as S, relative};
 use horizon_core::geometry::Vec3;
-use horizon_protocol::packets::play::{self, PlayerPosition, Serverbound as S, relative};
 
 /// Only movement updates advance this baseline. A teleport acknowledgement is
 /// separate and must not suppress the next tick's corrected position or look.

@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "result": {
+    "frames": null,
+    "quads": null,
+    "webgpu": true,
+    "error": "Resource manifest does not match Horizon's prepared resource format"
+  },
+  "logs": [
+    {
+      "type": "error",
+      "text": "Resource manifest does not match Horizon's prepared resource format"
+    }
+  ]
+}

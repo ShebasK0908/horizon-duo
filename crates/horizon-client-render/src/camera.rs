@@ -978,3 +978,10 @@ mod tests {
         assert_ne!(field_of_view_modifier(&p, false, 1.0), 0.1);
     }
 }
+
+/// Forward direction using the game's yaw and pitch convention.
+pub fn view_vector(yaw: f32, pitch: f32) -> [f64; 3] {
+    let (sy, cy) = f64::from(yaw).to_radians().sin_cos();
+    let (sp, cp) = f64::from(pitch).to_radians().sin_cos();
+    [-sy * cp, -sp, cy * cp]
+}

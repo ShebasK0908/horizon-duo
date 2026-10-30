@@ -4,6 +4,11 @@ use crate::{
     socket::ClientConnection,
 };
 use glam::DVec3;
+use horizon_client_physics::{
+    motion::{MotionWorld, PlayerMotion},
+    sprint::Keys,
+};
+use horizon_client_render::picking::{self, Hit};
 use horizon_client_render::{
     Result,
     chunk::LevelShape,
@@ -16,24 +21,35 @@ use horizon_client_render::{
     world::World,
 };
 use horizon_core::biome::BiomeZoom;
+use horizon_core::geometry::Vec3;
+use horizon_protocol::player_sync::{PositionSender, teleport_velocity};
 use horizon_protocol::{
     client_session::{ClientSession, Event as SessionEvent},
     packets::{Empty, configuration as cfg, play},
     registry::{Dynamic, ceil_log2},
 };
-use horizon_world::registry::BlockStateId;
+use horizon_world::{
+    registry::BlockStateId,
+    stepped_interpolation::{Path, PosRot, SteppedInterpolation},
+};
 use std::{
     collections::{HashMap, HashSet, VecDeque},
     sync::Arc,
 };
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::{JsCast, prelude::*};
 use winit::{
-    event::{Event, WindowEvent},
+    event::{DeviceEvent, ElementState, Event, MouseButton, WindowEvent},
     event_loop::EventLoop,
+    keyboard::{KeyCode, PhysicalKey},
     platform::web::{EventLoopExtWebSys, WindowExtWebSys},
     window::Window,
 };
 
+struct Peer {
+    network: [f64; 3],
+    current: PosRot,
+    interpolation: SteppedInterpolation,
+}
 struct BrowserClient {
     renderer: Renderer,
     window: Arc<Window>,
@@ -50,11 +66,20 @@ struct BrowserClient {
     pitch: f32,
     loaded: bool,
     teleported: bool,
+    player: Option<PlayerMotion>,
+    keys: HashSet<KeyCode>,
+    position_sender: PositionSender,
+    abilities: Option<play::PlayerAbilities>,
+    game_type: i32,
+    entity_id: i32,
     dirty: VecDeque<SectionKey>,
     pending: HashSet<SectionKey>,
     frames: u64,
     sections: u64,
-    peers: HashMap<i32, [f64; 3]>,
+    peers: HashMap<i32, Peer>,
+    sequence: i32,
+    selected_item: Option<String>,
+    observed_blocks: VecDeque<([i32; 3], u32)>,
     last_tick: horizon_client_render::time::Instant,
 }
 #[wasm_bindgen]
@@ -86,9 +111,43 @@ pub async fn connect_world(
     canvas.set_id("horizon-canvas");
     canvas.set_width(960);
     canvas.set_height(640);
-    document.body().unwrap().append_child(&canvas)?;
+    document
+        .get_element_by_id("viewport")
+        .unwrap()
+        .append_child(&canvas)?;
     let _ = window.request_inner_size(winit::dpi::PhysicalSize::new(960, 640));
     let render = &resources.imported.render;
+    let select = document.get_element_by_id("block").unwrap();
+    if let Some(items) = resources.builtin.get("minecraft:item") {
+        let mut names: Vec<_> = (0..items.names.len())
+            .filter_map(|id| items.name(id as i32))
+            .filter(|name| {
+                resources
+                    .imported
+                    .assets
+                    .registry
+                    .default_state(name)
+                    .is_some()
+            })
+            .collect();
+        names.sort_unstable();
+        for name in names {
+            let option = document.create_element("option")?;
+            option.set_attribute("value", name)?;
+            option.set_text_content(Some(name.strip_prefix("minecraft:").unwrap_or(name)));
+            select.append_child(&option)?;
+        }
+        select
+            .clone()
+            .dyn_into::<web_sys::HtmlSelectElement>()?
+            .set_value("minecraft:stone");
+    }
+    for id in ["materials", "controls", "crosshair"] {
+        document
+            .get_element_by_id(id)
+            .unwrap()
+            .remove_attribute("hidden")?;
+    }
     let white = [255u8; 4];
     let faces = panorama::Faces {
         size: 1,
@@ -103,7 +162,11 @@ pub async fn connect_world(
         render.texture_layers,
         &render.sprite_mips,
         &render.animations,
-        (&white, 1, 1),
+        (
+            &resources.player_skin.2,
+            resources.player_skin.0,
+            resources.player_skin.1,
+        ),
         (&white, 1, 1),
         (&white, 1, 1),
         (&white, 1),
@@ -142,11 +205,20 @@ pub async fn connect_world(
         pitch: 0.,
         loaded: false,
         teleported: false,
+        player: None,
+        keys: HashSet::new(),
+        position_sender: PositionSender::default(),
+        abilities: None,
+        game_type: 0,
+        entity_id: 0,
         dirty: VecDeque::new(),
         pending: HashSet::new(),
         frames: 0,
         sections: 0,
         peers: HashMap::new(),
+        sequence: 0,
+        selected_item: None,
+        observed_blocks: VecDeque::new(),
         last_tick: horizon_client_render::time::Instant::now(),
     };
     for event in start {
@@ -161,6 +233,66 @@ pub async fn connect_world(
             event: WindowEvent::Resized(size),
             ..
         } => client.renderer.resize(size.width, size.height),
+        Event::WindowEvent {
+            event: WindowEvent::KeyboardInput { event, .. },
+            ..
+        } => {
+            if let PhysicalKey::Code(key) = event.physical_key {
+                if event.state == ElementState::Pressed {
+                    client.keys.insert(key);
+                    if !event.repeat
+                        && matches!(key, KeyCode::KeyF | KeyCode::KeyR)
+                        && let Err(error) = client.interact(key == KeyCode::KeyF)
+                    {
+                        show_error(&error.to_string());
+                    }
+                } else {
+                    client.keys.remove(&key);
+                }
+            }
+        }
+        Event::WindowEvent {
+            event: WindowEvent::Focused(false),
+            ..
+        } => {
+            client.keys.clear();
+        }
+        Event::WindowEvent {
+            event:
+                WindowEvent::MouseInput {
+                    state: ElementState::Pressed,
+                    button,
+                    ..
+                },
+            ..
+        } => {
+            if button == MouseButton::Right {
+                if let Err(error) = client.interact(true) {
+                    show_error(&error.to_string());
+                }
+            } else if button == MouseButton::Left {
+                if web_sys::window()
+                    .unwrap()
+                    .document()
+                    .unwrap()
+                    .pointer_lock_element()
+                    .is_some()
+                {
+                    if let Err(error) = client.interact(false) {
+                        show_error(&error.to_string());
+                    }
+                } else {
+                    client.request_pointer_lock();
+                }
+            }
+        }
+        Event::DeviceEvent {
+            event: DeviceEvent::MouseMotion { delta },
+            ..
+        } => {
+            client.yaw += delta.0 as f32 * 0.15;
+            client.pitch = (client.pitch + delta.1 as f32 * 0.15).clamp(-90., 90.);
+        }
         Event::WindowEvent {
             event: WindowEvent::RedrawRequested,
             ..
@@ -190,6 +322,23 @@ fn show_error(error: &str) {
     }
 }
 impl BrowserClient {
+    fn request_pointer_lock(&self) {
+        let Some(canvas) = self.window.canvas() else {
+            return;
+        };
+        let result = js_sys::Reflect::get(&canvas, &JsValue::from_str("requestPointerLock"))
+            .and_then(|value| value.dyn_into::<js_sys::Function>())
+            .and_then(|function| function.call0(&canvas));
+        if let Ok(value) = result
+            && let Ok(promise) = value.dyn_into::<js_sys::Promise>()
+        {
+            wasm_bindgen_futures::spawn_local(async move {
+                if wasm_bindgen_futures::JsFuture::from(promise).await.is_err() {
+                    log::info!("Pointer lock unavailable; arrow keys still control the view");
+                }
+            });
+        }
+    }
     fn handle(&mut self, event: SessionEvent) -> Result<()> {
         match event {
             SessionEvent::Send(bytes) => self.connection.send(bytes)?,
@@ -215,7 +364,98 @@ impl BrowserClient {
                     .and_then(|ids| ids.name(packet.kind))
                     == Some("minecraft:player")
                 {
-                    self.peers.insert(packet.id, packet.position);
+                    self.peers.insert(
+                        packet.id,
+                        Peer {
+                            network: packet.position,
+                            current: PosRot {
+                                position: packet.position,
+                                yaw: horizon_protocol::buf::unpack_degrees(packet.yaw),
+                                pitch: horizon_protocol::buf::unpack_degrees(packet.pitch),
+                            },
+                            interpolation: SteppedInterpolation::new(3),
+                        },
+                    );
+                }
+            }
+            C::MoveEntityPos(play::MoveEntityPos(m))
+            | C::MoveEntityPosRot(play::MoveEntityPosRot(m))
+            | C::MoveEntityRot(play::MoveEntityRot(m)) => {
+                if let Some(peer) = self.peers.get_mut(&m.id) {
+                    let path = m.delta.as_ref().map(|d| match d {
+                        play::VecDelta::Linear(_) => Path::Linear(d.end(peer.network)),
+                        play::VecDelta::Stepped(steps) => {
+                            let mut at = peer.network;
+                            Path::Stepped(
+                                steps
+                                    .iter()
+                                    .map(|(delta, ticks)| {
+                                        at = play::VecDelta::apply(at, *delta);
+                                        (at, *ticks)
+                                    })
+                                    .collect(),
+                            )
+                        }
+                    });
+                    if let Some(path) = &path {
+                        peer.network = path.end();
+                    }
+                    peer.interpolation.interpolate_to(
+                        peer.current,
+                        path,
+                        m.rotation.map(|(yaw, pitch)| {
+                            (
+                                horizon_protocol::buf::unpack_degrees(yaw),
+                                horizon_protocol::buf::unpack_degrees(pitch),
+                            )
+                        }),
+                    );
+                }
+            }
+            C::EntityPositionSync(p) => {
+                if let Some(peer) = self.peers.get_mut(&p.id) {
+                    let path = match p.path {
+                        play::PositionPath::Linear(at) => Path::Linear(at),
+                        play::PositionPath::Stepped(steps) => Path::Stepped(steps),
+                    };
+                    peer.network = path.end();
+                    peer.interpolation.interpolate_to(
+                        peer.current,
+                        Some(path),
+                        Some((p.yaw, p.pitch)),
+                    );
+                }
+            }
+            C::TeleportEntity(p) => {
+                if let Some(peer) = self.peers.get_mut(&p.id) {
+                    let mut position = p.position;
+                    for (i, bit) in [play::relative::X, play::relative::Y, play::relative::Z]
+                        .into_iter()
+                        .enumerate()
+                    {
+                        if p.relatives & bit != 0 {
+                            position[i] += peer.network[i];
+                        }
+                    }
+                    let yaw = p.yaw
+                        + if p.relatives & play::relative::Y_ROT != 0 {
+                            peer.current.yaw
+                        } else {
+                            0.
+                        };
+                    let pitch = p.pitch
+                        + if p.relatives & play::relative::X_ROT != 0 {
+                            peer.current.pitch
+                        } else {
+                            0.
+                        };
+                    peer.network = position;
+                    peer.current = PosRot {
+                        position,
+                        yaw,
+                        pitch,
+                    };
+                    peer.interpolation = SteppedInterpolation::new(3);
                 }
             }
             C::RemoveEntities(packet) => {
@@ -223,7 +463,10 @@ impl BrowserClient {
                     self.peers.remove(&id);
                 }
             }
-            C::Login(packet) => self.dimension(&packet.spawn)?,
+            C::Login(packet) => {
+                self.entity_id = packet.player_id;
+                self.dimension(&packet.spawn)?;
+            }
             C::Respawn(packet) => self.dimension(&packet.spawn)?,
             C::PlayerPosition(packet) => {
                 let pick = |i, bit| {
@@ -249,6 +492,25 @@ impl BrowserClient {
                     packet.pitch
                 })
                 .clamp(-90., 90.);
+                let velocity = self.player.as_ref().map_or(Vec3::ZERO, |p| p.velocity);
+                let mut player = match self.player.take() {
+                    Some(player) => player,
+                    None => PlayerMotion::new(
+                        &self.resources.motion,
+                        Vec3::new(self.camera.x, self.camera.y, self.camera.z),
+                    )?,
+                };
+                player.position = Vec3::new(self.camera.x, self.camera.y, self.camera.z);
+                player.velocity = teleport_velocity(
+                    velocity,
+                    (player.yaw, player.pitch),
+                    (self.yaw, self.pitch),
+                    &packet,
+                );
+                player.client_side = true;
+                player.spectator = self.game_type == 3;
+                self.player = Some(player);
+                self.apply_abilities();
                 self.teleported = true;
                 self.send(play::Serverbound::AcceptTeleportation(
                     play::AcceptTeleportation {
@@ -260,6 +522,17 @@ impl BrowserClient {
                         pitch: self.pitch,
                     },
                 ))?;
+            }
+            C::PlayerAbilities(packet) => {
+                self.abilities = Some(packet);
+                self.apply_abilities();
+            }
+            C::SetHealth(packet) => {
+                if let Some(player) = &mut self.player {
+                    player.set_health(packet.health, false)?;
+                    player.health.food.food = packet.food;
+                    player.health.food.saturation = packet.saturation;
+                }
             }
             C::LevelChunkWithLight(packet) => {
                 let chunk = self.format.column(&packet)?;
@@ -278,14 +551,11 @@ impl BrowserClient {
                     self.dirty_near(packet.x, packet.z);
                 }
             }
-            C::BlockUpdate(packet) => {
-                self.world.set(
-                    packet.pos[0],
-                    packet.pos[1],
-                    packet.pos[2],
-                    BlockStateId(packet.state as u32),
-                )?;
-                self.dirty_near(packet.pos[0] >> 4, packet.pos[2] >> 4);
+            C::BlockUpdate(packet) => self.server_block(packet.pos, packet.state)?,
+            C::SectionBlocksUpdate(packet) => {
+                for (pos, state) in packet.blocks() {
+                    self.server_block(pos, state)?;
+                }
             }
             C::ChunkBatchFinished(_) => self.send(play::Serverbound::ChunkBatchReceived(
                 play::ChunkBatchReceived {
@@ -314,6 +584,11 @@ impl BrowserClient {
         Ok(())
     }
     fn dimension(&mut self, spawn: &play::SpawnInfo) -> Result<()> {
+        self.game_type = spawn.game_type;
+        self.player = None;
+        self.peers.clear();
+        self.teleported = false;
+        self.position_sender = PositionSender::default();
         let dimension = self.registries.dimension(spawn.dimension_type);
         let shape = LevelShape::new(
             dimension.min_y,
@@ -354,6 +629,236 @@ impl BrowserClient {
         self.send(play::Serverbound::ClientInformation(
             cfg::ClientInformation::new(4),
         ))?;
+        Ok(())
+    }
+    fn apply_abilities(&mut self) {
+        if let (Some(player), Some(abilities)) = (&mut self.player, &self.abilities) {
+            player.invulnerable = abilities.flags & 1 != 0;
+            player.flying = abilities.flags & 2 != 0;
+            player.may_fly = abilities.flags & 4 != 0;
+            player.flying_speed = abilities.flying_speed;
+        }
+    }
+    fn tick_player(&mut self) -> Result<()> {
+        for peer in self.peers.values_mut() {
+            if let Some(current) = peer.interpolation.interpolate() {
+                peer.current = current;
+            }
+        }
+        if !self.loaded {
+            return Ok(());
+        }
+        if self.keys.contains(&KeyCode::ArrowLeft) {
+            self.yaw -= 4.;
+        }
+        if self.keys.contains(&KeyCode::ArrowRight) {
+            self.yaw += 4.;
+        }
+        if self.keys.contains(&KeyCode::ArrowUp) {
+            self.pitch = (self.pitch - 4.).max(-90.);
+        }
+        if self.keys.contains(&KeyCode::ArrowDown) {
+            self.pitch = (self.pitch + 4.).min(90.);
+        }
+        let held = |key| self.keys.contains(&key);
+        let keys = Keys {
+            forward: held(KeyCode::KeyW),
+            backward: held(KeyCode::KeyS),
+            left: held(KeyCode::KeyA),
+            right: held(KeyCode::KeyD),
+            jump: held(KeyCode::Space),
+            shift: held(KeyCode::ShiftLeft),
+            sprint: held(KeyCode::ControlLeft),
+            analog: None,
+        };
+        let input = u8::from(keys.forward)
+            | (u8::from(keys.backward) << 1)
+            | (u8::from(keys.left) << 2)
+            | (u8::from(keys.right) << 3)
+            | (u8::from(keys.jump) << 4)
+            | (u8::from(keys.shift) << 5)
+            | (u8::from(keys.sprint) << 6);
+        let Some(player) = &mut self.player else {
+            return Ok(());
+        };
+        player.yaw = self.yaw;
+        player.pitch = self.pitch;
+        let was_flying = player.flying;
+        let was_sprinting = player.sprinting;
+        MotionWorld {
+            entities: &[],
+            player,
+            scene: &mut self.world,
+            assets: &self.resources.imported.assets,
+            collision_binding: &self.resources.collision,
+            resources: &self.resources.motion,
+        }
+        .controlled_simulation_tick(keys)?;
+        player.events.clear();
+        self.camera = DVec3::new(player.position.x, player.position.y, player.position.z);
+        let flying = player.flying;
+        let sprinting = player.sprinting;
+        let position = self.position_sender.update(
+            [self.camera.x, self.camera.y, self.camera.z],
+            (self.yaw, self.pitch),
+            player.ground.on_ground,
+            player.collision.horizontal,
+        );
+        self.send(play::Serverbound::PlayerInput(play::PlayerInput {
+            flags: input,
+        }))?;
+        if flying != was_flying {
+            self.send(play::Serverbound::PlayerAbilities(
+                play::PlayerAbilitiesRequest {
+                    flags: if flying { 2 } else { 0 },
+                },
+            ))?;
+        }
+        if sprinting != was_sprinting {
+            self.send(play::Serverbound::PlayerCommand(play::PlayerCommand {
+                id: self.entity_id,
+                action: if sprinting { 1 } else { 2 },
+                data: 0,
+            }))?;
+        }
+        if let Some(packet) = position {
+            self.send(packet)?;
+        }
+        Ok(())
+    }
+    fn server_block(&mut self, pos: [i32; 3], state: i32) -> Result<()> {
+        self.world
+            .set(pos[0], pos[1], pos[2], BlockStateId(state as u32))?;
+        self.world.light_edits.clear();
+        self.world.dirty_light.clear();
+        self.observed_blocks.push_back((pos, state as u32));
+        if self.observed_blocks.len() > 64 {
+            self.observed_blocks.pop_front();
+        }
+        let layout = self.world.layout();
+        let mut changed = Vec::new();
+        for dz in -1..=1 {
+            for dx in -1..=1 {
+                let (x, z) = ((pos[0] >> 4) + dx, (pos[2] >> 4) + dz);
+                if !self.world.chunks.contains_key(&(x, z)) {
+                    continue;
+                }
+                for dy in -1..=1 {
+                    if let Some(sy) = layout.section_index(pos[1] + dy * 16) {
+                        changed.push((x, sy as i32, z));
+                    }
+                }
+            }
+        }
+        self.dirty.retain(|key| !changed.contains(key));
+        for key in changed {
+            self.pending.insert(key);
+            self.dirty.push_front(key);
+        }
+        Ok(())
+    }
+    fn eye(&self) -> DVec3 {
+        self.camera
+            + DVec3::new(
+                0.,
+                self.player
+                    .as_ref()
+                    .map_or(1.62, |p| f64::from(p.dimensions.eye_height)),
+                0.,
+            )
+    }
+    fn pick(&self) -> Option<Hit> {
+        picking::clip_ray(
+            self.eye().to_array(),
+            horizon_client_render::camera::view_vector(self.yaw, self.pitch),
+            if self.game_type == 1 { 5. } else { 4.5 },
+            &self.world,
+            &self.resources.facts,
+            |pos| {
+                let state = self.world.block(pos[0], pos[1], pos[2]);
+                let facts = self.resources.facts.get(state);
+                let offset = if facts.outline_offset {
+                    self.resources
+                        .tables
+                        .offset(state, pos[0], pos[2])
+                        .unwrap_or([0.; 3])
+                } else {
+                    [0.; 3]
+                };
+                facts
+                    .outline
+                    .iter()
+                    .map(|b| std::array::from_fn(|i| f64::from(pos[i % 3]) + offset[i % 3] + b[i]))
+                    .collect()
+            },
+        )
+    }
+    fn interact(&mut self, place: bool) -> Result<()> {
+        if !self.loaded {
+            return Ok(());
+        }
+        let Some(hit) = self.pick() else {
+            return Ok(());
+        };
+        self.sequence = self.sequence.wrapping_add(1);
+        let face = [
+            [0, -1, 0],
+            [0, 1, 0],
+            [0, 0, -1],
+            [0, 0, 1],
+            [-1, 0, 0],
+            [1, 0, 0],
+        ]
+        .iter()
+        .position(|f| *f == hit.face)
+        .unwrap_or(1) as i32;
+        if place {
+            if self.game_type == 1 {
+                let name = web_sys::window()
+                    .unwrap()
+                    .document()
+                    .unwrap()
+                    .get_element_by_id("block")
+                    .unwrap()
+                    .dyn_into::<web_sys::HtmlSelectElement>()
+                    .unwrap()
+                    .value();
+                if self.selected_item.as_ref() != Some(&name) {
+                    let item = self
+                        .resources
+                        .builtin
+                        .get("minecraft:item")
+                        .and_then(|items| items.id(&name))
+                        .ok_or("Unknown creative block")?;
+                    self.send(play::Serverbound::SetCreativeModeSlot(
+                        play::SetCreativeModeSlot {
+                            slot: 36,
+                            item: Some(horizon_protocol::item::Stack::new(item, 64)),
+                        },
+                    ))?;
+                    self.send(play::Serverbound::SetCarriedItem(play::SetCarriedItem {
+                        slot: 0,
+                    }))?;
+                    self.selected_item = Some(name);
+                }
+            }
+            self.send(play::Serverbound::UseItemOn(play::UseItemOn {
+                hand: 0,
+                pos: hit.pos,
+                face,
+                cursor: std::array::from_fn(|i| (hit.point[i] - f64::from(hit.pos[i])) as f32),
+                inside: false,
+                world_border: false,
+                sequence: self.sequence,
+            }))?;
+        } else {
+            self.send(play::Serverbound::PlayerAction(play::PlayerAction {
+                action: 0,
+                pos: hit.pos,
+                direction: face as u8,
+                sequence: self.sequence,
+            }))?;
+        }
         Ok(())
     }
     fn dirty_near(&mut self, x: i32, z: i32) {
@@ -429,13 +934,32 @@ impl BrowserClient {
                 horizon_protocol::client_session::Phase::Play
             )
         {
+            self.tick_player()?;
             self.send(play::Serverbound::ClientTickEnd(Empty))?;
             self.last_tick = horizon_client_render::time::Instant::now();
         }
         let size = self.window.inner_size();
         let hud = HudBatch::new([size.width, size.height]);
         let mut frame = frame(&hud, self.frames);
-        frame.camera = self.camera + DVec3::new(0., 1.62, 0.);
+        frame.camera = self.eye();
+        let mut entities = Vec::new();
+        for peer in self.peers.values() {
+            let relative = DVec3::from_array(peer.current.position) - frame.camera;
+            let base = glam::Mat4::from_translation(relative.as_vec3())
+                * glam::Mat4::from_rotation_y((180. - peer.current.yaw).to_radians())
+                * glam::Mat4::from_scale(glam::Vec3::new(-1., -1., 1.))
+                * glam::Mat4::from_translation(glam::Vec3::new(0., -1.501, 0.));
+            horizon_client_render::entity_model::render_model(
+                &self.resources.player_model,
+                base,
+                &|part| part.pose,
+                [0., 0., 1., 1.],
+                0x00f000f0,
+                0,
+                &mut entities,
+            );
+        }
+        frame.entities = &entities;
         frame.yaw = self.yaw;
         frame.pitch = self.pitch;
         frame.sky = self.environment.sample(self.world.day_time, None, None);
@@ -450,6 +974,45 @@ impl BrowserClient {
             .unwrap()
             .body()
             .unwrap();
+        body.set_attribute("data-horizon-mesh-pending", &self.pending.len().to_string())
+            .map_err(|e| format!("{e:?}"))?;
+        body.set_attribute(
+            "data-horizon-target",
+            &serde_json::to_string(&self.pick().map(|h| {
+                (
+                    h.pos,
+                    h.face,
+                    self.world.block(h.pos[0], h.pos[1], h.pos[2]).0,
+                )
+            }))?,
+        )
+        .map_err(|e| format!("{e:?}"))?;
+        body.set_attribute(
+            "data-horizon-observed-blocks",
+            &serde_json::to_string(&self.observed_blocks)?,
+        )
+        .map_err(|e| format!("{e:?}"))?;
+        body.set_attribute(
+            "data-horizon-peer-positions",
+            &serde_json::to_string(
+                &self
+                    .peers
+                    .iter()
+                    .map(|(id, p)| (*id, p.network))
+                    .collect::<Vec<_>>(),
+            )?,
+        )
+        .map_err(|e| format!("{e:?}"))?;
+        body.set_attribute("data-horizon-peer-vertices", &entities.len().to_string())
+            .map_err(|e| format!("{e:?}"))?;
+        body.set_attribute(
+            "data-horizon-position",
+            &format!(
+                "{:.4},{:.4},{:.4}",
+                self.camera.x, self.camera.y, self.camera.z
+            ),
+        )
+        .map_err(|e| format!("{e:?}"))?;
         body.set_attribute("data-horizon-world-peers", &self.peers.len().to_string())
             .map_err(|e| format!("{e:?}"))?;
         body.set_attribute(

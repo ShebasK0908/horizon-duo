@@ -1,0 +1,69 @@
+{
+  "passed": true,
+  "mode": "read",
+  "block": {
+    "position": [
+      0,
+      -60,
+      2
+    ],
+    "state": 6865
+  },
+  "target": [
+    [
+      0,
+      -60,
+      2
+    ],
+    [
+      0,
+      0,
+      -1
+    ],
+    6865
+  ],
+  "position": "0.5000,-60.0000,0.5000",
+  "error": "",
+  "logs": [
+    {
+      "type": "info",
+      "text": "Horizon renderer:  (BrowserWebGpu, Other)"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: device ready; configuring the surface (960x640 Bgra8Unorm, Fifo)"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: HDR output not offered by this display"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: creating the pipelines"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: acquiring the first frame"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: submitting the first frame"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: presenting the first frame"
+    },
+    {
+      "type": "info",
+      "text": "Pointer lock unavailable; arrow keys still control the view"
+    }
+  ]
+}

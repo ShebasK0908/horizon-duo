@@ -2270,15 +2270,8 @@ impl Game<'_> {
                 self.destroy_block_progress(p.id, p.pos, i32::from(p.progress));
             }
             C::SectionBlocksUpdate(p) => {
-                let [sx, sy, sz] = p.section;
-                for change in p.changes {
-                    let local = (change & 0xFFF) as i32;
-                    let pos = [
-                        sx * 16 + (local >> 8 & 15),
-                        sy * 16 + (local & 15),
-                        sz * 16 + (local >> 4 & 15),
-                    ];
-                    self.server_block(pos, (change >> 12) as i32);
+                for (pos, state) in p.blocks() {
+                    self.server_block(pos, state);
                 }
             }
             C::BlockChangedAck(p) => self.end_predictions(p.sequence),

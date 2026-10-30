@@ -1,0 +1,18 @@
+[package]
+name = "horizon-client-physics"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version = "1.90"
+description = "Shared native and browser player-physics bindings"
+
+[dependencies]
+horizon-assets = { path = "../horizon-assets" }
+horizon-core = { path = "../horizon-core" }
+horizon-world = { path = "../horizon-world" }
+horizon-client-core = { path = "../horizon-client-core" }
+horizon-client-render = { path = "../horizon-client-render" }
+serde_json = "1"
+
+[lints]
+workspace = true

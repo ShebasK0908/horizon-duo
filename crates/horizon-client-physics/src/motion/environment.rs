@@ -142,7 +142,7 @@ impl MotionWorld<'_, '_, '_> {
         Ok(())
     }
 }
-pub(crate) fn fire_contact(
+pub fn fire_contact(
     world: &World,
     registry: &horizon_world::registry::BlockRegistry,
     bounds: Aabb,
@@ -170,7 +170,7 @@ pub(crate) fn fire_contact(
 /// `CactusBlock.entityInside`: the box (deflated by `1.0E-5`, as in
 /// `Entity.checkInsideBlocks`) touches a cactus; its inside shape is the
 /// whole block.
-pub(crate) fn cactus_contact(
+pub fn cactus_contact(
     world: &World,
     registry: &horizon_world::registry::BlockRegistry,
     bounds: Aabb,
@@ -327,7 +327,7 @@ impl MotionWorld<'_, '_, '_> {
     }
 }
 
-pub(crate) fn ignite_contact(
+pub fn ignite_contact(
     ticks: i32,
     player: bool,
     random: &mut impl RandomSource,

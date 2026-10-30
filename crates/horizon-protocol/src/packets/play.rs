@@ -794,6 +794,22 @@ packet!(
     /// Each change is `state << 12 | x << 8 | z << 4 | y` within the section.
     SectionBlocksUpdate { section: [i32; 3] => SectionPos, changes: Vec<i64> => List<VarLong> }
 );
+impl SectionBlocksUpdate {
+    pub fn blocks(&self) -> impl Iterator<Item = ([i32; 3], i32)> + '_ {
+        let [sx, sy, sz] = self.section;
+        self.changes.iter().map(move |change| {
+            let local = (change & 0xFFF) as i32;
+            (
+                [
+                    sx * 16 + (local >> 8 & 15),
+                    sy * 16 + (local & 15),
+                    sz * 16 + (local >> 4 & 15),
+                ],
+                (change >> 12) as i32,
+            )
+        })
+    }
+}
 packet!(Text { text: Tag => Nbt });
 packet!(SetChunkCacheCenter { x: i32 => VarInt, z: i32 => VarInt });
 packet!(

@@ -12,6 +12,7 @@ pub mod frame;
 pub mod ids;
 pub mod item;
 pub mod packets;
+pub mod player_sync;
 pub mod quiet;
 pub mod registry;
 mod resolver;

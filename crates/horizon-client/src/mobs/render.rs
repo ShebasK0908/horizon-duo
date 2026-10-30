@@ -19,7 +19,7 @@ pub type Atlas<'a> = &'a dyn Fn(&str) -> Option<[f32; 4]>;
 /// draws depth only: armour with 13 vanished; 35 is text pulled toward the
 /// camera). It marks the `ARMOR_ENTITY_GLINT_TEXTURING` sample: entity.wgsl
 /// transforms the model UV and reads `enchanted_glint_armor`.
-pub const ARMOR_GLINT: u32 = 36;
+pub use horizon_client_render::entity_model::ARMOR_GLINT;
 
 /// `RenderTypes.breezeWind`: the texture of the breeze's wind layer scrolls
 /// by 0.02 of the texture per tick.

@@ -1,0 +1,16 @@
+Browser gameplay checkpoint, 2026-10-30 UTC
+Matching toolchain: /Users/test/.rustup/toolchains/stable-aarch64-apple-darwin/bin/{cargo,rustc}
+python3 tools/build_web.py: PASS (wasm32-unknown-unknown, wasm-bindgen 0.2.129)
+cargo check -p horizon-client --bin horizon-client --no-default-features: PASS
+HORIZON_TEST_RESOURCES=.local/web-owned/26.3 cargo test -p horizon-client-physics -p horizon-client-render -p horizon-protocol --lib: PASS, 39 + 627 + 126 tests, 16 existing ignored renderer tests
+HORIZON_TEST_RESOURCES=.local/web-owned/26.3 cargo test -p horizon-client --lib motion_saved_tests: PASS, 1 resource-backed native save round trip
+cargo test -p horizon-client --lib mobs::: PASS, 187 tests, 6 existing ignored
+cargo clippy -p horizon-client-physics -p horizon-client-render -p horizon-protocol --lib -- -D warnings -A clippy::manual_range_contains: PASS
+cargo clippy -p horizon-client-physics -p horizon-client-render -p horizon-protocol -p horizon-web --target wasm32-unknown-unknown -- -D warnings -A clippy::manual_range_contains: PASS after fixing two new collapsible_if warnings
+Strict Clippy remains blocked by the unchanged aquifer manual_range_contains baseline lint.
+HORIZON_WEB_NAME_PREFIX=Fresh5 HORIZON_WEB_PROOF=.local/web-play-proof-2 node tools/web_play_check.cjs: PASS; actual received edits plus drained mesh queue before captures. Inspected placed.png shows real gold-block geometry, peer.png shows real imported player model.
+node tools/web_persistence_check.cjs: PASS write; separate server clean exit 0; resume same marked scratch directory; HORIZON_WEB_PERSIST_MODE=read: PASS read from restarted server chunks
+python3 tools/check_public_tree.py: PASS
+Wrong data-version manifest import in Chrome: PASS, rejected before rendering.
+Full workspace, parity harnesses, offline browser execution, mobile input, and real X post are not verified.
+Full logs: .audit/play-shared-tests.txt, play-native-save-test.txt, play-native-model-tests.txt, play-native-check.txt, play-native-clippy.txt, play-wasm-clippy.txt

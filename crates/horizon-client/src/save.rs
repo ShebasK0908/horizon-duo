@@ -6077,3 +6077,17 @@ mod tests {
         fs::remove_dir_all(root).unwrap();
     }
 }
+
+impl From<&Level> for crate::motion::SavedMotion {
+    fn from(level: &Level) -> Self {
+        Self {
+            player_extra: level.player_extra.clone(),
+            health: level.health,
+            absorption: level.absorption,
+            food: level.food,
+            saturation: level.saturation,
+            fall_distance: level.fall_distance,
+            flying: level.flying,
+        }
+    }
+}

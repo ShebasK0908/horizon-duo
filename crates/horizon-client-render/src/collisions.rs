@@ -2,6 +2,7 @@
 //! The development scene has no entities, block entities or world border.
 //! Entity-dependent rules use the defaults for players and the supported mobs.
 use crate::{Result, world::World};
+use horizon_assets::source::{NativeResources, ResourceSource};
 use horizon_core::{
     geometry::{Aabb, Vec3, VoxelShape, border::BorderGeometry},
     position::{BlockPos, ChunkPos},
@@ -26,7 +27,13 @@ use horizon_world::{
 use std::{io, path::Path, sync::Arc};
 
 pub fn load<'r>(root: &Path, registry: &'r BlockRegistry) -> Result<BlockCollisionRegistry<'r>> {
-    let file = BlockTableFile::open(&root.join("cached-collision.nbt"), registry)?;
+    load_from(&NativeResources(root), registry)
+}
+pub fn load_from<'r>(
+    source: &dyn ResourceSource,
+    registry: &'r horizon_world::registry::BlockRegistry,
+) -> crate::Result<BlockCollisionRegistry<'r>> {
+    let file = BlockTableFile::read(&source.read("cached-collision.nbt")?, registry)?;
     let cached = CachedCollisionRegistry::from_table(file.table("collision")?)?;
     if !cached.has_canonical_identities() {
         return Err("scene collisions require canonical shape identities".into());

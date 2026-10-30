@@ -12,7 +12,7 @@ pub use horizon_client_render::{
     extras, fast_hash, fog, font, gfx, graphics, graphics_style, graphics_ui, hud, hud_layout,
     hud_overlays, inventory_effects, java_text, jigsaw_block, level_loading, light, lod, logging,
     menu_blur, mesher, minimap, mipmap, mod_list, model_library, models, options_file,
-    options_fixes, options_ui, overlay, pack_screen, packs, par, particles, poi_sections,
+    options_fixes, options_ui, overlay, pack_screen, packs, par, particles, picking, poi_sections,
     potent_sulfur, providers, remote_chunks, screen_draw, screen_effects, sculk, section_mask,
     settings, shader_pack_list, signs, skins, sound_engine, sound_events, sound_preview, spans,
     split_layout, sprites, streaming, structure_block, tab_list, telemetry, test_block,
@@ -20,8 +20,8 @@ pub use horizon_client_render::{
     worldborder, zip,
 };
 pub mod attack_strength;
-pub mod attribute_updates;
-pub mod auto_jump;
+pub use horizon_client_physics::attribute_updates;
+pub use horizon_client_physics::auto_jump;
 pub mod banner;
 pub mod beehive;
 pub mod benchmark;
@@ -62,23 +62,23 @@ pub mod game_mode_switcher;
 pub mod game_rules_screen;
 pub mod gizmos;
 pub mod gossip;
-pub mod health;
+pub use horizon_client_physics::health;
 pub mod heartbeat;
 pub mod hotbar;
-pub mod hunger;
+pub use horizon_client_physics::hunger;
 pub mod inv_sort;
 pub mod item_activation;
 pub mod item_render;
 pub mod item_sync;
 pub mod item_tooltip;
 pub mod lan;
-pub mod landing;
+pub use horizon_client_physics::landing;
 pub mod locator_bar;
 pub mod menu;
 pub mod merchant;
 pub mod mobs;
 pub mod mod_content;
-pub mod motion;
+pub use horizon_client_physics::motion;
 pub mod multiplayer;
 pub mod music;
 pub mod net;
@@ -89,9 +89,9 @@ pub mod osk;
 pub mod patrol;
 pub mod perf_overlay;
 pub mod pick_item;
-pub mod player_sync;
+pub use horizon_protocol::player_sync;
 pub mod portal_sections;
-pub mod pose;
+pub use horizon_client_physics::pose;
 pub mod pregen;
 pub mod projectiles;
 pub mod raid;
@@ -107,7 +107,7 @@ pub mod server_packs;
 pub mod shadows;
 pub mod spear;
 pub mod spectator_menu;
-pub mod sprint;
+pub use horizon_client_physics::sprint;
 pub mod stations;
 pub mod stopwatches;
 pub mod structure_blocks;
@@ -148,3 +148,6 @@ pub use horizon_items::enchant;
 pub use horizon_items::item_data;
 pub use horizon_items::items;
 pub use horizon_items::random_sequences;
+
+#[cfg(test)]
+mod motion_saved_tests;

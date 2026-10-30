@@ -1,0 +1,35 @@
+Server persistence proof, 2026-10-30 UTC
+Separate disposable server on 127.0.0.1:25576; the user-facing 25575 server was left running.
+World directory: .local/web-test-server-oe5m5dnj
+First run: run-4gbqwroo/server.log, pid 14361
+Browser write: tools/web_persistence_check.cjs, state 6865 at [0,-60,2]
+Console stop; process exited 0.
+Second run: python3 tools/run_web_test_server.py --resources .local/web-owned/26.3 --port 25576 --resume .local/web-test-server-oe5m5dnj
+Second environment: run-o1qspdlt/server.log, pid 15057
+Browser read: HORIZON_WEB_PERSIST_MODE=read node tools/web_persistence_check.cjs
+Same world block state 6865 read from received chunks after the process restart.
+Native server executable was built at remote-world checkpoint 145bbbd; server gameplay was not changed by client extraction.
+
+stop
+[16:19:28] [Server thread/INFO]: PersistProof lost connection: Disconnected
+[16:19:28] [Server thread/INFO]: System chat: PersistProof left the game
+[16:19:41] [Server thread/INFO]: System chat: Stopping the server
+[16:19:41] [Server thread/INFO]: System chat: Stopping the server
+[16:19:41] [Server thread/INFO]: Stopping server
+[16:19:41] [Server thread/INFO]: Saving players
+[16:19:42] [Server thread/INFO]: Saving worlds
+[16:19:42] [Server thread/INFO]: Saving chunks for level 'ServerLevel[web-proof]'/minecraft:overworld
+[16:19:42] [Server thread/INFO]: Saving chunks for level 'ServerLevel[web-proof]'/minecraft:the_nether
+[16:19:42] [Server thread/INFO]: Saving chunks for level 'ServerLevel[web-proof]'/minecraft:the_end
+
+resume
+Horizon: worldgen data loaded in 1.293851292s
+Horizon: live features ready in 1.679608166s
+[16:20:00] [Server thread/INFO]: Done (11.255s)! For help, type "help"
+[16:20:00] [Server thread/INFO]: Saving chunks for level 'ServerLevel[web-proof]'/minecraft:overworld
+[16:20:00] [Server thread/INFO]: Saving chunks for level 'ServerLevel[web-proof]'/minecraft:the_nether
+[16:20:00] [Server thread/INFO]: Saving chunks for level 'ServerLevel[web-proof]'/minecraft:the_end
+[16:20:12] [Server thread/INFO]: PersistProof[/127.0.0.1:54831] logged in with entity id 2 at (0.5, -60.0, 0.5)
+[16:20:12] [Server thread/INFO]: System chat: PersistProof joined the game
+[16:20:13] [Server thread/INFO]: PersistProof lost connection: Disconnected
+[16:20:13] [Server thread/INFO]: System chat: PersistProof left the game

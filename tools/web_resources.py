@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Package player-owned prepared resources for browser rendering validation."""
+"""Package player-owned prepared resources for the browser client."""
 import argparse
 import json
 from pathlib import Path
@@ -19,7 +19,7 @@ def main():
     if manifest.get("data_version") != expected or manifest.get("schema") != 7:
         raise SystemExit("Prepare resources for Horizon's pinned version before importing them.")
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    top = {"facts.json", "horizon-resources.json", "block-tags.json", "model-states.json", "gameplay-facts.json", "block-behaviours.json", "occlusion.nbt", "render-definitions.json", "registries.json"}
+    top = {"facts.json", "horizon-resources.json", "block-tags.json", "model-states.json", "gameplay-facts.json", "block-behaviours.json", "occlusion.nbt", "render-definitions.json", "registries.json", "entity-models.json", "attributes.json", "movement-properties.nbt", "landing-definitions.json", "damage-catalog.json", "damage-tags.json", "player-float-ids.json", "cached-collision.nbt"}
     with zipfile.ZipFile(args.output, "w", zipfile.ZIP_DEFLATED, compresslevel=1) as archive:
         for file in sorted(args.resources.rglob("*")):
             relative = file.relative_to(args.resources)

@@ -1,10 +1,13 @@
 <!doctype html>
 <meta charset="utf-8">
 <link rel="icon" href="data:,">
-<title>Horizon browser renderer validation</title>
-<style>body{margin:0;background:#15202a;color:#eee;font:16px system-ui}header{padding:16px}canvas{display:block;width:960px;height:640px;max-width:100%}#error{color:#faa}</style>
+<title>Horizon browser</title>
+<style>body{margin:0;background:#15202a;color:#eee;font:16px system-ui}header{padding:16px}canvas{display:block;width:960px;height:auto;max-width:100%}#viewport{position:relative;width:960px;max-width:100%}#error{color:#faa}#crosshair{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none}label, #controls{margin:0 16px}</style>
 <header>Horizon renderer validation. Original synthetic mesh. Gameplay and multiplayer are not connected.</header>
 <label id="import" hidden>Import your prepared Horizon resources (.zip) <input type="file" accept=".zip" aria-label="Prepared resources"></label>
+<label id="materials" hidden>Creative block <select id="block" aria-label="Creative block"></select></label>
+<p id="controls" hidden>Click the world to focus. WASD move, Space jump, Shift crouch, Ctrl sprint, mouse or arrow keys look. F places a block, R breaks. Double Space toggles creative flight.</p>
+<div id="viewport"><span id="crosshair" hidden>+</span></div>
 <pre id="error"></pre>
 <script type="module">
 import init, {run_render_fixture, run_owned_resources, connect_world} from './pkg/horizon_web.js';
@@ -12,7 +15,7 @@ const fail = error => {document.querySelector('#error').textContent=String(error
 await init();
 const params=new URLSearchParams(location.search);
 if (params.has('owned') || params.has('world')) {
-    document.querySelector('header').textContent='Horizon owned-resource rendering validation. Gameplay and multiplayer are not connected.';
+    document.querySelector('header').textContent=params.has('world') ? 'Horizon browser — remote world' : 'Horizon owned-resource rendering validation.';
     document.querySelector('#import').hidden=false;
     document.querySelector('input').addEventListener('change', async event => {
         try {
