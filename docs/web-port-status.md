@@ -17,7 +17,7 @@ client parity, offline browser worlds, and in-X execution remain unfinished.
 | Durable world | End-to-end verified for server-backed reconnect and process restart | Reload and reconnect after an edit and observe that edit in the same world. |
 | Offline browser world | Not started | Create, edit, save, and reopen a world without a remote game server. This follows the remote-first milestone. |
 | Multiplayer | End-to-end verified for two local browser clients | Two browser clients join one Horizon server, see each other, and observe the same block edits. |
-| Shared world URL | End-to-end verified locally; private Tailscale runtime exposed by parent | A second browser opens the world URL and joins the intended world. |
+| Shared world URL | End-to-end verified locally and through private Tailscale HTTPS/WSS in Chrome | A second browser opens the world URL and joins the intended world. |
 | X embedding | In progress; source research only | Confirm the current supported integration and, if available, run the actual game inside X. A shared URL does not establish this. |
 | Native regressions | Locally tested for current shared changes | Run the checks relevant to each shared engine change. |
 | Review and synchronization | In progress; checkpoint pushed, parent review outstanding | Inspect the real diff, obtain independent review, and push coherent tested commits to a dedicated fork branch. |
@@ -261,3 +261,19 @@ that download. This is parent-supplied runtime evidence; the implementation
 checks above used local Chrome. Phone input and mobile WebGPU have not been
 verified. The native world and these runtime services remain running for user
 testing. This is not a public HTTPS deployment or an X embed test.
+
+The implementation owner then ran the actual world check through that exact
+Tailscale HTTPS/WSS route in Chrome, using a separate `TailWebProof` profile.
+[The browser receipt](../.audit/web-tailnet-browser.json) records 45 received
+columns, two drawn sections, and player movement from `[0.5,-60,0.5]` to
+`[0.5,-60,1.6003]`, with no page or shader validation errors. This checks the
+current compiled build and the private route together. It does not establish
+phone WebGPU or in-X execution.
+
+The playable creative checkpoint is `84f20823f` on `codex/horizon-web`, pushed
+to `fork/codex/horizon-web`. Parent architecture synthesis and independent review
+remain outstanding. No PR, merge, public deployment, release, or X post was made.
+The temporary persistence-test server and bridge were stopped after their checks.
+The user-facing HTTP server (PID 55502, 8766), original bridge (PID 88366, 8767),
+and native world (PID 88504, 25575) remain running. Parent-owned ports 8491,
+8492, 18766, and 18767 were left untouched.
