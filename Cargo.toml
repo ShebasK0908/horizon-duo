@@ -2,6 +2,7 @@
 exclude = ["launcher", "crates/horizon-telemetry-server", "crates/horizon-mod-registry", "third_party/wgpu-hal"]
 members = [
     "crates/horizon-web",
+    "crates/horizon-web-bridge",
     "crates/horizon-core",
     "crates/horizon-dualsense",
     "crates/horizon-threads",

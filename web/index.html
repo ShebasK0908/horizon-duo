@@ -7,14 +7,22 @@
 <label id="import" hidden>Import your prepared Horizon resources (.zip) <input type="file" accept=".zip" aria-label="Prepared resources"></label>
 <pre id="error"></pre>
 <script type="module">
-import init, {run_render_fixture, run_owned_resources} from './pkg/horizon_web.js';
+import init, {run_render_fixture, run_owned_resources, connect_world} from './pkg/horizon_web.js';
 const fail = error => {document.querySelector('#error').textContent=String(error); console.error(error);};
 await init();
-if (new URLSearchParams(location.search).has('owned')) {
+const params=new URLSearchParams(location.search);
+if (params.has('owned') || params.has('world')) {
     document.querySelector('header').textContent='Horizon owned-resource rendering validation. Gameplay and multiplayer are not connected.';
     document.querySelector('#import').hidden=false;
     document.querySelector('input').addEventListener('change', async event => {
-        try {await run_owned_resources(new Uint8Array(await event.target.files[0].arrayBuffer()));}
+        try {
+            const bytes=new Uint8Array(await event.target.files[0].arrayBuffer());
+            if (params.has('world')) {
+                const bridge=new URL(params.get('bridge') || location.origin.replace('http','ws'));
+                bridge.pathname='/world/'+encodeURIComponent(params.get('world'));
+                await connect_world(bytes, bridge.href, params.get('world'), params.get('name') || 'Player'+crypto.getRandomValues(new Uint16Array(1))[0]);
+            } else {await run_owned_resources(bytes);}
+        }
         catch(error) {fail(error);}
     }, {once:true});
 } else {

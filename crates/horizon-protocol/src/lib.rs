@@ -4,6 +4,7 @@
 #![forbid(unsafe_code)]
 pub mod buf;
 pub mod chunk;
+pub mod client_session;
 pub mod connection;
 pub mod crypto;
 pub mod entity_data;

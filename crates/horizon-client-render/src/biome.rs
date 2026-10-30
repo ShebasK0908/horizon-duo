@@ -1,11 +1,11 @@
 //! Biome colours from the pinned biome definitions and colormaps
 //! (`Biome.getGrassColor`/`getFoliageColor`/..., `BlockTintSources`).
 use crate::Result;
+use horizon_assets::source::{NativeResources, ResourceSource};
 use horizon_core::{noise::SimplexNoise, position::BlockPos, random::LegacyRandom};
 use serde_json::Value;
 use std::{
     collections::{BTreeMap, HashMap},
-    fs,
     path::Path,
     sync::Arc,
 };
@@ -169,9 +169,9 @@ fn color(v: &Value) -> Option<u32> {
         _ => None,
     }
 }
-fn colormap(root: &Path, name: &str) -> Result<Vec<u32>> {
-    let path = root.join(format!("assets/minecraft/textures/colormap/{name}.png"));
-    let mut decoder = png::Decoder::new(std::io::BufReader::new(fs::File::open(path)?));
+fn colormap(source: &dyn ResourceSource, name: &str) -> Result<Vec<u32>> {
+    let path = format!("assets/minecraft/textures/colormap/{name}.png");
+    let mut decoder = png::Decoder::new(std::io::Cursor::new(source.read(&path)?));
     decoder.set_transformations(png::Transformations::EXPAND | png::Transformations::STRIP_16);
     let mut reader = decoder.read_info()?;
     let mut bytes = vec![0; reader.output_buffer_size().ok_or("colormap too large")?];
@@ -270,26 +270,30 @@ pub fn identifier_order(a: &str, b: &str) -> std::cmp::Ordering {
 }
 impl Biomes {
     pub fn load(root: &Path) -> Result<Self> {
+        Self::load_from(&NativeResources(root))
+    }
+    pub fn load_from(source: &dyn ResourceSource) -> Result<Self> {
         let maps = Colormaps {
-            grass: colormap(root, "grass")?,
-            foliage: colormap(root, "foliage")?,
-            dry: colormap(root, "dry_foliage")?,
+            grass: colormap(source, "grass")?,
+            foliage: colormap(source, "foliage")?,
+            dry: colormap(source, "dry_foliage")?,
         };
         let mut list = Vec::new();
-        let mut names: Vec<_> = fs::read_dir(root.join("data/minecraft/worldgen/biome"))?
-            .filter_map(|e| e.ok())
-            .map(|e| e.path())
-            .filter(|p| p.extension().is_some_and(|e| e == "json"))
+        let mut names: Vec<_> = source
+            .files("data/minecraft/worldgen/biome")?
+            .into_iter()
+            .filter(|name| name.ends_with(".json"))
             .collect();
         names.sort();
         for path in names {
             let name = format!(
                 "minecraft:{}",
-                path.file_stem()
+                Path::new(&path)
+                    .file_stem()
                     .and_then(|s| s.to_str())
                     .ok_or("bad biome")?
             );
-            let v: Value = serde_json::from_slice(&fs::read(&path)?)?;
+            let v: Value = serde_json::from_slice(&source.read(&path)?)?;
             list.push(BiomeInfo::from_json(name, &v, &maps));
         }
         let index = list

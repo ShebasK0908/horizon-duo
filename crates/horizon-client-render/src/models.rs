@@ -123,16 +123,22 @@ pub fn load_visibility(
     root: &Path,
     registry: &BlockRegistry,
 ) -> Result<horizon_world::block_render::FaceVisibility> {
+    load_visibility_from(&NativeResources(root), registry)
+}
+pub fn load_visibility_from(
+    source: &dyn ResourceSource,
+    registry: &BlockRegistry,
+) -> Result<horizon_world::block_render::FaceVisibility> {
     use horizon_world::{
         block_render::{FaceVisibility, RenderDefinition, SkipRendering},
         collision::CachedCollisionRegistry,
         registry::BlockTableFile,
     };
-    use std::{collections::BTreeMap, fs};
-    let file = BlockTableFile::open(&root.join("occlusion.nbt"), registry)?;
+    use std::collections::BTreeMap;
+    let file = BlockTableFile::read(&source.read("occlusion.nbt")?, registry)?;
     let occlusion = CachedCollisionRegistry::from_table(file.table("occlusion")?)?;
     let raw: BTreeMap<String, Value> =
-        serde_json::from_slice(&fs::read(root.join("render-definitions.json"))?)?;
+        serde_json::from_slice(&source.read("render-definitions.json")?)?;
     let definitions = raw
         .into_iter()
         .map(|(name, v)| {

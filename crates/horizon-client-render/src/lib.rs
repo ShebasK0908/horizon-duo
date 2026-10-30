@@ -62,6 +62,7 @@ pub mod particles;
 pub mod poi_sections;
 pub mod potent_sulfur;
 pub mod providers;
+pub mod remote_chunks;
 pub mod screen_draw;
 pub mod screen_effects;
 pub mod sculk;

@@ -19,12 +19,13 @@ def main():
     if manifest.get("data_version") != expected or manifest.get("schema") != 7:
         raise SystemExit("Prepare resources for Horizon's pinned version before importing them.")
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    top = {"facts.json", "horizon-resources.json", "block-tags.json", "model-states.json"}
+    top = {"facts.json", "horizon-resources.json", "block-tags.json", "model-states.json", "gameplay-facts.json", "block-behaviours.json", "occlusion.nbt", "render-definitions.json", "registries.json"}
     with zipfile.ZipFile(args.output, "w", zipfile.ZIP_DEFLATED, compresslevel=1) as archive:
         for file in sorted(args.resources.rglob("*")):
             relative = file.relative_to(args.resources)
             render = len(relative.parts) > 2 and relative.parts[0] == "assets" and relative.parts[2] in {"models", "textures", "blockstates"}
-            if file.is_file() and (relative.as_posix() in top or render):
+            data = relative.as_posix().startswith(("data/minecraft/worldgen/biome/", "data/minecraft/timeline/", "data/minecraft/dimension_type/"))
+            if file.is_file() and (relative.as_posix() in top or render or data):
                 archive.write(file, relative.as_posix())
     print(args.output)
 

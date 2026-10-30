@@ -1,15 +1,13 @@
-use glam::{DVec3, Mat4};
-use horizon_assets::source::{ResourceBundle, ResourceSource};
+use crate::render_frame::frame;
 use horizon_client_render::{
-    assets::{Assets, RenderAssets},
-    environment::Sky,
-    gfx::{Frame, Renderer, panorama},
+    assets::RenderAssets,
+    gfx::{Renderer, panorama},
     graphics::GraphicsApi,
     hud::HudBatch,
     mesher::{SectionMesh, TerrainVertex},
 };
 use horizon_core::position::BlockPos;
-use std::{collections::BTreeMap, sync::Arc};
+use std::sync::Arc;
 use wasm_bindgen::prelude::*;
 use winit::{
     event::{Event, WindowEvent},
@@ -34,32 +32,9 @@ pub async fn run_render_fixture() -> Result<(), JsValue> {
 pub async fn run_owned_resources(bytes: Vec<u8>) -> Result<(), JsValue> {
     console_error_panic_hook::set_once();
     let _ = console_log::init_with_level(log::Level::Info);
-    let zip = horizon_client_render::zip::Zip::from_bytes(bytes).map_err(js_error)?;
-    let mut files = BTreeMap::new();
-    let mut total = 0usize;
-    for name in zip.names() {
-        let bytes = zip.read(name).map_err(js_error)?;
-        total = total
-            .checked_add(bytes.len())
-            .ok_or_else(|| js_error("Resource bundle too large"))?;
-        if total > 1024 * 1024 * 1024 {
-            return Err(js_error("Resource bundle exceeds 1 GiB"));
-        }
-        files.insert(name.to_owned(), bytes);
-    }
-    let source = ResourceBundle::new(files).map_err(js_error)?;
-    let manifest: serde_json::Value =
-        serde_json::from_slice(&source.read("horizon-resources.json").map_err(js_error)?)
-            .map_err(js_error)?;
-    if manifest["schema"].as_i64() != Some(7)
-        || manifest["minecraft"].as_str() != Some(horizon_core::VANILLA_VERSION)
-    {
-        return Err(js_error(
-            "Resource manifest does not match Horizon's prepared resource format",
-        ));
-    }
-    let assets = Assets::load_from(&source).map_err(js_error)?;
-    let render = RenderAssets::load_from(&source, &assets).map_err(js_error)?;
+    let imported = crate::resources::ImportedResources::from_zip(bytes).map_err(js_error)?;
+    let assets = imported.assets;
+    let render = imported.render;
     let mut mesh = SectionMesh::default();
     for (name, at) in [
         ("minecraft:stone", [0, 0, 0]),
@@ -236,74 +211,4 @@ fn mesh() -> SectionMesh {
     }
     mesh.sort_solid();
     mesh
-}
-
-fn frame(hud: &HudBatch, ticks: u64) -> Frame<'_> {
-    Frame {
-        camera: DVec3::new(5., 68., 6.),
-        yaw: 140.,
-        pitch: 25.,
-        fov_degrees: 70.,
-        bob: Mat4::IDENTITY,
-        spin: Mat4::IDENTITY,
-        sky: Sky {
-            sky_color: [0.3, 0.5, 0.8],
-            fog_color: [0.5, 0.6, 0.8],
-            sky_light_factor: 1.,
-            sky_light_color: [1.; 3],
-            block_light_tint: [1.; 3],
-            ..Default::default()
-        },
-        distance: 128.,
-        detail_distance: 128.,
-        depth_far: 512.,
-        underwater: false,
-        cave_culling: false,
-        title: false,
-        sky_blocked: false,
-        skybox: true,
-        end_sky: false,
-        end_sky_sprite: None,
-        environment_fog: None,
-        water_fog: [0.; 3],
-        fog: None,
-        dark_disc: false,
-        outline: vec![],
-        outline_after_terrain: false,
-        outline_high_contrast: false,
-        debug_lines: &[],
-        debug_lines_on_top: &[],
-        debug_crosshair: &[],
-        hud,
-        glint_alpha: 0.,
-        glint_ticks: 0.,
-        nether_lighting: false,
-        entities: &[],
-        glowing: &[],
-        entity_spans: &[],
-        weather: &[],
-        weather_time: horizon_client_render::weather::Time::new(ticks as i64, 0.),
-        dynamic_lights: &[],
-        clouds: None,
-        lightning: Default::default(),
-        additive: &[],
-        see_through: &[],
-        celestial: &[],
-        stars: None,
-        hand: &[],
-        hand_fov_degrees: 70.,
-        screen: &[],
-        pack: Default::default(),
-        border: None,
-        game_time: 0.,
-        shader_game_time: 0.,
-        end_portal_sprites: [[0.; 4]; 2],
-        crumbling_sprite: [0.; 4],
-        ticks,
-        darkness: (0., 0.),
-        night_vision: 0.,
-        block_flicker: 0.,
-        boss_darken: 0.,
-        menu_blur: None,
-    }
 }

@@ -1,5 +1,4 @@
 //! Identity of the ordered block-state registry used by chunk packets.
-use sha2::{Digest, Sha256};
 use std::{
     collections::HashMap,
     path::{Path, PathBuf},
@@ -25,22 +24,7 @@ pub fn identity(root: &Path) -> Result<[u8; 32], String> {
 }
 
 fn hash_facts(bytes: &[u8]) -> Result<[u8; 32], String> {
-    let facts: serde_json::Value = serde_json::from_slice(bytes).map_err(|e| e.to_string())?;
-    let states = facts
-        .get("states")
-        .and_then(|s| s.as_array())
-        .ok_or("facts.json has no block states")?;
-    let mut hash = Sha256::new();
-    for row in states {
-        let state = row
-            .as_array()
-            .and_then(|r| r.get(4))
-            .ok_or("facts.json has an invalid block state")?;
-        let encoded = serde_json::to_vec(state).map_err(|e| e.to_string())?;
-        hash.update((encoded.len() as u64).to_le_bytes());
-        hash.update(encoded);
-    }
-    Ok(hash.finalize().into())
+    horizon_protocol::registry::block_state_identity(bytes)
 }
 
 #[cfg(test)]

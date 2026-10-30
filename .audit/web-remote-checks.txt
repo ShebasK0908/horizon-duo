@@ -1,0 +1,14 @@
+native-server-build.txt
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 51.80s
+remote-shared-tests.txt
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 15.15s
+test result: ok. 627 passed; 0 failed; 16 ignored; 0 measured; 0 filtered out; finished in 4.19s
+test result: ok. 126 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.15s
+native-remote-chunk-tests.txt
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 46.43s
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 297 filtered out; finished in 0.01s
+bridge-tests.txt
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.37s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+browser-remote-clippy.txt
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 5.73s

@@ -1,0 +1,22 @@
+[
+  {
+    "path": "/world/other",
+    "origin": "http://127.0.0.1:8766",
+    "status": "HTTP/1.1 403 Forbidden"
+  },
+  {
+    "path": "/world/webproof",
+    "origin": "https://evil.invalid",
+    "status": "HTTP/1.1 403 Forbidden"
+  },
+  {
+    "path": "/world/webproof",
+    "origin": null,
+    "status": "HTTP/1.1 403 Forbidden"
+  },
+  {
+    "path": "/world/webproof?host=example.com",
+    "origin": "http://127.0.0.1:8766",
+    "status": "HTTP/1.1 403 Forbidden"
+  }
+]

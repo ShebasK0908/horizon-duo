@@ -283,8 +283,19 @@ impl BlockFacts {
         callback: impl FnOnce(&[decode::Entry<'_>]) -> Result<T>,
     ) -> Result<(Self, T)> {
         let bytes = fs::read(root.join("gameplay-facts.json"))?;
-        serde_json::from_slice::<decode::Validate>(&bytes)?;
-        let raw: decode::Gameplay<'_> = serde_json::from_slice(&bytes)?;
+        Self::decode_with_callback(&bytes, registry, behaviours, callback)
+    }
+    pub fn from_bytes(bytes: &[u8], registry: &BlockRegistry, behaviours: &Value) -> Result<Self> {
+        Ok(Self::decode_with_callback(bytes, registry, behaviours, |_| Ok(()))?.0)
+    }
+    fn decode_with_callback<T>(
+        bytes: &[u8],
+        registry: &BlockRegistry,
+        behaviours: &Value,
+        callback: impl FnOnce(&[decode::Entry<'_>]) -> Result<T>,
+    ) -> Result<(Self, T)> {
+        serde_json::from_slice::<decode::Validate>(bytes)?;
+        let raw: decode::Gameplay<'_> = serde_json::from_slice(bytes)?;
         let entries = raw
             .states
             .0

@@ -9,16 +9,16 @@ No playable browser build has been verified yet.
 
 | Item | State | Acceptance evidence |
 | --- | --- | --- |
-| Build and rendering | In progress | Build WebAssembly and display actual Horizon world meshes through its renderer in a real browser. |
-| Owned game resources | Browser verified for models and textures | Import a matching player-owned resource bundle, validate its version, and render its models and textures. |
+| Build and rendering | End-to-end verified on local Chrome WebGPU | Build WebAssembly and display actual Horizon world meshes through its renderer in a real browser. |
+| Owned game resources | End-to-end verified for local import | Import a matching player-owned resource bundle, validate its version, and render its models and textures. |
 | Player interaction | Not started | Move in the real world and place and break blocks through existing Horizon gameplay rules. |
 | Durable world | Not started | Reload and reconnect after an edit and observe that edit in the same world. |
 | Offline browser world | Not started | Create, edit, save, and reopen a world without a remote game server. This follows the remote-first milestone. |
-| Multiplayer | Not started | Two browser clients join one Horizon server, see each other, and observe the same block edits. |
-| Shared world URL | Not started | A second browser opens the world URL and joins the intended world. |
-| X embedding | Source research only; live test outstanding | Confirm the current supported integration and, if available, run the actual game inside X. A shared URL does not establish this. |
-| Native regressions | Local tests passed for rendering checkpoint | Run the checks relevant to each shared engine change. |
-| Review and synchronization | Awaiting independent review | Inspect the real diff, obtain independent review, and push coherent tested commits to a dedicated fork branch. |
+| Multiplayer | In progress; stationary server session only | Two browser clients join one Horizon server, see each other, and observe the same block edits. |
+| Shared world URL | In progress; query routes to a configured world | A second browser opens the world URL and joins the intended world. |
+| X embedding | In progress; source research only | Confirm the current supported integration and, if available, run the actual game inside X. A shared URL does not establish this. |
+| Native regressions | Locally tested for current shared changes | Run the checks relevant to each shared engine change. |
+| Review and synchronization | In progress; checkpoint pushed, parent review outstanding | Inspect the real diff, obtain independent review, and push coherent tested commits to a dedicated fork branch. |
 
 Compilation, a blank canvas, a triangle, a network echo, and a different voxel
 game do not satisfy the gameplay requirements. A partial checkpoint keeps every
@@ -149,3 +149,39 @@ and client-dependent inline playback. This is first-party implementation evidenc
 for Rosebud, not a verified Horizon integration or a current X support contract.
 Horizon still needs a hosted HTTPS build and an authorized real-post check.
 No deployment or post was performed. Share links and in-X play remain separate.
+
+## Remote-world checkpoint
+
+The browser now joins an actual native Horizon dedicated server through a bounded
+WebSocket bridge and renders server chunks. `ChunkFormat` moved from the private
+`Game` module into `horizon-client-render::remote_chunks`. Both clients use that
+same decoder. The browser uses the existing `Mesher`, `World`, and `Renderer`.
+This is a stationary world client. It has no player movement or block input yet.
+
+`horizon-protocol::client_session` owns incremental framing, compression, optional
+offline encryption, login, configuration, and play. Online account authentication,
+required server packs, code-of-conduct prompts, and reconfiguration are rejected
+with explicit errors. They are not silently accepted or treated as supported.
+The dedicated test server uses offline profiles on loopback.
+
+Run the native binary from a fresh test environment with
+`python3 tools/run_web_test_server.py --resources PATH_TO_PREPARED_RESOURCES`.
+The tool prints its private test directory and log path. Type `stop` to end it.
+Start `horizon-web-bridge --world webproof --upstream 127.0.0.1:25575 --origin http://127.0.0.1:8766`.
+The bridge serves only that configured upstream and world path. It requires an
+exact allowed origin, caps concurrent connections, bounds WebSocket messages,
+and applies backpressure separately in each direction.
+
+Open `http://127.0.0.1:8766/?world=webproof&bridge=ws://127.0.0.1:8767&name=BrowserOne`
+and import a fresh archive made by `tools/web_resources.py`.
+`tools/web_world_check.cjs` automates that stationary world check.
+[The browser result](../.audit/web-world-browser.json) records nine received columns
+and a drawn resident section. The capture remains private under
+`.local/web-world-proof-2/world.png`. Four invalid world/origin/query handshakes
+were [rejected with HTTP 403](../.audit/bridge-origin-check.json).
+
+The native client compiles, its two remote chunk-decoder tests pass, and the
+shared protocol and renderer library suites pass. Two new session tests cover
+fragmented/coalesced frames across compression and state changes, plus malformed
+frame closure. Movement, authoritative block interactions, peer rendering,
+reconnection after edits, and offline worlds remain unfinished.

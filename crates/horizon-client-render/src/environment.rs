@@ -2,8 +2,9 @@
 //! (`KeyframeTrackSampler`, `EasingType`): sky/fog colours, sky light factor,
 //! celestial angles and star brightness for the overworld day cycle.
 use crate::Result;
+use horizon_assets::source::{NativeResources, ResourceSource};
 use serde_json::Value;
-use std::{collections::HashMap, fs, path::Path};
+use std::{collections::HashMap, path::Path};
 
 #[derive(Clone, Copy, Debug)]
 enum Easing {
@@ -148,14 +149,21 @@ impl Environment {
     }
     /// A dimension's base attributes, optionally driven by the day timeline.
     pub fn load_dimension(root: &Path, dimension: &str, day_cycle: bool) -> Result<Self> {
+        Self::load_dimension_from(&NativeResources(root), dimension, day_cycle)
+    }
+    pub fn load_dimension_from(
+        source: &dyn ResourceSource,
+        dimension: &str,
+        day_cycle: bool,
+    ) -> Result<Self> {
         let timeline: Value = if day_cycle {
-            serde_json::from_slice(&fs::read(root.join("data/minecraft/timeline/day.json"))?)?
+            serde_json::from_slice(&source.read("data/minecraft/timeline/day.json")?)?
         } else {
             serde_json::json!({"period_ticks": 24000, "tracks": {}})
         };
-        let dimension: Value = serde_json::from_slice(&fs::read(
-            root.join(format!("data/minecraft/dimension_type/{dimension}.json")),
-        )?)?;
+        let dimension: Value = serde_json::from_slice(
+            &source.read(&format!("data/minecraft/dimension_type/{dimension}.json"))?,
+        )?;
         let mut tracks = HashMap::new();
         for (name, track) in timeline["tracks"].as_object().ok_or("invalid timeline")? {
             let easing = match &track["ease"] {
