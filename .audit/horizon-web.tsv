@@ -1,0 +1,7 @@
+ts	phase	decision	why	evidence	result
+2026-10-30T22:16:00Z	frame	Preserve browser gameplay, persistence, multiplayer and X integration as separate acceptance items	Compilation alone cannot prove a playable game	docs/web-port-status.md	open
+2026-10-30T22:18:00Z	design	Choose remote-first browser execution using existing Horizon renderer and native authoritative server	Porting the integrated server simultaneously delays the first actual browser gameplay check	crates/horizon-client/src/game/remote.rs	open
+2026-10-30T22:19:00Z	baseline	Use matching rustup Cargo and rustc for WebAssembly checks	Homebrew rustc selects a different sysroot despite rustup target installation	getrandom-0.2.17/src/lib.rs:346	NOT VERIFIED: baseline fails without browser randomness support
+2026-10-30T22:25:00Z	coordination	Continue as a fork-local user build and leave the existing upstream claim untouched	Issue 4153 has a claim but no accessible implementation to reuse	https://github.com/horizon-rust/horizon/issues/4153	open
+2026-10-30T22:26:00Z	base	Fast-forward the clean dedicated browser branch before implementation	The first delegate fetched five newer upstream commits	a12b5151e139b346aef09c3ceacb4e5f925694a8	clean base
+2026-10-30T22:25:30Z	audit	Correct the preceding base row's timestamp to before 22:25:30 UTC	The original timestamp was an estimate later than the actual clock reading	a12b5151e139b346aef09c3ceacb4e5f925694a8	previous timestamp superseded
