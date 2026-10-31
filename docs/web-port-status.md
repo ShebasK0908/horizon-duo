@@ -5,7 +5,8 @@ with multiplayer, durable worlds, and a world URL that can be shared on X.
 Browser rendering and owned-resource import have been verified in Chrome.
 Creative movement, block placement and breaking, two-client convergence, and
 server-backed persistence have now been verified locally in Chrome. Full native
-client parity, offline browser worlds, and in-X execution remain unfinished.
+client parity and in-X execution remain unfinished. The user explicitly deferred
+offline browser worlds to focus on multiplayer and X integration.
 
 ## Scope ledger
 
@@ -15,7 +16,7 @@ client parity, offline browser worlds, and in-X execution remain unfinished.
 | Owned game resources | End-to-end verified for local import | Import a matching player-owned resource bundle, validate its version, and render its models and textures. |
 | Player interaction | End-to-end verified for creative movement, placement and breaking | Move in the real world and place and break blocks through existing Horizon gameplay rules. |
 | Durable world | End-to-end verified for server-backed reconnect and process restart | Reload and reconnect after an edit and observe that edit in the same world. |
-| Offline browser world | Design inspection complete; implementation not started | Create, edit, save, and reopen a world without a remote game server. This follows the remote-first milestone. |
+| Offline browser world | Explicitly deferred by the user; design inspection complete, implementation not started | Future acceptance remains create, edit, save, and reopen without a remote game server. Excluded from the current multiplayer and X milestone. |
 | Multiplayer | End-to-end verified for two local browser clients | Two browser clients join one Horizon server, see each other, and observe the same block edits. |
 | Shared world URL | End-to-end verified locally and through private Tailscale HTTPS/WSS in Chrome | A second browser opens the world URL and joins the intended world. |
 | X embedding | In progress; private Player Card candidate and local cross-origin iframe tested; X remains unverified | Confirm the current supported integration and, if available, run the actual game inside X. A shared URL does not establish this. |
@@ -33,8 +34,8 @@ unfinished item in this ledger.
 
 The first milestone is a remote browser client. It reuses Horizon's renderer,
 mesher, chunk data, physics, and protocol. The existing native server owns
-authoritative gameplay and world persistence. Offline browser worlds remain a
-separate unfinished item.
+authoritative gameplay and world persistence. Offline browser worlds are
+explicitly deferred by the user.
 
 The alternative is to port the full native client and integrated server at once.
 That requires replacing platform assumptions throughout startup, resources,
@@ -65,8 +66,8 @@ actual code before changing APIs.
 5. Verify movement, placement, and breaking through the existing server.
 6. Verify two clients, reconnect persistence, and the shared world URL.
 7. Verify the supported X integration and report any external limitation.
-8. Add offline browser execution and browser persistence, then repeat gameplay
-   checks without a server.
+8. Explicitly deferred by the user. Add offline browser execution and browser
+   persistence, then repeat gameplay checks without a server in a future milestone.
 
 The public fixture must contain no Mojang files. Game runs use fresh scratch data
 directories as required by `AGENTS.md`. Evidence records distinguish source
@@ -497,10 +498,10 @@ Admitted actions must preserve native obstruction, connections and effect
 ordering. Unsupported behavior cannot be silently dropped.
 
 Both designs require real native-code extraction, byte-based resources and
-atomic browser persistence. The choice and implementation are pending. A scope
-question asks whether to build offline worlds now or defer that follow-on while
-focusing on multiplayer and X. No answer or deferral is assumed. The original
-create/edit/save/reopen acceptance item stays in this ledger.
+atomic browser persistence. The user answered the scope question with
+"Defer offline; focus on multiplayer and X". Offline implementation is explicitly
+deferred and remains unstarted. The designs and original create/edit/save/reopen
+acceptance item stay in this ledger for a future milestone.
 
 ## Isolated single-origin private staging
 
@@ -530,5 +531,7 @@ input coverage, actual phone execution, full native parity, or a cross-family
 verdict. Claude providers remain unavailable, so shipping is still blocked by
 the invoked skill's independent-review gate. The original private multiplayer
 build and isolated private staging demo remain live. Public hosting and actual
-X execution have not occurred. Offline implementation remains unstarted, with
-the earlier scope question unanswered.
+X execution have not occurred. Offline implementation remains unstarted and is
+explicitly deferred by the user. The active milestone is multiplayer and X
+integration. Public hosting authorization and the independent-review gate remain
+pending; the offline scope answer does not resolve either.

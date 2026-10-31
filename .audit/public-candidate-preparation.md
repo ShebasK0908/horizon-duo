@@ -104,5 +104,6 @@ remain unverified. The private resource ZIP stays private.
 
 The pending fresh mobile review covers the latest input correction. Cross-family
 review remains blocked by unavailable Claude providers. Actual Safari/Duo and
-full native parity remain unfinished. Offline implementation is unstarted and
-the scope question remains open; no deferral is assumed.
+full native parity remain unfinished. The user explicitly deferred offline
+implementation to focus on multiplayer and X. Public hosting authorization and
+the independent-review gate remain pending.
