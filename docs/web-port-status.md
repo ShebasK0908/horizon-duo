@@ -348,3 +348,14 @@ missing resources. The eight native clock tests passed after moving `Timer` into
 the shared crate. The native binary compiles, the WebAssembly build passes, and
 scoped WebAssembly Clippy passes with the same documented baseline lint excluded.
 The fix diff still needs a fresh review. Cross-family review remains blocked.
+
+## Fresh state-fix verification
+
+A fresh verifier reran the served artifact at `6ee463b8d` and independently
+asserted R1 through R4. [The report](../.audit/fresh-state-verification.md) and
+[results](../.audit/fresh-state-results.json) identify the executed commands,
+packet observations, and limitations. Separately aimed captures were inspected
+and show textured peers in both directions. The verifier also confirmed that
+the served files match the local artifacts. Native suites were not rerun in that
+verification; those remain the parent's checks. Cross-family review remains
+blocked by Claude rate limits.
