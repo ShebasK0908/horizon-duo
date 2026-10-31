@@ -1,0 +1,1048 @@
+{
+  "passed": true,
+  "proof": "Desktop Chrome WebGPU with CDP emulated touch. No phone, Safari, or native fold API execution.",
+  "base": "http://127.0.0.1:8766/?world=webproof&bridge=ws://127.0.0.1:18787",
+  "checks": {
+    "holdRelease": {
+      "start": [
+        -3.5,
+        -60,
+        8.5
+      ],
+      "after": [
+        -3.5,
+        -60,
+        9.5424
+      ],
+      "released": {
+        "a": [
+          -3.5,
+          -60,
+          9.7915
+        ],
+        "b": [
+          -3.5,
+          -60,
+          9.7915
+        ]
+      }
+    },
+    "simultaneous": {
+      "beforeLook": [
+        0,
+        0
+      ],
+      "afterLook": [
+        13.75,
+        7.5
+      ],
+      "beforeMove": [
+        -3.5,
+        -60,
+        9.7915
+      ],
+      "afterMove": [
+        -4.0027,
+        -60,
+        12.2776
+      ]
+    },
+    "cancel": {
+      "a": [
+        -4.473,
+        -60,
+        14.1997
+      ],
+      "b": [
+        -4.473,
+        -60,
+        14.1997
+      ]
+    },
+    "lostCapture": {
+      "a": [
+        -4.8313,
+        -60,
+        15.6639
+      ],
+      "b": [
+        -4.8313,
+        -60,
+        15.6639
+      ]
+    },
+    "blur": {
+      "method": "DOM blur event while touch and keyboard remain pressed",
+      "a": [
+        -5.0862,
+        -60,
+        16.7059
+      ],
+      "b": [
+        -5.0862,
+        -60,
+        16.7059
+      ]
+    },
+    "background": {
+      "method": "DOM visibilitychange event while touch remains pressed",
+      "a": [
+        -5.3412,
+        -60,
+        17.7479
+      ],
+      "b": [
+        -5.3412,
+        -60,
+        17.7479
+      ]
+    },
+    "sources": {
+      "keyboardHeld": [
+        -5.589,
+        -60,
+        18.7604
+      ],
+      "touchHeld": [
+        -6.1004,
+        -60,
+        20.8505
+      ],
+      "released": {
+        "a": [
+          -6.6229,
+          -60,
+          22.9861
+        ],
+        "b": [
+          -6.6229,
+          -60,
+          22.9861
+        ]
+      }
+    },
+    "twoOwners": {
+      "a": [
+        -7.1351,
+        -60,
+        25.0792
+      ],
+      "b": [
+        -7.1351,
+        -60,
+        25.0792
+      ]
+    },
+    "jumpDebug": {
+      "ground": [
+        -7.1351,
+        -60,
+        25.0792
+      ],
+      "jumpSamples": [
+        [
+          -7.1351,
+          -60,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -58.7508,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -58.7508,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -58.7508,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -58.7508,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -59.5048,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -59.8787,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -59.8787,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -59.8787,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -59.8787,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -60,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -60,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -60,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -60,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -60,
+          25.0792
+        ]
+      ],
+      "events": [
+        [
+          "pointerdown",
+          2,
+          "forward",
+          6270.100000023842
+        ],
+        [
+          "pointerup",
+          2,
+          "forward",
+          6606.400000095367
+        ],
+        [
+          "lostpointercapture",
+          2,
+          "forward",
+          6606.600000023842
+        ],
+        [
+          "pointerdown",
+          3,
+          "forward",
+          7650.400000095367
+        ],
+        [
+          "pointerdown",
+          4,
+          "horizon-canvas",
+          7684.100000023842
+        ],
+        [
+          "pointerup",
+          3,
+          "forward",
+          8267.100000023842
+        ],
+        [
+          "lostpointercapture",
+          3,
+          "forward",
+          8267.200000047684
+        ],
+        [
+          "pointerup",
+          4,
+          "horizon-canvas",
+          8300.400000095367
+        ],
+        [
+          "lostpointercapture",
+          4,
+          "horizon-canvas",
+          8300.400000095367
+        ],
+        [
+          "pointerdown",
+          5,
+          "forward",
+          9334
+        ],
+        [
+          "pointercancel",
+          5,
+          "forward",
+          9717.400000095367
+        ],
+        [
+          "lostpointercapture",
+          5,
+          "forward",
+          9717.5
+        ],
+        [
+          "pointerdown",
+          6,
+          "forward",
+          10751.300000071526
+        ],
+        [
+          "lostpointercapture",
+          6,
+          "forward",
+          11097.900000095367
+        ],
+        [
+          "pointerup",
+          6,
+          "forward",
+          12135.700000047684
+        ],
+        [
+          "pointerdown",
+          7,
+          "forward",
+          12168.700000047684
+        ],
+        [
+          "pointerup",
+          7,
+          "forward",
+          13451.700000047684
+        ],
+        [
+          "lostpointercapture",
+          7,
+          "forward",
+          13451.700000047684
+        ],
+        [
+          "pointerdown",
+          8,
+          "forward",
+          13485.100000023842
+        ],
+        [
+          "pointerup",
+          8,
+          "forward",
+          14768.5
+        ],
+        [
+          "lostpointercapture",
+          8,
+          "forward",
+          14768.600000023842
+        ],
+        [
+          "pointerdown",
+          9,
+          "forward",
+          14802.900000095367
+        ],
+        [
+          "pointerup",
+          9,
+          "forward",
+          15085
+        ],
+        [
+          "lostpointercapture",
+          9,
+          "forward",
+          15085
+        ],
+        [
+          "pointerdown",
+          10,
+          "forward",
+          15567.200000047684
+        ],
+        [
+          "pointerup",
+          10,
+          "forward",
+          16051.100000023842
+        ],
+        [
+          "lostpointercapture",
+          10,
+          "forward",
+          16051.100000023842
+        ],
+        [
+          "pointerdown",
+          11,
+          "forward",
+          17084.800000071526
+        ],
+        [
+          "pointerdown",
+          12,
+          "forward",
+          17117.900000095367
+        ],
+        [
+          "pointerup",
+          12,
+          "forward",
+          17154.200000047684
+        ],
+        [
+          "lostpointercapture",
+          12,
+          "forward",
+          17154.300000071526
+        ],
+        [
+          "pointerup",
+          11,
+          "forward",
+          17602.700000047684
+        ],
+        [
+          "lostpointercapture",
+          11,
+          "forward",
+          17602.700000047684
+        ],
+        [
+          "pointerdown",
+          13,
+          "jump",
+          19113.100000023842
+        ],
+        [
+          "pointerup",
+          13,
+          "jump",
+          19129.800000071526
+        ],
+        [
+          "lostpointercapture",
+          13,
+          "jump",
+          19130
+        ]
+      ]
+    },
+    "quickJump": {
+      "before": [
+        -7.1351,
+        -60,
+        25.0792
+      ],
+      "peak": -58.7508,
+      "renderDelayMs": 250
+    },
+    "separatedJumps": {
+      "normalFlight": false,
+      "stalledFlight": false,
+      "gapMs": 721.7000000476837,
+      "jumpDowns": [
+        [
+          "pointerdown",
+          16,
+          "jump",
+          23031.5
+        ],
+        [
+          "pointerdown",
+          17,
+          "jump",
+          23753.200000047684
+        ]
+      ]
+    },
+    "cancelledJumpPreservesKeyboard": {
+      "before": [
+        -7.1351,
+        -60,
+        25.0792
+      ],
+      "peak": -58.7478,
+      "samples": [
+        [
+          -7.1351,
+          -60,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -59.58,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -59.2468,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -58.9987,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -58.8339,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -58.7508,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -58.7478,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -58.8232,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -58.8232,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -58.9756,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -59.2033,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -59.5048,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -59.8787,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -60,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -60,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -60,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -60,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -60,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -60,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -60,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -60,
+          25.0792
+        ],
+        [
+          -7.1351,
+          -60,
+          25.0792
+        ]
+      ]
+    },
+    "freshFocusInput": {
+      "freshTouch": [
+        -7.1351,
+        -60,
+        25.0792
+      ],
+      "afterTouch": [
+        -7.3828,
+        -60,
+        26.0917
+      ],
+      "freshKey": [
+        -7.442,
+        -60,
+        26.3337
+      ],
+      "afterKey": [
+        -7.6898,
+        -60,
+        27.3462
+      ],
+      "focusEvents": [
+        {
+          "type": "blur",
+          "trusted": true,
+          "time": 26326.100000023842
+        },
+        {
+          "type": "focus",
+          "trusted": true,
+          "time": 26435.300000071526
+        },
+        {
+          "type": "blur",
+          "trusted": true,
+          "time": 27627.5
+        },
+        {
+          "type": "focus",
+          "trusted": true,
+          "time": 27735.600000023842
+        }
+      ]
+    },
+    "flight": {
+      "flying": [
+        -7.749,
+        -58.2979,
+        27.5882
+      ],
+      "raised": [
+        -7.749,
+        -55.0608,
+        27.5882
+      ],
+      "lowered": [
+        -7.749,
+        -57.6944,
+        27.5882
+      ]
+    },
+    "actionBefore": {
+      "target": [
+        [
+          -8,
+          -61,
+          29
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        9
+      ],
+      "placed": [
+        -8,
+        -60,
+        29
+      ],
+      "position": [
+        -7.749,
+        -60,
+        27.5882
+      ],
+      "view": [
+        0,
+        40
+      ]
+    },
+    "actions": {
+      "target": [
+        [
+          -8,
+          -61,
+          29
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        9
+      ],
+      "placed": [
+        -8,
+        -60,
+        29
+      ],
+      "observed": [
+        [
+          [
+            -8,
+            -61,
+            29
+          ],
+          9
+        ],
+        [
+          [
+            -8,
+            -60,
+            29
+          ],
+          3830
+        ],
+        [
+          [
+            -8,
+            -60,
+            29
+          ],
+          3830
+        ],
+        [
+          [
+            -8,
+            -60,
+            29
+          ],
+          0
+        ]
+      ]
+    },
+    "viewports": [
+      {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "canvas": [
+          390,
+          844
+        ],
+        "dpr": 2,
+        "buttons": [
+          {
+            "action": "forward",
+            "x": 64,
+            "y": 732,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "left",
+            "x": 12,
+            "y": 784,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "backward",
+            "x": 64,
+            "y": 784,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "right",
+            "x": 116,
+            "y": 784,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "break",
+            "x": 278,
+            "y": 732,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "place",
+            "x": 330,
+            "y": 732,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "descend",
+            "x": 278,
+            "y": 784,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "jump",
+            "x": 330,
+            "y": 784,
+            "width": 48,
+            "height": 48
+          }
+        ]
+      },
+      {
+        "viewport": {
+          "width": 844,
+          "height": 390
+        },
+        "canvas": [
+          844,
+          390
+        ],
+        "dpr": 2,
+        "buttons": [
+          {
+            "action": "forward",
+            "x": 64,
+            "y": 278,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "left",
+            "x": 12,
+            "y": 330,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "backward",
+            "x": 64,
+            "y": 330,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "right",
+            "x": 116,
+            "y": 330,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "break",
+            "x": 732,
+            "y": 278,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "place",
+            "x": 784,
+            "y": 278,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "descend",
+            "x": 732,
+            "y": 330,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "jump",
+            "x": 784,
+            "y": 330,
+            "width": 48,
+            "height": 48
+          }
+        ]
+      },
+      {
+        "viewport": {
+          "width": 1152,
+          "height": 804
+        },
+        "canvas": [
+          1152,
+          804
+        ],
+        "dpr": 2,
+        "buttons": [
+          {
+            "action": "forward",
+            "x": 64,
+            "y": 692,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "left",
+            "x": 12,
+            "y": 744,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "backward",
+            "x": 64,
+            "y": 744,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "right",
+            "x": 116,
+            "y": 744,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "break",
+            "x": 1040,
+            "y": 692,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "place",
+            "x": 1092,
+            "y": 692,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "descend",
+            "x": 1040,
+            "y": 744,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "jump",
+            "x": 1092,
+            "y": 744,
+            "width": 48,
+            "height": 48
+          }
+        ]
+      },
+      {
+        "viewport": {
+          "width": 320,
+          "height": 568
+        },
+        "canvas": [
+          320,
+          568
+        ],
+        "dpr": 2,
+        "buttons": [
+          {
+            "action": "forward",
+            "x": 64,
+            "y": 456,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "left",
+            "x": 12,
+            "y": 508,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "backward",
+            "x": 64,
+            "y": 508,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "right",
+            "x": 116,
+            "y": 508,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "break",
+            "x": 208,
+            "y": 456,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "place",
+            "x": 260,
+            "y": 456,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "descend",
+            "x": 208,
+            "y": 508,
+            "width": 48,
+            "height": 48
+          },
+          {
+            "action": "jump",
+            "x": 260,
+            "y": 508,
+            "width": 48,
+            "height": 48
+          }
+        ]
+      }
+    ]
+  },
+  "logs": [
+    {
+      "type": "info",
+      "text": "Horizon renderer:  (BrowserWebGpu, Other)"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: device ready; configuring the surface (390x591 Bgra8Unorm, Fifo)"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: HDR output not offered by this display"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: creating the pipelines"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: acquiring the first frame"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: submitting the first frame"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: presenting the first frame"
+    }
+  ],
+  "error": ""
+}

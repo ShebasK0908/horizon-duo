@@ -121,6 +121,16 @@ async function main() {
   const jumpDowns=await page.evaluate(()=>window.horizonPointerLog.filter(event=>event[0]==='pointerdown'&&event[2]==='jump').slice(-2));
   const gapMs=jumpDowns[1][3]-jumpDowns[0][3];assert(gapMs>350,'retained presses are separated by more than the flight gesture window');
   evidence.checks.separatedJumps={normalFlight:false,stalledFlight:false,gapMs,jumpDowns};
+  const beforeCancel=await position();
+  await pause();await page.locator('#horizon-canvas').focus();await page.keyboard.press('Space');
+  await down(1,await center(button('jump')));points.clear();await dispatch('touchCancel');await resume();
+  const cancelSamples=[];
+  for(let i=0;i<22;i++){cancelSamples.push(await position());await page.waitForTimeout(40);}
+  const cancelPeak=Math.max(...cancelSamples.map(p=>p[1]));
+  assert(cancelPeak>beforeCancel[1]+0.3,'cancelling Jump touch preserves a completed keyboard jump');
+  assert.equal(await page.evaluate(()=>document.body.dataset.horizonFlying),'false','cancelled touch is not a second flight tap');
+  evidence.checks.cancelledJumpPreservesKeyboard={before:beforeCancel,peak:cancelPeak,samples:cancelSamples};
+  await page.waitForTimeout(600);
   const other=await context.newPage();await other.goto('about:blank');
   const otherCdp=await context.newCDPSession(other);
   await cdp.send('Emulation.setFocusEmulationEnabled',{enabled:false});

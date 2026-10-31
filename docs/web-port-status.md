@@ -450,6 +450,17 @@ preserves the existing movement, valid double-tap flight, block action, and resi
 checks. Six input unit tests, the WebAssembly build, scoped Clippy, the expanded
 touch driver, desktop multiplayer, and the fixed-tick check pass. No shared native
 engine source changed. [The first fix-round report](../.audit/mobile-input-fix-round1.md)
-preserves commands and before/after evidence. Fresh review remains pending.
+preserves commands and before/after evidence. Fresh Codex review verified both
+original corrections and found one additional cancellation defect.
 Cross-family review, actual phone evidence, offline worlds, native parity, and X
 execution retain their existing unfinished status.
+
+Cancelling a pending Jump touch could clear an earlier completed keyboard jump
+from the shared queue. The parent reproduced this failure. Transitions now retain
+their source until sampling, and cancellation removes only the active pointer's
+unconsumed press. Earlier keyboard and pointer gestures survive, including reused
+pointer IDs. Nine input tests, the WebAssembly build, scoped Clippy, all six focused
+browser probes, and the expanded full touch driver pass. Matching server-delivered
+observer ascent confirms the corrected keyboard jump. [The second fix-round
+report](../.audit/mobile-input-fix-round2.md) preserves evidence and commands.
+Fresh review of this latest correction remains pending.

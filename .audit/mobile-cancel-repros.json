@@ -1,0 +1,1134 @@
+{
+  "before": {
+    "artifacts": {
+      "index.html": {
+        "status": 200,
+        "sha256": "6bf71174a4de607a0b5bc4866c895d6e720ec26a36b16a1c8bf11b408492ec5a",
+        "bytes": 5647,
+        "matchesLocal": true
+      },
+      "pkg/horizon_web.js": {
+        "status": 200,
+        "sha256": "fb986a1c0d74ece7cd358bd9ffdbc25f746d13649866b79aa2595b6c2e7a7df7",
+        "bytes": 126799,
+        "matchesLocal": true
+      },
+      "pkg/horizon_web_bg.wasm": {
+        "status": 200,
+        "sha256": "aaab226ef53e6e9abf33898e3223ab822fe9dbf42211f1aba914ce2ea63e14d0",
+        "bytes": 21505234,
+        "matchesLocal": true
+      }
+    },
+    "tests": [
+      {
+        "name": "keyboard-quick-control",
+        "expected": {
+          "flight": false,
+          "jump": true
+        },
+        "before": {
+          "position": [
+            -1.5,
+            -60,
+            7.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "3",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            -1.5,
+            -60,
+            7.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "6",
+          "error": ""
+        },
+        "peak": -58.7478,
+        "jumped": true,
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 7456.099999904633
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 7458.399999976158
+          }
+        ],
+        "pass": true,
+        "observerPeak": -58.750732421875,
+        "observerSample": {
+          "client": {
+            "position": [
+              -1.5,
+              -58.7478,
+              7.5
+            ],
+            "flying": "false",
+            "view": "0.000,0.000",
+            "frames": "4",
+            "error": ""
+          },
+          "peers": [
+            [
+              29,
+              [
+                -1.5,
+                -58.750732421875,
+                7.5
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "name": "keyboard-quick-canceled-jump",
+        "expected": {
+          "flight": false,
+          "jump": true
+        },
+        "before": {
+          "position": [
+            1.5,
+            -60,
+            -9.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "3",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            1.5,
+            -60,
+            -9.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "6",
+          "error": ""
+        },
+        "peak": -60,
+        "jumped": false,
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 7180.600000023842
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 7181.299999952316
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 7206.899999976158
+          },
+          {
+            "type": "pointercancel",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 7218
+          },
+          {
+            "type": "lostpointercapture",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 7218.200000047684
+          }
+        ],
+        "pass": false,
+        "observerPeak": -60,
+        "observerSample": {
+          "client": {
+            "position": [
+              1.5,
+              -60,
+              -9.5
+            ],
+            "flying": "false",
+            "view": "0.000,0.000",
+            "frames": "3",
+            "error": ""
+          },
+          "peers": [
+            [
+              71,
+              [
+                1.5,
+                -60,
+                -9.5
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "name": "keyboard-quick-canceled-forward-control",
+        "expected": {
+          "flight": false,
+          "jump": true
+        },
+        "before": {
+          "position": [
+            7.5,
+            -60,
+            2.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "2",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            7.5,
+            -60,
+            2.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "7",
+          "error": ""
+        },
+        "peak": -58.7478,
+        "jumped": true,
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 6935.100000023842
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 6935.799999952316
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "id": 2,
+            "target": "forward",
+            "t": 6950.899999976158
+          },
+          {
+            "type": "pointercancel",
+            "trusted": true,
+            "id": 2,
+            "target": "forward",
+            "t": 6967.199999928474
+          },
+          {
+            "type": "lostpointercapture",
+            "trusted": true,
+            "id": 2,
+            "target": "forward",
+            "t": 6967.399999976158
+          }
+        ],
+        "pass": true,
+        "observerPeak": -58.747802734375,
+        "observerSample": {
+          "client": {
+            "position": [
+              7.5,
+              -58.8232,
+              2.5
+            ],
+            "flying": "false",
+            "view": "0.000,0.000",
+            "frames": "4",
+            "error": ""
+          },
+          "peers": [
+            [
+              91,
+              [
+                7.5,
+                -58.747802734375,
+                2.5
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "name": "keyboard-quick-canceled-jump-repeat",
+        "expected": {
+          "flight": false,
+          "jump": true
+        },
+        "before": {
+          "position": [
+            4.5,
+            -60,
+            -0.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "2",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            4.5,
+            -60,
+            -0.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "5",
+          "error": ""
+        },
+        "peak": -60,
+        "jumped": false,
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 6848.200000047684
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 6848.700000047684
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 6862.200000047684
+          },
+          {
+            "type": "pointercancel",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 6877.600000023842
+          },
+          {
+            "type": "lostpointercapture",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 6877.800000071526
+          }
+        ],
+        "pass": false,
+        "observerPeak": -60,
+        "observerSample": {
+          "client": {
+            "position": [
+              4.5,
+              -60,
+              -0.5
+            ],
+            "flying": "false",
+            "view": "0.000,0.000",
+            "frames": "2",
+            "error": ""
+          },
+          "peers": [
+            [
+              92,
+              [
+                4.5,
+                -60,
+                -0.5
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "name": "queued-keys-long-gap-flight-only",
+        "expected": {
+          "flight": false,
+          "jump": null
+        },
+        "before": {
+          "position": [
+            0.5,
+            -60,
+            5.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "3",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            0.5,
+            -60,
+            5.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "7",
+          "error": ""
+        },
+        "peak": -59.5048,
+        "jumped": true,
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 6958
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 6958.700000047684
+          },
+          {
+            "type": "keydown",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 7661
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 7661.400000095367
+          }
+        ],
+        "pass": true,
+        "observerPeak": -59.504799122994086,
+        "observerSample": {
+          "client": {
+            "position": [
+              0.5,
+              -59.8787,
+              5.5
+            ],
+            "flying": "false",
+            "view": "0.000,0.000",
+            "frames": "3",
+            "error": ""
+          },
+          "peers": [
+            [
+              93,
+              [
+                0.5,
+                -59.504799122994086,
+                5.5
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "name": "queued-mixed-long-gap-flight-only",
+        "expected": {
+          "flight": false,
+          "jump": null
+        },
+        "before": {
+          "position": [
+            4.5,
+            -60,
+            -3.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "2",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            4.5,
+            -60,
+            -3.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "5",
+          "error": ""
+        },
+        "peak": -59.8787,
+        "jumped": false,
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 7183.299999952316
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 7183.899999976158
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 7889.599999904633
+          },
+          {
+            "type": "pointerup",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 7901.199999928474
+          },
+          {
+            "type": "lostpointercapture",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 7901.399999976158
+          }
+        ],
+        "pass": true,
+        "observerPeak": -60,
+        "observerSample": {
+          "client": {
+            "position": [
+              4.5,
+              -60,
+              -3.5
+            ],
+            "flying": "false",
+            "view": "0.000,0.000",
+            "frames": "2",
+            "error": ""
+          },
+          "peers": [
+            [
+              94,
+              [
+                4.5,
+                -60,
+                -3.5
+              ]
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "after": {
+    "artifacts": {
+      "index.html": {
+        "status": 200,
+        "sha256": "6bf71174a4de607a0b5bc4866c895d6e720ec26a36b16a1c8bf11b408492ec5a",
+        "bytes": 5647,
+        "matchesLocal": true
+      },
+      "pkg/horizon_web.js": {
+        "status": 200,
+        "sha256": "fb986a1c0d74ece7cd358bd9ffdbc25f746d13649866b79aa2595b6c2e7a7df7",
+        "bytes": 126799,
+        "matchesLocal": true
+      },
+      "pkg/horizon_web_bg.wasm": {
+        "status": 200,
+        "sha256": "2ab67e89cc87b1eef188fe1e9d57a5b311fb40f721366c3e6c9d92a7de1fb938",
+        "bytes": 21512726,
+        "matchesLocal": true
+      }
+    },
+    "tests": [
+      {
+        "name": "keyboard-quick-control",
+        "expected": {
+          "flight": false,
+          "jump": true
+        },
+        "before": {
+          "position": [
+            -6.5,
+            -60,
+            10.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "2",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            -6.5,
+            -60,
+            10.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "4",
+          "error": ""
+        },
+        "peak": -58.7478,
+        "jumped": true,
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 6924.5
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 6925.199999928474
+          }
+        ],
+        "pass": true,
+        "observerPeak": -58.750732421875,
+        "observerSample": {
+          "client": {
+            "position": [
+              -6.5,
+              -58.7478,
+              10.5
+            ],
+            "flying": "false",
+            "view": "0.000,0.000",
+            "frames": "2",
+            "error": ""
+          },
+          "peers": [
+            [
+              178,
+              [
+                -6.5,
+                -58.750732421875,
+                10.5
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "name": "keyboard-quick-canceled-jump",
+        "expected": {
+          "flight": false,
+          "jump": true
+        },
+        "before": {
+          "position": [
+            -2.5,
+            -60,
+            -1.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "2",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            -2.5,
+            -60,
+            -1.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "5",
+          "error": ""
+        },
+        "peak": -58.7478,
+        "jumped": true,
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 6870.100000023842
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 6870.700000047684
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 6882.800000071526
+          },
+          {
+            "type": "pointercancel",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 6898.100000023842
+          },
+          {
+            "type": "lostpointercapture",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 6898.400000095367
+          }
+        ],
+        "pass": true,
+        "observerPeak": -58.750732421875,
+        "observerSample": {
+          "client": {
+            "position": [
+              -2.5,
+              -58.7478,
+              -1.5
+            ],
+            "flying": "false",
+            "view": "0.000,0.000",
+            "frames": "3",
+            "error": ""
+          },
+          "peers": [
+            [
+              179,
+              [
+                -2.5,
+                -58.750732421875,
+                -1.5
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "name": "keyboard-quick-canceled-forward-control",
+        "expected": {
+          "flight": false,
+          "jump": true
+        },
+        "before": {
+          "position": [
+            -4.5,
+            -60,
+            1.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "3",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            -4.5,
+            -60,
+            1.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "7",
+          "error": ""
+        },
+        "peak": -58.7478,
+        "jumped": true,
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 7063.100000023842
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 7063.699999928474
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "id": 2,
+            "target": "forward",
+            "t": 7068.600000023842
+          },
+          {
+            "type": "pointercancel",
+            "trusted": true,
+            "id": 2,
+            "target": "forward",
+            "t": 7085.299999952316
+          },
+          {
+            "type": "lostpointercapture",
+            "trusted": true,
+            "id": 2,
+            "target": "forward",
+            "t": 7085.699999928474
+          }
+        ],
+        "pass": true,
+        "observerPeak": -58.750732421875,
+        "observerSample": {
+          "client": {
+            "position": [
+              -4.5,
+              -58.7478,
+              1.5
+            ],
+            "flying": "false",
+            "view": "0.000,0.000",
+            "frames": "4",
+            "error": ""
+          },
+          "peers": [
+            [
+              180,
+              [
+                -4.5,
+                -58.750732421875,
+                1.5
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "name": "keyboard-quick-canceled-jump-repeat",
+        "expected": {
+          "flight": false,
+          "jump": true
+        },
+        "before": {
+          "position": [
+            -5.5,
+            -60,
+            6.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "2",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            -5.5,
+            -60,
+            6.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "6",
+          "error": ""
+        },
+        "peak": -58.7478,
+        "jumped": true,
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 6899.299999952316
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 6900.100000023842
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 6914.5
+          },
+          {
+            "type": "pointercancel",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 6929.799999952316
+          },
+          {
+            "type": "lostpointercapture",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 6930.200000047684
+          }
+        ],
+        "pass": true,
+        "observerPeak": -58.747802734375,
+        "observerSample": {
+          "client": {
+            "position": [
+              -5.5,
+              -58.7478,
+              6.5
+            ],
+            "flying": "false",
+            "view": "0.000,0.000",
+            "frames": "3",
+            "error": ""
+          },
+          "peers": [
+            [
+              182,
+              [
+                -5.5,
+                -58.747802734375,
+                6.5
+              ]
+            ],
+            [
+              181,
+              [
+                -4.831298828125,
+                -60,
+                15.663818359375
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "name": "queued-keys-long-gap-flight-only",
+        "expected": {
+          "flight": false,
+          "jump": null
+        },
+        "before": {
+          "position": [
+            0.5,
+            -60,
+            -5.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "3",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            0.5,
+            -60,
+            -5.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "6",
+          "error": ""
+        },
+        "peak": -59.5048,
+        "jumped": true,
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 7066.399999976158
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 7066.899999976158
+          },
+          {
+            "type": "keydown",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 7768.799999952316
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 7769.200000047684
+          }
+        ],
+        "pass": true,
+        "observerPeak": -60,
+        "observerSample": {
+          "client": {
+            "position": [
+              0.5,
+              -60,
+              -5.5
+            ],
+            "flying": "false",
+            "view": "0.000,0.000",
+            "frames": "3",
+            "error": ""
+          },
+          "peers": [
+            [
+              183,
+              [
+                0.5,
+                -60,
+                -5.5
+              ]
+            ],
+            [
+              181,
+              [
+                -7.135063538154107,
+                -60,
+                25.07917693733868
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "name": "queued-mixed-long-gap-flight-only",
+        "expected": {
+          "flight": false,
+          "jump": null
+        },
+        "before": {
+          "position": [
+            9.5,
+            -60,
+            1.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "2",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            9.5,
+            -60,
+            1.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "7",
+          "error": ""
+        },
+        "peak": -60,
+        "jumped": false,
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 7038.100000023842
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "key": "Space",
+            "target": "horizon-canvas",
+            "t": 7039.100000023842
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 7743.5
+          },
+          {
+            "type": "pointerup",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 7759.600000023842
+          },
+          {
+            "type": "lostpointercapture",
+            "trusted": true,
+            "id": 2,
+            "target": "jump",
+            "t": 7759.899999976158
+          }
+        ],
+        "pass": true,
+        "observerPeak": -60,
+        "observerSample": {
+          "client": {
+            "position": [
+              9.5,
+              -60,
+              1.5
+            ],
+            "flying": "false",
+            "view": "0.000,0.000",
+            "frames": "2",
+            "error": ""
+          },
+          "peers": [
+            [
+              193,
+              [
+                9.5,
+                -60,
+                1.5
+              ]
+            ],
+            [
+              181,
+              [
+                -7.74897876897945,
+                -55.80517578125,
+                27.58815711774728
+              ]
+            ]
+          ]
+        }
+      }
+    ]
+  }
+}

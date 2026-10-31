@@ -38,13 +38,19 @@ pub(crate) struct PlayerInput {
     pub(crate) actions: VecDeque<TouchAction>,
     look: [f32; 2],
     jump_sources: HashSet<JumpSource>,
-    jumps: VecDeque<(bool, f64)>,
+    sampled_jump_sources: HashSet<JumpSource>,
+    jumps: VecDeque<JumpTransition>,
     last_jump_press: Option<f64>,
 }
 #[derive(Clone, Copy, Eq, Hash, PartialEq)]
 enum JumpSource {
     Keyboard,
     Pointer(i32),
+}
+struct JumpTransition {
+    source: JumpSource,
+    pressed: bool,
+    at_ms: f64,
 }
 pub(crate) struct JumpSample {
     pub(crate) held: bool,
@@ -81,54 +87,69 @@ impl PlayerInput {
         }
     }
     pub(crate) fn release(&mut self, id: i32, cancelled: bool, at_ms: f64) {
-        self.set_jump(JumpSource::Pointer(id), false, at_ms);
-        if let Some(PointerRole::Button(action)) = self.pointers.remove(&id)
-            && !self
-                .pointers
-                .values()
-                .any(|role| matches!(role, PointerRole::Button(a) if *a == action))
-        {
-            if action == TouchAction::Jump && cancelled {
-                self.jumps.clear();
-                self.last_jump_press = None;
+        if let Some(PointerRole::Button(action)) = self.pointers.remove(&id) {
+            if action == TouchAction::Jump {
+                let source = JumpSource::Pointer(id);
+                if cancelled
+                    && let Some(index) = self
+                        .jumps
+                        .iter()
+                        .rposition(|event| event.source == source && event.pressed)
+                {
+                    self.jumps.remove(index);
+                }
+                self.set_jump(source, false, at_ms);
             }
-            if cancelled {
+            if cancelled
+                && !self
+                    .pointers
+                    .values()
+                    .any(|role| matches!(role, PointerRole::Button(a) if *a == action))
+            {
                 self.presses.remove(&action);
             }
         }
     }
     fn set_jump(&mut self, source: JumpSource, pressed: bool, at_ms: f64) {
-        let was_held = !self.jump_sources.is_empty();
-        if pressed {
-            self.jump_sources.insert(source);
+        let changed = if pressed {
+            self.jump_sources.insert(source)
         } else {
-            self.jump_sources.remove(&source);
-        }
-        let held = !self.jump_sources.is_empty();
-        if held != was_held {
-            self.jumps.push_back((held, at_ms));
+            self.jump_sources.remove(&source)
+        };
+        if changed {
+            self.jumps.push_back(JumpTransition {
+                source,
+                pressed,
+                at_ms,
+            });
         }
     }
     pub(crate) fn jump_key(&mut self, pressed: bool, at_ms: f64) {
         self.set_jump(JumpSource::Keyboard, pressed, at_ms);
     }
     pub(crate) fn jump(&mut self) -> JumpSample {
-        match self.jumps.pop_front() {
-            Some((true, at_ms)) => JumpSample {
-                held: true,
-                new_sequence: self
-                    .last_jump_press
-                    .replace(at_ms)
-                    .is_none_or(|last| at_ms - last >= 350.),
-            },
-            Some((false, _)) => JumpSample {
-                held: false,
-                new_sequence: false,
-            },
-            None => JumpSample {
-                held: !self.jump_sources.is_empty(),
-                new_sequence: false,
-            },
+        while let Some(event) = self.jumps.pop_front() {
+            let was_held = !self.sampled_jump_sources.is_empty();
+            if event.pressed {
+                self.sampled_jump_sources.insert(event.source);
+            } else {
+                self.sampled_jump_sources.remove(&event.source);
+            }
+            let held = !self.sampled_jump_sources.is_empty();
+            if held != was_held {
+                return JumpSample {
+                    held,
+                    new_sequence: held
+                        && self
+                            .last_jump_press
+                            .replace(event.at_ms)
+                            .is_none_or(|last| event.at_ms - last >= 350.),
+                };
+            }
+        }
+        JumpSample {
+            held: !self.sampled_jump_sources.is_empty(),
+            new_sequence: false,
         }
     }
     pub(crate) fn held(&self, action: TouchAction) -> bool {
@@ -227,5 +248,53 @@ mod tests {
         input.reset();
         input.jump_key(true, 110.);
         assert!(input.jump().new_sequence);
+    }
+    #[test]
+    fn cancelling_jump_preserves_completed_keyboard_taps_before_and_during_touch() {
+        for keyboard_first in [true, false] {
+            let mut input = PlayerInput::default();
+            if !keyboard_first {
+                input.press(1, PointerRole::Button(TouchAction::Jump), 0.);
+            }
+            input.jump_key(true, 1.);
+            input.jump_key(false, 2.);
+            if keyboard_first {
+                input.press(1, PointerRole::Button(TouchAction::Jump), 3.);
+            }
+            input.release(1, true, 4.);
+            assert!(input.jump().held);
+            assert!(!input.jump().held);
+            assert!(!input.jump().held);
+        }
+    }
+    #[test]
+    fn cancellation_preserves_completed_contacts_with_reused_pointer_ids() {
+        for role in [
+            PointerRole::Button(TouchAction::Jump),
+            PointerRole::Look { x: 0., y: 0. },
+        ] {
+            let mut input = PlayerInput::default();
+            input.press(1, PointerRole::Button(TouchAction::Jump), 0.);
+            input.release(1, false, 1.);
+            input.press(1, role, 2.);
+            input.release(1, true, 3.);
+            assert!(input.jump().held);
+            assert!(!input.jump().held);
+            assert!(!input.jump().held);
+        }
+    }
+    #[test]
+    fn cancellation_removes_only_a_pending_contact_and_releases_sampled_owners() {
+        let mut input = PlayerInput::default();
+        input.press(1, PointerRole::Button(TouchAction::Jump), 0.);
+        input.release(1, true, 1.);
+        assert!(!input.jump().held);
+        input.press(1, PointerRole::Button(TouchAction::Jump), 2.);
+        assert!(input.jump().held);
+        input.jump_key(true, 3.);
+        input.release(1, true, 4.);
+        assert!(input.jump().held);
+        input.jump_key(false, 5.);
+        assert!(!input.jump().held);
     }
 }
