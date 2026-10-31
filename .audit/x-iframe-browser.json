@@ -1,0 +1,102 @@
+{
+  "passed": true,
+  "proof": "Desktop Chrome cross-origin sandboxed iframe. This is not an X post or X client.",
+  "base": "http://127.0.0.1:8766/?world=webproof&bridge=ws://127.0.0.1:18787",
+  "logs": [
+    {
+      "type": "info",
+      "text": "Horizon renderer:  (BrowserWebGpu, Other)"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: device ready; configuring the surface (720x504 Bgra8Unorm, Fifo)"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: HDR output not offered by this display"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: creating the pipelines"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: acquiring the first frame"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: submitting the first frame"
+    },
+    {
+      "type": "info",
+      "text": "Horizon renderer: presenting the first frame"
+    }
+  ],
+  "parent": "http://127.0.0.1:57469/",
+  "sandbox": "allow-scripts allow-same-origin allow-pointer-lock allow-forms",
+  "initial": {
+    "horizonReady": "true",
+    "horizonView": "0.000,0.000",
+    "horizonFlying": "false",
+    "horizonViewport": "720,720",
+    "horizonMeshPending": "306",
+    "horizonTarget": "null",
+    "horizonObservedBlocks": "[]",
+    "horizonPeerPositions": "[]",
+    "horizonPeerVertices": "0",
+    "horizonPosition": "0.5000,-60.0000,0.5000",
+    "horizonWorldPeers": "0",
+    "horizonWorldChunks": "13",
+    "horizonWorldSections": "6",
+    "horizonWorldResident": "1",
+    "horizonWorldDrawn": "1"
+  },
+  "moved": {
+    "horizonReady": "true",
+    "horizonView": "0.000,0.000",
+    "horizonFlying": "false",
+    "horizonViewport": "720,720",
+    "horizonMeshPending": "2014",
+    "horizonTarget": "null",
+    "horizonObservedBlocks": "[]",
+    "horizonPeerPositions": "[]",
+    "horizonPeerVertices": "0",
+    "horizonPosition": "0.5000,-60.0000,1.8504",
+    "horizonWorldPeers": "0",
+    "horizonWorldChunks": "89",
+    "horizonWorldSections": "122",
+    "horizonWorldResident": "6",
+    "horizonWorldDrawn": "3"
+  },
+  "placed": [
+    0,
+    -60,
+    3
+  ],
+  "final": {
+    "horizonReady": "true",
+    "horizonView": "0.000,40.000",
+    "horizonFlying": "false",
+    "horizonViewport": "720,720",
+    "horizonMeshPending": "0",
+    "horizonTarget": "[[0,-60,3],[0,0,-1],3830]",
+    "horizonObservedBlocks": "[[[0,-61,3],9],[[0,-60,3],3830],[[0,-60,3],3830]]",
+    "horizonPeerPositions": "[]",
+    "horizonPeerVertices": "0",
+    "horizonPosition": "0.5000,-60.0000,1.8504",
+    "horizonWorldPeers": "0",
+    "horizonWorldChunks": "117",
+    "horizonWorldSections": "2828",
+    "horizonWorldResident": "117",
+    "horizonWorldDrawn": "24"
+  },
+  "error": ""
+}
