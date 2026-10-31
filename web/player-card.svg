@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="sky" x2="1" y2="1">
+      <stop stop-color="#112936"/>
+      <stop offset="1" stop-color="#254c5e"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#sky)" d="M0 0h1200v630H0z"/>
+  <path fill="#446d7d" opacity=".35" d="m600 345 600 285H0z"/>
+  <g stroke="#b7e4db" stroke-width="2" stroke-linejoin="round">
+    <path fill="#a8e6d1" d="m850 180 140 70-140 70-140-70z"/>
+    <path fill="#4d9c8e" d="m710 250 140 70v160l-140-70z"/>
+    <path fill="#367886" d="m850 320 140-70v160l-140 70z"/>
+    <path fill="#d9e9b9" d="m990 330 100 50-100 50-100-50z"/>
+    <path fill="#87b99a" d="m890 380 100 50v115l-100-50z"/>
+    <path fill="#568c8d" d="m990 430 100-50v115l-100 50z"/>
+  </g>
+  <text x="76" y="240" fill="#f1f7fa" font-family="system-ui,sans-serif" font-size="92" font-weight="750" letter-spacing="-3">HORIZON</text>
+  <text x="80" y="302" fill="#cbe5e8" font-family="system-ui,sans-serif" font-size="30">A shared world in your browser</text>
+  <rect fill="#b4ead5" x="80" y="370" width="270" height="64" rx="12"/>
+  <text x="109" y="412" fill="#132a35" font-family="system-ui,sans-serif" font-size="26" font-weight="650">BUILD TOGETHER</text>
+</svg>

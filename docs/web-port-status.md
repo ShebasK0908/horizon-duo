@@ -18,7 +18,7 @@ client parity, offline browser worlds, and in-X execution remain unfinished.
 | Offline browser world | Not started | Create, edit, save, and reopen a world without a remote game server. This follows the remote-first milestone. |
 | Multiplayer | End-to-end verified for two local browser clients | Two browser clients join one Horizon server, see each other, and observe the same block edits. |
 | Shared world URL | End-to-end verified locally and through private Tailscale HTTPS/WSS in Chrome | A second browser opens the world URL and joins the intended world. |
-| X embedding | In progress; local cross-origin iframe verified in Chrome; X remains unverified | Confirm the current supported integration and, if available, run the actual game inside X. A shared URL does not establish this. |
+| X embedding | In progress; private Player Card candidate and local cross-origin iframe tested; X remains unverified | Confirm the current supported integration and, if available, run the actual game inside X. A shared URL does not establish this. |
 | Native regressions | Locally tested for current shared changes | Run the checks relevant to each shared engine change. |
 | Touch controls and responsive viewport | End-to-end verified in desktop Chrome with CDP emulated touch | Chrome GPU with emulated touch must verify movement, simultaneous look, actions, cleanup, and live viewport changes. |
 | Browser application lifecycle | Implemented and browser-tested in Chrome | Both startup callers use active-event-loop window creation and asynchronous renderer startup without deprecated APIs. |
@@ -164,6 +164,16 @@ framed world. This proves one Chrome iframe configuration. It does not establish
 X's actual sandbox, crawler access, Player Card acceptance, or inline execution.
 The [parent verification report](../.audit/mobile-parent-verification.md) records
 the command, failed setup attempts, and remaining limits.
+
+`tools/web_card.py` generates a static Player Card candidate for an explicit
+HTTPS game URL and preview URL. Its ignored output is currently available at
+the private Tailscale `/share.html` route. The original SVG and PNG preview use
+no imported game resources. Private HTTP checks read the metadata with both
+Twitterbot and ordinary user agents. A Chrome check renders the share page and
+follows **Play Horizon** to the game's resource import. This is private candidate
+validation, not a real X crawler request. [The card preparation guide](web-x-card.md)
+records generation and public-validation steps. Public hosting, actual X card
+acceptance, and in-X gameplay remain unfinished.
 
 ## Remote-world checkpoint
 

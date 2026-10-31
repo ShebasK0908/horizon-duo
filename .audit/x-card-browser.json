@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "proof": "Private Tailscale share-page rendering and ordinary play-link navigation. No X client or crawler was driven.",
+  "title": "Horizon multiplayer",
+  "image": {
+    "complete": true,
+    "width": 1200,
+    "height": 630
+  },
+  "gameURL": "https://tests-mac-studio.tail935cc1.ts.net:8491/?world=webproof&bridge=wss%3A%2F%2Ftests-mac-studio.tail935cc1.ts.net%3A8492",
+  "errors": []
+}

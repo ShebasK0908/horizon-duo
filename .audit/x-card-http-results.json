@@ -1,0 +1,59 @@
+{
+  "proof": "Private Tailscale HTTP retrieval with crawler user agents. This does not prove X crawler access or Player Card acceptance.",
+  "pages": [
+    {
+      "userAgent": "Twitterbot/1.0",
+      "status": 200,
+      "metadata": {
+        "null": null,
+        "viewport": "width=device-width, initial-scale=1",
+        "twitter:card": "player",
+        "twitter:title": "Horizon multiplayer",
+        "twitter:description": "A shared Horizon world. Import your prepared resources to play in a browser with WebGPU.",
+        "twitter:player": "https://tests-mac-studio.tail935cc1.ts.net:8491/?world=webproof&bridge=wss%3A%2F%2Ftests-mac-studio.tail935cc1.ts.net%3A8492",
+        "twitter:player:width": "720",
+        "twitter:player:height": "720",
+        "twitter:image": "https://tests-mac-studio.tail935cc1.ts.net:8491/player-card.png",
+        "twitter:image:alt": "Horizon. A shared world in your browser.",
+        "og:type": "website",
+        "og:title": "Horizon multiplayer",
+        "og:description": "A shared Horizon world. Import your prepared resources to play in a browser with WebGPU.",
+        "og:image": "https://tests-mac-studio.tail935cc1.ts.net:8491/player-card.png"
+      },
+      "playLinks": [
+        "https://tests-mac-studio.tail935cc1.ts.net:8491/?world=webproof&bridge=wss%3A%2F%2Ftests-mac-studio.tail935cc1.ts.net%3A8492"
+      ],
+      "matchesLocal": true
+    },
+    {
+      "userAgent": "HorizonCardCheck/1.0",
+      "status": 200,
+      "metadata": {
+        "null": null,
+        "viewport": "width=device-width, initial-scale=1",
+        "twitter:card": "player",
+        "twitter:title": "Horizon multiplayer",
+        "twitter:description": "A shared Horizon world. Import your prepared resources to play in a browser with WebGPU.",
+        "twitter:player": "https://tests-mac-studio.tail935cc1.ts.net:8491/?world=webproof&bridge=wss%3A%2F%2Ftests-mac-studio.tail935cc1.ts.net%3A8492",
+        "twitter:player:width": "720",
+        "twitter:player:height": "720",
+        "twitter:image": "https://tests-mac-studio.tail935cc1.ts.net:8491/player-card.png",
+        "twitter:image:alt": "Horizon. A shared world in your browser.",
+        "og:type": "website",
+        "og:title": "Horizon multiplayer",
+        "og:description": "A shared Horizon world. Import your prepared resources to play in a browser with WebGPU.",
+        "og:image": "https://tests-mac-studio.tail935cc1.ts.net:8491/player-card.png"
+      },
+      "playLinks": [
+        "https://tests-mac-studio.tail935cc1.ts.net:8491/?world=webproof&bridge=wss%3A%2F%2Ftests-mac-studio.tail935cc1.ts.net%3A8492"
+      ],
+      "matchesLocal": true
+    }
+  ],
+  "preview": {
+    "contentType": "image/png",
+    "width": 1200,
+    "height": 630,
+    "matchesLocal": true
+  }
+}
