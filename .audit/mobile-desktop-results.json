@@ -1,0 +1,407 @@
+{
+  "passed": true,
+  "base": "http://127.0.0.1:8766/?world=webproof&bridge=ws://127.0.0.1:8767",
+  "movement": {
+    "before": "9.5000,-60.0000,-4.5000",
+    "after": "9.5000,-60.0000,-1.1880",
+    "observer": {
+      "position": "6.5000,-60.0000,8.5000",
+      "peers": [
+        [
+          1146,
+          [
+            -2.453125,
+            -60,
+            14.291748046875
+          ]
+        ],
+        [
+          1231,
+          [
+            9.5,
+            -60,
+            -1.305908203125
+          ]
+        ]
+      ],
+      "vertices": 576,
+      "target": null,
+      "observed": [],
+      "error": ""
+    }
+  },
+  "placement": {
+    "pos": [
+      6,
+      -60,
+      10
+    ],
+    "a": {
+      "position": "6.5000,-60.0000,8.5000",
+      "peers": [
+        [
+          1146,
+          [
+            -2.470458984375,
+            -60,
+            14.36328125
+          ]
+        ],
+        [
+          1231,
+          [
+            9.5,
+            -60,
+            -1.050048828125
+          ]
+        ]
+      ],
+      "vertices": 576,
+      "target": [
+        [
+          6,
+          -60,
+          10
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        3830
+      ],
+      "observed": [
+        [
+          [
+            6,
+            -61,
+            10
+          ],
+          9
+        ],
+        [
+          [
+            6,
+            -60,
+            10
+          ],
+          3830
+        ],
+        [
+          [
+            6,
+            -60,
+            10
+          ],
+          3830
+        ]
+      ],
+      "error": ""
+    },
+    "b": {
+      "position": "9.5000,-60.0000,-1.0500",
+      "peers": [
+        [
+          1230,
+          [
+            6.5,
+            -60,
+            8.5
+          ]
+        ],
+        [
+          1146,
+          [
+            -2.521484375,
+            -60,
+            14.57275390625
+          ]
+        ]
+      ],
+      "vertices": 576,
+      "target": null,
+      "observed": [
+        [
+          [
+            6,
+            -60,
+            10
+          ],
+          3830
+        ]
+      ],
+      "error": ""
+    }
+  },
+  "reconnect": {
+    "position": "6.5000,-60.0000,8.5000",
+    "peers": [],
+    "vertices": 0,
+    "target": [
+      [
+        6,
+        -60,
+        10
+      ],
+      [
+        0,
+        0,
+        -1
+      ],
+      3830
+    ],
+    "observed": [],
+    "error": ""
+  },
+  "breaking": {
+    "a": {
+      "position": "6.5000,-60.0000,8.5000",
+      "peers": [
+        [
+          1146,
+          [
+            -2.98269982084447,
+            -60,
+            16.456489100730828
+          ]
+        ],
+        [
+          1231,
+          [
+            9.5,
+            -60,
+            -1.0500100698859363
+          ]
+        ]
+      ],
+      "vertices": 576,
+      "target": [
+        [
+          6,
+          -61,
+          10
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        10
+      ],
+      "observed": [
+        [
+          [
+            6,
+            -60,
+            10
+          ],
+          0
+        ]
+      ],
+      "error": ""
+    },
+    "b": {
+      "position": "9.5000,-60.0000,-1.0500",
+      "peers": [
+        [
+          1232,
+          [
+            6.5,
+            -60,
+            8.5
+          ]
+        ],
+        [
+          1146,
+          [
+            -2.98269982084447,
+            -60,
+            16.456489100730828
+          ]
+        ]
+      ],
+      "vertices": 576,
+      "target": null,
+      "observed": [
+        [
+          [
+            6,
+            -60,
+            10
+          ],
+          3830
+        ],
+        [
+          [
+            6,
+            -61,
+            10
+          ],
+          10
+        ],
+        [
+          [
+            -3,
+            -60,
+            17
+          ],
+          3830
+        ],
+        [
+          [
+            -3,
+            -60,
+            17
+          ],
+          0
+        ],
+        [
+          [
+            6,
+            -60,
+            10
+          ],
+          0
+        ]
+      ],
+      "error": ""
+    }
+  },
+  "logs": [
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer:  (BrowserWebGpu, Other)"
+    },
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)"
+    },
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer: device ready; configuring the surface (1000x630 Bgra8Unorm, Fifo)"
+    },
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer: HDR output not offered by this display"
+    },
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer: creating the pipelines"
+    },
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)"
+    },
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer: acquiring the first frame"
+    },
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer: submitting the first frame"
+    },
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer: presenting the first frame"
+    },
+    {
+      "name": "MobDBeta",
+      "type": "info",
+      "text": "Horizon renderer:  (BrowserWebGpu, Other)"
+    },
+    {
+      "name": "MobDBeta",
+      "type": "info",
+      "text": "Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)"
+    },
+    {
+      "name": "MobDBeta",
+      "type": "info",
+      "text": "Horizon renderer: device ready; configuring the surface (1000x630 Bgra8Unorm, Fifo)"
+    },
+    {
+      "name": "MobDBeta",
+      "type": "info",
+      "text": "Horizon renderer: HDR output not offered by this display"
+    },
+    {
+      "name": "MobDBeta",
+      "type": "info",
+      "text": "Horizon renderer: creating the pipelines"
+    },
+    {
+      "name": "MobDBeta",
+      "type": "info",
+      "text": "Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)"
+    },
+    {
+      "name": "MobDBeta",
+      "type": "info",
+      "text": "Horizon renderer: acquiring the first frame"
+    },
+    {
+      "name": "MobDBeta",
+      "type": "info",
+      "text": "Horizon renderer: submitting the first frame"
+    },
+    {
+      "name": "MobDBeta",
+      "type": "info",
+      "text": "Horizon renderer: presenting the first frame"
+    },
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer:  (BrowserWebGpu, Other)"
+    },
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)"
+    },
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer: device ready; configuring the surface (1000x630 Bgra8Unorm, Fifo)"
+    },
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer: HDR output not offered by this display"
+    },
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer: creating the pipelines"
+    },
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)"
+    },
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer: acquiring the first frame"
+    },
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer: submitting the first frame"
+    },
+    {
+      "name": "MobDAlpha",
+      "type": "info",
+      "text": "Horizon renderer: presenting the first frame"
+    }
+  ]
+}

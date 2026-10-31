@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "result": {
+    "touchDisplay": "none",
+    "buttons": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "coarse": false,
+    "error": ""
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "index.html": {
+    "sha256": "6bf71174a4de607a0b5bc4866c895d6e720ec26a36b16a1c8bf11b408492ec5a",
+    "bytes": 5647,
+    "matches_local": true
+  },
+  "pkg/horizon_web.js": {
+    "sha256": "e4a7e1b7e6c24c5cf8ef41d5ebfde2dab2cd2ba5716cc46a19e59a8f3e4054ba",
+    "bytes": 126374,
+    "matches_local": true
+  },
+  "pkg/horizon_web_bg.wasm": {
+    "sha256": "2afe5825e9baca8c3ba29b746c77582fd553423e8547859f1c9c2a5773955d3c",
+    "bytes": 21488445,
+    "matches_local": true
+  }
+}

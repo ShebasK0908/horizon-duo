@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "method": "navigator.gpu unavailable before startup",
+  "text": "Horizon could not start graphics. Enable WebGPU or try an updated browser, then reload.",
+  "errors": []
+}

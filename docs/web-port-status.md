@@ -20,6 +20,9 @@ client parity, offline browser worlds, and in-X execution remain unfinished.
 | Shared world URL | End-to-end verified locally and through private Tailscale HTTPS/WSS in Chrome | A second browser opens the world URL and joins the intended world. |
 | X embedding | In progress; source research only | Confirm the current supported integration and, if available, run the actual game inside X. A shared URL does not establish this. |
 | Native regressions | Locally tested for current shared changes | Run the checks relevant to each shared engine change. |
+| Touch controls and responsive viewport | End-to-end verified in desktop Chrome with CDP emulated touch | Chrome GPU with emulated touch must verify movement, simultaneous look, actions, cleanup, and live viewport changes. |
+| Browser application lifecycle | Implemented and browser-tested in Chrome | Both startup callers use active-event-loop window creation and asynchronous renderer startup without deprecated APIs. |
+| Phone and Duo runtime | Blocked | Device session is owned by another session; no phone, Safari, or actual fold proof is claimed. |
 | Review and synchronization | Pushed checkpoints; parent runtime check passed; cross-family review blocked by Claude rate limit | Inspect the real diff, obtain independent review, and push coherent tested commits to a dedicated fork branch. |
 
 Compilation, a blank canvas, a triangle, a network echo, and a different voxel
@@ -247,7 +250,7 @@ constitute full workspace or vanilla parity verification.
 ## Private Tailscale runtime
 
 The parent configured and verified a tailnet-only runtime at
-`https://tests-mac-studio.tail935cc1.ts.net:8491/?world=webproof&bridge=wss%3A%2F%2Ftests-mac-studio.tail935cc1.ts.net%3A8492&name=TailPlayer`.
+`https://tests-mac-studio.tail935cc1.ts.net:8491/?world=webproof&bridge=wss%3A%2F%2Ftests-mac-studio.tail935cc1.ts.net%3A8492`.
 Port 8491 proxies the existing HTTP server on 8766. Port 8492 proxies a separate
 bridge on 18767, restricted to world `webproof`, upstream 25575, and the exact
 origin `https://tests-mac-studio.tail935cc1.ts.net:8491`. The original bridge on
@@ -258,8 +261,7 @@ allowed origin, 403 for a wrong origin, and matching SHA-256 for the private
 `/resources.zip` download. The download proxies 18766 through a temporary
 symlink to `.local/web-owned/play-resources.zip`, so regenerated bundles update
 that download. This is parent-supplied runtime evidence; the implementation
-checks above used local Chrome. Phone input and mobile WebGPU have not been
-verified. The native world and these runtime services remain running for user
+checks above used local Chrome. Touch input is now checked in desktop Chrome with emulated touch, as described below. Mobile WebGPU has not been verified. The native world and these runtime services remain running for user
 testing. This is not a public HTTPS deployment or an X embed test.
 
 The implementation owner then ran the actual world check through that exact
@@ -300,9 +302,9 @@ replaces the fixed aiming delay.
 
 Comment review removed ten narrative lines and two suppressions, including the
 shader suppression and a redundant deprecation allowance. Two function-level
-deprecation allowances remain in browser window startup. Migration to winit's
-current application lifecycle remains open; no runtime failure was reproduced
-for that concern. Claude's independent review attempt failed with a rate limit.
+deprecation allowances remained at that checkpoint. The mobile phase below
+migrates both browser startup callers to the current winit application lifecycle.
+Claude's independent review attempt failed with a rate limit.
 Neither the parent check nor the remaining Codex review is a cross-family verdict.
 
 ## Runtime review findings
@@ -359,3 +361,53 @@ and show textured peers in both directions. The verifier also confirmed that
 the served files match the local artifacts. Native suites were not rerun in that
 verification; those remain the parent's checks. Cross-family review remains
 blocked by Claude rate limits.
+
+## Touch input and browser lifecycle checkpoint
+
+The browser now has 48 CSS-pixel edge controls for movement, jump, descent,
+placement, and breaking. Drag the world with a second finger to look while
+moving. Double-tap Jump to toggle the existing native creative flight behavior.
+Hold Jump to rise and Down to descend. Keyboard and touch holds have separate
+ownership and merge into the existing `Keys` input. Pointer ownership, retained
+jump transitions, and queued actions live in Rust. A release from one source
+does not release the other source. Cancel, lost capture, blur, visibility changes,
+and dimension resets clear the relevant state.
+
+The page uses viewport metadata, dynamic viewport height, and safe-area insets.
+Controls stay at the outer edges and retain their CSS size across resizing.
+Winit's canvas resize observer updates Window dimensions, and both callers pass
+those dimensions to `Renderer::resize`. The renderer uses its current dimensions
+for the camera aspect ratio. This is ordinary web resizing. No native hinge,
+reserved-region, or occlusion API is available or claimed here.
+
+`application.rs` creates each window through `ActiveEventLoop` in `resumed`,
+starts the renderer asynchronously, and receives the result through a user event.
+Both callers use `spawn_app`. The two broad deprecation allowances are removed.
+Graphics startup failures show a reload and browser-update action. Module and
+WebAssembly loading failures also appear visibly. Wrong-resource imports still
+reject. The canonical shared URL above omits a fixed profile name. Explicit
+`name` query parameters remain supported for tests and persistent test profiles.
+
+[The mobile phase report](../.audit/mobile-verification.md) records exact commands,
+checks, and private evidence paths. [The touch receipt](../.audit/mobile-touch-results.json)
+passed through private Tailscale HTTPS/WSS in desktop Chrome with CDP touch input.
+It covers press, hold, release, simultaneous look, multiple owners, cancellation,
+lost capture, keyboard-plus-touch ownership, retained jump taps at 250 ms render
+callback delays, creative flight, and authoritative gold placement and removal.
+Blur and visibility cleanup were exercised by DOM lifecycle event dispatch,
+not a real phone background transition. Viewport changes to 390x844, 844x390,
+1152x804, and 320x568 updated actual canvas and Window sizes and kept every
+button inside the viewport. Captures were visually inspected. Emulated DPR was
+2, but winit's device-pixel resize observer reported CSS-pixel-sized drawing
+buffers under CDP. This proves aspect and viewport adaptation, not Retina or
+mobile GPU fidelity.
+
+The existing desktop two-client gameplay check and fixed-tick check pass.
+The synthetic fixture, four input unit tests, scoped WebAssembly Clippy, and
+wrong-resource rejection pass. No shared engine source changed in this phase,
+so the earlier native engine test results remain prior evidence. Actual phone,
+Safari, and Duo execution remain blocked by `DEVICE_IN_USE` from the parent's
+device session. This phase did not drive any device. Independent review remains
+blocked by unavailable Claude providers and belongs to the parent. Offline
+browser worlds, full native parity, X embedding, and public deployment retain
+their existing unfinished status.

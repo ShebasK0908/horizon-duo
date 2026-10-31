@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "base": "http://127.0.0.1:8766/?world=webproof&bridge=ws://127.0.0.1:8767",
+  "windows": [
+    {
+      "renderDelayMs": 0,
+      "elapsedMs": 2501,
+      "ticks": 50,
+      "expectedTicks": 50.02
+    },
+    {
+      "renderDelayMs": 250,
+      "elapsedMs": 2501,
+      "ticks": 51,
+      "expectedTicks": 50.02
+    }
+  ],
+  "errors": [],
+  "errorText": ""
+}
