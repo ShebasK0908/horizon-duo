@@ -1,0 +1,23 @@
+{
+  "head": "3277bb98164804f8cc00bf7468493df71d6cf455",
+  "branch": "codex/horizon-web",
+  "status": "head unchanged; external edits untouched",
+  "upstream_divergence": [
+    0,
+    0
+  ],
+  "evidence": "wasm type check only; no gameplay or browser persistence execution",
+  "command": "RUSTC=/Users/test/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc CARGO_TARGET_DIR=/tmp/horizon-offline-design.EE1Tv7/target /Users/test/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo check --locked --offline --manifest-path /tmp/horizon-offline-design.EE1Tv7/probe-workspace/Cargo.toml -p horizon-web --example offline_api_probe --target wasm32-unknown-unknown",
+  "exit_code": 0,
+  "elapsed_cargo_seconds": 29.75,
+  "flatgen_source_unchanged": true,
+  "initial_status": "clean",
+  "final_status": "concurrent external modifications: crates/horizon-web/src/input.rs; tools/web_touch_check.cjs",
+  "pinned_recheck": {
+    "snapshot": "pinned-head created by git archive of exact head",
+    "exit_code": 0,
+    "elapsed_cargo_seconds": 1.45,
+    "command": "RUSTC=/Users/test/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc CARGO_TARGET_DIR=/tmp/horizon-offline-design.EE1Tv7/target /Users/test/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo check --locked --offline --manifest-path /tmp/horizon-offline-design.EE1Tv7/pinned-head/Cargo.toml -p horizon-web --example offline_api_probe --target wasm32-unknown-unknown",
+    "flatgen_matches_pinned_source": true
+  }
+}

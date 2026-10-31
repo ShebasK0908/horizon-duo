@@ -1,0 +1,2 @@
+    Checking horizon-web v0.1.0 (/tmp/horizon-offline-design.EE1Tv7/pinned-head/crates/horizon-web)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.45s

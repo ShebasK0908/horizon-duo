@@ -15,7 +15,7 @@ client parity, offline browser worlds, and in-X execution remain unfinished.
 | Owned game resources | End-to-end verified for local import | Import a matching player-owned resource bundle, validate its version, and render its models and textures. |
 | Player interaction | End-to-end verified for creative movement, placement and breaking | Move in the real world and place and break blocks through existing Horizon gameplay rules. |
 | Durable world | End-to-end verified for server-backed reconnect and process restart | Reload and reconnect after an edit and observe that edit in the same world. |
-| Offline browser world | Not started | Create, edit, save, and reopen a world without a remote game server. This follows the remote-first milestone. |
+| Offline browser world | Design inspection complete; implementation not started | Create, edit, save, and reopen a world without a remote game server. This follows the remote-first milestone. |
 | Multiplayer | End-to-end verified for two local browser clients | Two browser clients join one Horizon server, see each other, and observe the same block edits. |
 | Shared world URL | End-to-end verified locally and through private Tailscale HTTPS/WSS in Chrome | A second browser opens the world URL and joins the intended world. |
 | X embedding | In progress; private Player Card candidate and local cross-origin iframe tested; X remains unverified | Confirm the current supported integration and, if available, run the actual game inside X. A shared URL does not establish this. |
@@ -464,3 +464,31 @@ browser probes, and the expanded full touch driver pass. Matching server-deliver
 observer ascent confirms the corrected keyboard jump. [The second fix-round
 report](../.audit/mobile-input-fix-round2.md) preserves evidence and commands.
 Fresh review of this latest correction remains pending.
+
+## Offline architecture investigation
+
+Two Codex-only candidates inspected the actual server and shared-kernel paths.
+Neither candidate implemented a browser world. Both reject a browser-specific
+imitation of native gameplay and the deprecated native in-frame path.
+
+[The supported-server candidate](../.audit/offline-design-server.md) found that
+a worker wrapper is insufficient. Supported server state, incremental sessions,
+cooperative jobs, byte-based content and durable snapshots require extraction.
+Its direct native-binary Wasm check failed first at getrandom 0.2's missing
+browser feature. Later platform and visibility barriers are source findings,
+not compiler errors reached by that probe.
+
+[The shared-kernel candidate](../.audit/offline-design-kernel.md) proposes a smaller
+superflat building milestone using extracted native action policy, FlatTerrain,
+level behavior and save codecs. A temporary probe with source-identical
+FlatTerrain and existing public APIs passed a pinned Wasm type check.
+[The probe receipt](../.audit/offline-kernel-probe.json) distinguishes that result
+from initialized gameplay or browser durability, which remain unverified.
+Admitted actions must preserve native obstruction, connections and effect
+ordering. Unsupported behavior cannot be silently dropped.
+
+Both designs require real native-code extraction, byte-based resources and
+atomic browser persistence. The choice and implementation are pending. A scope
+question asks whether to build offline worlds now or defer that follow-on while
+focusing on multiplayer and X. No answer or deferral is assumed. The original
+create/edit/save/reopen acceptance item stays in this ledger.
