@@ -1,0 +1,73 @@
+[
+  {
+    "help": "usage: web_card.py [-h] --player-url PLAYER_URL --image-url IMAGE_URL\n                   [--title TITLE] [--output OUTPUT]\n\nGenerate a static Horizon Player Card candidate for an HTTPS game URL.\n\noptional arguments:\n  -h, --help            show this help message and exit\n  --player-url PLAYER_URL\n  --image-url IMAGE_URL\n  --title TITLE\n  --output OUTPUT\n"
+  },
+  {
+    "command": [
+      "python3",
+      "/Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon-web/tools/web_card.py",
+      "--player-url",
+      "https://tests-mac-studio.tail935cc1.ts.net:8491/?world=webproof&bridge=wss%3A%2F%2Ftests-mac-studio.tail935cc1.ts.net%3A8492",
+      "--image-url",
+      "https://tests-mac-studio.tail935cc1.ts.net:8491/player-card.png",
+      "--output",
+      "/tmp/horizon-card-review.bHn9GQ/candidate.html"
+    ],
+    "exit": 0,
+    "stdout": "Wrote /tmp/horizon-card-review.bHn9GQ/candidate.html. X acceptance and public access remain unverified.\n",
+    "metadata": {
+      "null": null,
+      "viewport": "width=device-width, initial-scale=1",
+      "twitter:card": "player",
+      "twitter:title": "Horizon multiplayer",
+      "twitter:description": "A shared Horizon world. Import your prepared resources to play in a browser with WebGPU.",
+      "twitter:player": "https://tests-mac-studio.tail935cc1.ts.net:8491/?world=webproof&bridge=wss%3A%2F%2Ftests-mac-studio.tail935cc1.ts.net%3A8492",
+      "twitter:player:width": "720",
+      "twitter:player:height": "720",
+      "twitter:image": "https://tests-mac-studio.tail935cc1.ts.net:8491/player-card.png",
+      "twitter:image:alt": "Horizon. A shared world in your browser.",
+      "og:type": "website",
+      "og:title": "Horizon multiplayer",
+      "og:description": "A shared Horizon world. Import your prepared resources to play in a browser with WebGPU.",
+      "og:image": "https://tests-mac-studio.tail935cc1.ts.net:8491/player-card.png"
+    }
+  },
+  {
+    "escaping": "PASS: decoded exact title, player and image; no script/iframe element"
+  },
+  {
+    "invalid_urls": 26,
+    "exit": 2,
+    "output_created": false
+  },
+  {
+    "ua": "Twitterbot/1.0",
+    "headers": "HTTP/2 200 \ncontent-type: text/html\ndate: Sat, 31 Oct 2026 01:27:41 GMT\nlast-modified: Sat, 31 Oct 2026 01:09:06 GMT\nserver: SimpleHTTP/0.6 Python/3.9.6\ncontent-length: 1988\n\n",
+    "sha256": "d850f7dbfa194c96ec464c812693a78690e4809a7ff73d54bcd5176501abacb7",
+    "matches_generated": true
+  },
+  {
+    "ua": "Mozilla/5.0",
+    "headers": "HTTP/2 200 \ncontent-type: text/html\ndate: Sat, 31 Oct 2026 01:27:41 GMT\nlast-modified: Sat, 31 Oct 2026 01:09:06 GMT\nserver: SimpleHTTP/0.6 Python/3.9.6\ncontent-length: 1988\n\n",
+    "sha256": "d850f7dbfa194c96ec464c812693a78690e4809a7ff73d54bcd5176501abacb7",
+    "matches_generated": true
+  },
+  {
+    "png_headers": "HTTP/2 200 \ncontent-type: image/png\ndate: Sat, 31 Oct 2026 01:27:41 GMT\nlast-modified: Sat, 31 Oct 2026 01:05:07 GMT\nserver: SimpleHTTP/0.6 Python/3.9.6\ncontent-length: 132524\n\n",
+    "png_bytes": 132524,
+    "dimensions": [
+      1200,
+      630
+    ],
+    "sha256": "fb3ebdd5387221beefdd6c452de793c39691b30c31f84ac32cbda5082400572c",
+    "matches_source": true
+  },
+  {
+    "docstrings": 1,
+    "help_uses": "__doc__",
+    "comments": [
+      "#!/usr/bin/env python3"
+    ],
+    "suppressions": []
+  }
+]

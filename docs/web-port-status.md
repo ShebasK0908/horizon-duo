@@ -171,7 +171,10 @@ the private Tailscale `/share.html` route. The original SVG and PNG preview use
 no imported game resources. Private HTTP checks read the metadata with both
 Twitterbot and ordinary user agents. A Chrome check renders the share page and
 follows **Play Horizon** to the game's resource import. This is private candidate
-validation, not a real X crawler request. [The card preparation guide](web-x-card.md)
+validation, not a real X crawler request. A fresh Codex review found no verified
+issues in the generator, URL boundary, decoded tags, preview delivery or play-link
+navigation. [Its results](../.audit/x-card-review.md) remain private-candidate
+evidence. [The card preparation guide](web-x-card.md)
 records generation and public-validation steps. Public hosting, actual X card
 acceptance, and in-X gameplay remain unfinished.
 
