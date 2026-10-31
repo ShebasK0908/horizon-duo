@@ -1,34 +1,58 @@
 <!doctype html>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="icon" href="data:,">
 <title>Horizon browser</title>
-<style>body{margin:0;background:#15202a;color:#eee;font:16px system-ui}header{padding:16px}canvas{display:block;width:960px;height:auto;max-width:100%}#viewport{position:relative;width:960px;max-width:100%}#error{color:#faa}#crosshair{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none}label, #controls{margin:0 16px}</style>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#15202a;color:#eee;font:16px system-ui}header{padding:16px}label,#controls{margin:0 16px}#error{color:#faa;white-space:pre-wrap;position:relative;z-index:5}#viewport{position:relative;width:100%;height:70dvh;min-height:240px}canvas{display:block;width:100%;height:100%;touch-action:none}#crosshair{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:1}#touch-controls{display:none;position:absolute;inset:0;pointer-events:none;z-index:2}#touch-controls button{width:48px;height:48px;border:1px solid #ffffff90;border-radius:12px;background:#14202ccc;color:white;font:600 13px system-ui;touch-action:none;user-select:none;-webkit-user-select:none;pointer-events:auto}#touch-controls button:active{background:#527399e6}.move-pad{position:absolute;left:max(12px,env(safe-area-inset-left));bottom:max(12px,env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(3,48px);gap:4px}.move-pad [data-touch-action="forward"]{grid-column:2}.move-pad [data-touch-action="left"]{grid-column:1}.action-pad{position:absolute;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(2,48px);gap:4px}
+body[data-horizon-ready] {overflow:hidden}body[data-horizon-ready] header,body[data-horizon-ready] #import{display:none}body[data-horizon-ready] #viewport{position:fixed;inset:0;height:100dvh;min-height:0}body[data-horizon-ready] #materials{position:fixed;top:max(8px,env(safe-area-inset-top));left:max(8px,env(safe-area-inset-left));z-index:3;margin:0;background:#14202ccc;padding:8px;border-radius:8px}#block{max-width:150px;min-height:32px}body[data-horizon-ready] #controls{position:fixed;top:max(60px,env(safe-area-inset-top));left:12px;right:12px;z-index:3;pointer-events:none;font-size:12px;text-shadow:0 1px 3px #000;margin:0}body[data-horizon-ready] #error{position:fixed;top:100px;left:12px;right:12px;background:#15202a}
+@media(any-pointer:coarse){#touch-controls:not([hidden]){display:block}body[data-horizon-ready] #controls{top:64px;max-width:260px}.desktop-help{display:none}}
+@media not all and (any-pointer:coarse){.touch-help{display:none}}
+[hidden]{display:none!important}
+</style>
 <header>Horizon renderer validation. Original synthetic mesh. Gameplay and multiplayer are not connected.</header>
 <label id="import" hidden>Import your prepared Horizon resources (.zip) <input type="file" accept=".zip" aria-label="Prepared resources"></label>
 <label id="materials" hidden>Creative block <select id="block" aria-label="Creative block"></select></label>
-<p id="controls" hidden>Click the world to focus. WASD move, Space jump, Shift crouch, Ctrl sprint, mouse or arrow keys look. F places a block, R breaks. Double Space toggles creative flight.</p>
-<div id="viewport"><span id="crosshair" hidden>+</span></div>
+<p id="controls" hidden><span class="desktop-help">Click the world to focus. WASD move, Space jump, Shift crouch, Ctrl sprint, mouse or arrow keys look. F places a block, R breaks. Double Space toggles creative flight.</span><span class="touch-help">Drag the world to look. Hold arrows to move. Double-tap Jump to fly. Hold Jump to rise, Down to descend.</span></p>
+<div id="viewport"><span id="crosshair" hidden>+</span>
+<div id="touch-controls" hidden aria-label="Touch game controls">
+<div class="move-pad">
+<button type="button" data-touch-action="forward" aria-label="Move forward">▲</button>
+<button type="button" data-touch-action="left" aria-label="Move left">◀</button>
+<button type="button" data-touch-action="backward" aria-label="Move backward">▼</button>
+<button type="button" data-touch-action="right" aria-label="Move right">▶</button>
+</div>
+<div class="action-pad">
+<button type="button" data-touch-action="break" aria-label="Break block">Break</button>
+<button type="button" data-touch-action="place" aria-label="Place block">Place</button>
+<button type="button" data-touch-action="descend" aria-label="Crouch or fly down">Down</button>
+<button type="button" data-touch-action="jump" aria-label="Jump or fly up">Jump</button>
+</div>
+</div></div>
 <pre id="error"></pre>
 <script type="module">
-import init, {run_render_fixture, run_owned_resources, connect_world} from './pkg/horizon_web.js';
-const fail = error => {document.querySelector('#error').textContent=String(error); console.error(error);};
-await init();
-const params=new URLSearchParams(location.search);
-if (params.has('owned') || params.has('world')) {
-    document.querySelector('header').textContent=params.has('world') ? 'Horizon browser — remote world' : 'Horizon owned-resource rendering validation.';
-    document.querySelector('#import').hidden=false;
-    document.querySelector('input').addEventListener('change', async event => {
-        try {
-            const bytes=new Uint8Array(await event.target.files[0].arrayBuffer());
-            if (params.has('world')) {
-                const bridge=new URL(params.get('bridge') || location.origin.replace('http','ws'));
-                bridge.pathname='/world/'+encodeURIComponent(params.get('world'));
-                await connect_world(bytes, bridge.href, params.get('world'), params.get('name') || 'Player'+crypto.getRandomValues(new Uint16Array(1))[0]);
-            } else {await run_owned_resources(bytes);}
-        }
-        catch(error) {fail(error);}
-    }, {once:true});
-} else {
-    try {await run_render_fixture();} catch(error) {fail(error);}
-}
+const fail = error => {
+    document.querySelector('#error').textContent=String(error);
+    console.error(error);
+};
+try {
+    const {default:init,run_render_fixture,run_owned_resources,connect_world}=await import('./pkg/horizon_web.js');
+    await init();
+    const params=new URLSearchParams(location.search);
+    if (params.has('owned') || params.has('world')) {
+        document.querySelector('header').textContent=params.has('world') ? 'Horizon browser' : 'Horizon owned-resource rendering validation.';
+        document.querySelector('#import').hidden=false;
+        document.querySelector('input').addEventListener('change', async event => {
+            if (!event.target.files.length) return;
+            try {
+                const bytes=new Uint8Array(await event.target.files[0].arrayBuffer());
+                if (params.has('world')) {
+                    const bridge=new URL(params.get('bridge') || location.origin.replace('http','ws'));
+                    bridge.pathname='/world/'+encodeURIComponent(params.get('world'));
+                    await connect_world(bytes, bridge.href, params.get('world'), params.get('name') || 'Player'+crypto.getRandomValues(new Uint32Array(1))[0].toString(36));
+                } else {await run_owned_resources(bytes);}
+            } catch(error) {fail(error);}
+        });
+    } else {await run_render_fixture();}
+} catch(error) {fail("Horizon could not start. Enable WebGPU or try an updated browser, then reload. "+String(error));}
 </script>

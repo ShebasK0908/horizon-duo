@@ -10,16 +10,17 @@ use horizon_core::position::BlockPos;
 use std::sync::Arc;
 use wasm_bindgen::prelude::*;
 use winit::{
-    event::{Event, WindowEvent},
-    event_loop::EventLoop,
-    platform::web::{EventLoopExtWebSys, WindowExtWebSys},
-    window::Window,
+    application::ApplicationHandler,
+    event::WindowEvent,
+    event_loop::ActiveEventLoop,
+    window::{Window, WindowId},
 };
 
-struct RenderFixture {
+pub(crate) struct RenderFixture {
     renderer: Renderer,
     window: Arc<Window>,
     frames: u64,
+    quads: usize,
 }
 
 #[wasm_bindgen]
@@ -66,112 +67,108 @@ pub async fn run_owned_resources(bytes: Vec<u8>) -> Result<(), JsValue> {
     run_fixture(Some(render), mesh).await
 }
 
-#[allow(deprecated)]
 async fn run_fixture(render: Option<RenderAssets>, mesh: SectionMesh) -> Result<(), JsValue> {
     console_error_panic_hook::set_once();
     let _ = console_log::init_with_level(log::Level::Info);
-    let events = EventLoop::new().map_err(js_error)?;
-    let window = Arc::new(
-        events
-            .create_window(
-                Window::default_attributes()
-                    .with_title("Horizon renderer fixture")
-                    .with_inner_size(winit::dpi::PhysicalSize::new(960, 640)),
-            )
-            .map_err(js_error)?,
-    );
-    let document = web_sys::window().unwrap().document().unwrap();
-    let canvas = window.canvas().ok_or_else(|| js_error("No canvas"))?;
-    canvas.set_id("horizon-canvas");
-    canvas.set_width(960);
-    canvas.set_height(640);
-    let _ = window.request_inner_size(winit::dpi::PhysicalSize::new(960, 640));
-    document.body().unwrap().append_child(&canvas)?;
-    let white = [255u8; 4];
-    let faces = panorama::Faces {
-        size: 1,
-        pixels: [70, 100, 140, 255].repeat(6),
-    };
-    let (pixels, size, minimum, layers, mips, animations) = match &render {
-        Some(render) => (
-            render.pixels.as_slice(),
-            render.sprite_size,
-            render.sprite_minimum_size,
-            render.texture_layers,
-            render.sprite_mips.as_slice(),
-            render.animations.as_slice(),
-        ),
-        None => (white.as_slice(), 1, 1, 1, &[][..], &[][..]),
-    };
-    let mut renderer = Renderer::new(
-        window.clone(),
-        false,
-        pixels,
-        size,
-        minimum,
-        layers,
-        mips,
-        animations,
-        (&white, 1, 1),
-        (&white, 1, 1),
-        (&white, 1, 1),
-        (&white, 1),
-        &faces,
-        None,
-        None,
-        GraphicsApi::Auto,
-    )
-    .await
-    .map_err(js_error)?;
-    renderer.upload((0, 8, 0), &mesh);
-    let mut fixture = RenderFixture {
-        renderer,
-        window,
-        frames: 0,
-    };
-    events.spawn(move |event, events| match event {
-        Event::WindowEvent {
-            event: WindowEvent::CloseRequested,
-            ..
-        } => events.exit(),
-        Event::WindowEvent {
-            event: WindowEvent::Resized(size),
-            ..
-        } => {
-            fixture.renderer.resize(size.width, size.height);
-        }
-        Event::WindowEvent {
-            event: WindowEvent::RedrawRequested,
-            ..
-        } => {
-            let hud = HudBatch::new([960, 640]);
-            let frame = frame(&hud, fixture.frames);
-            match fixture.renderer.render(&frame) {
-                Ok(true) => {
-                    fixture.frames += 1;
-                    if fixture.frames == 3 {
-                        let body = web_sys::window()
+    crate::application::start(crate::application::Startup::Fixture { render, mesh })
+}
+impl RenderFixture {
+    pub(crate) async fn new(
+        window: Arc<Window>,
+        render: Option<RenderAssets>,
+        mesh: SectionMesh,
+    ) -> Result<Self, JsValue> {
+        let white = [255u8; 4];
+        let faces = panorama::Faces {
+            size: 1,
+            pixels: [70, 100, 140, 255].repeat(6),
+        };
+        let (pixels, size, minimum, layers, mips, animations) = match &render {
+            Some(render) => (
+                render.pixels.as_slice(),
+                render.sprite_size,
+                render.sprite_minimum_size,
+                render.texture_layers,
+                render.sprite_mips.as_slice(),
+                render.animations.as_slice(),
+            ),
+            None => (white.as_slice(), 1, 1, 1, &[][..], &[][..]),
+        };
+        let mut renderer = Renderer::new(
+            window.clone(),
+            false,
+            pixels,
+            size,
+            minimum,
+            layers,
+            mips,
+            animations,
+            (&white, 1, 1),
+            (&white, 1, 1),
+            (&white, 1, 1),
+            (&white, 1),
+            &faces,
+            None,
+            None,
+            GraphicsApi::Auto,
+        )
+        .await
+        .map_err(js_error)?;
+        renderer.upload((0, 8, 0), &mesh);
+        Ok(Self {
+            renderer,
+            window,
+            frames: 0,
+            quads: mesh.solid.len().div_ceil(4),
+        })
+    }
+}
+impl ApplicationHandler<crate::application::Ready> for RenderFixture {
+    fn resumed(&mut self, _: &ActiveEventLoop) {}
+    fn window_event(&mut self, events: &ActiveEventLoop, _: WindowId, event: WindowEvent) {
+        match event {
+            WindowEvent::CloseRequested => events.exit(),
+            WindowEvent::Resized(size) => self.renderer.resize(size.width, size.height),
+            WindowEvent::RedrawRequested => {
+                let size = self.window.inner_size();
+                let hud = HudBatch::new([size.width, size.height]);
+                let frame = frame(&hud, self.frames);
+                match self.renderer.render(&frame) {
+                    Ok(true) => {
+                        self.frames += 1;
+                        if self.frames == 3 {
+                            let body = web_sys::window()
+                                .unwrap()
+                                .document()
+                                .unwrap()
+                                .body()
+                                .unwrap();
+                            body.set_attribute("data-horizon-frames", "3").unwrap();
+                            body.set_attribute("data-horizon-quads", &self.quads.to_string())
+                                .unwrap();
+                        }
+                    }
+                    Ok(false) => {}
+                    Err(error) => {
+                        web_sys::window()
                             .unwrap()
                             .document()
                             .unwrap()
-                            .body()
-                            .unwrap();
-                        body.set_attribute("data-horizon-frames", "3").unwrap();
-                        body.set_attribute(
-                            "data-horizon-quads",
-                            &mesh.solid.len().div_ceil(4).to_string(),
-                        )
-                        .unwrap();
+                            .get_element_by_id("error")
+                            .unwrap()
+                            .set_text_content(Some(&format!(
+                                "Horizon could not draw the world. Reload to try again. {error}"
+                            )));
+                        events.exit();
                     }
                 }
-                Ok(false) => {}
-                Err(error) => panic!("Horizon render failed: {error}"),
             }
+            _ => {}
         }
-        Event::AboutToWait => fixture.window.request_redraw(),
-        _ => {}
-    });
-    Ok(())
+    }
+    fn about_to_wait(&mut self, _: &ActiveEventLoop) {
+        self.window.request_redraw();
+    }
 }
 
 fn js_error(error: impl std::fmt::Display) -> JsValue {

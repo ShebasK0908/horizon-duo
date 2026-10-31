@@ -38,11 +38,12 @@ use std::{
 };
 use wasm_bindgen::{JsCast, prelude::*};
 use winit::{
-    event::{DeviceEvent, ElementState, Event, MouseButton, WindowEvent},
-    event_loop::EventLoop,
+    application::ApplicationHandler,
+    event::{DeviceEvent, DeviceId, ElementState, MouseButton, WindowEvent},
+    event_loop::ActiveEventLoop,
     keyboard::{KeyCode, PhysicalKey},
-    platform::web::{EventLoopExtWebSys, WindowExtWebSys},
-    window::Window,
+    platform::web::WindowExtWebSys,
+    window::{Window, WindowId},
 };
 
 struct Peer {
@@ -50,7 +51,7 @@ struct Peer {
     current: PosRot,
     interpolation: SteppedInterpolation,
 }
-struct BrowserClient {
+pub(crate) struct BrowserClient {
     renderer: Renderer,
     window: Arc<Window>,
     resources: WorldResources,
@@ -68,6 +69,8 @@ struct BrowserClient {
     teleported: bool,
     player: Option<PlayerMotion>,
     keys: HashSet<KeyCode>,
+    key_presses: HashSet<KeyCode>,
+    input: crate::browser_input::BrowserInput,
     position_sender: PositionSender,
     abilities: Option<play::PlayerAbilities>,
     game_type: i32,
@@ -84,7 +87,6 @@ struct BrowserClient {
     timer: horizon_client_physics::timer::Timer,
 }
 #[wasm_bindgen]
-#[allow(deprecated)]
 pub async fn connect_world(
     bytes: Vec<u8>,
     bridge: String,
@@ -95,219 +97,215 @@ pub async fn connect_world(
     let _ = console_log::init_with_level(log::Level::Info);
     let resources = WorldResources::new(ImportedResources::from_zip(bytes).map_err(js_error)?)
         .map_err(js_error)?;
-    let events = EventLoop::new().map_err(js_error)?;
-    let window = Arc::new(
-        events
-            .create_window(
-                Window::default_attributes()
-                    .with_title("Horizon")
-                    .with_inner_size(winit::dpi::PhysicalSize::new(960, 640)),
-            )
-            .map_err(js_error)?,
-    );
-    let document = web_sys::window().unwrap().document().unwrap();
-    let canvas = window
-        .canvas()
-        .ok_or_else(|| js_error("No browser canvas"))?;
-    canvas.set_id("horizon-canvas");
-    canvas.set_width(960);
-    canvas.set_height(640);
-    document
-        .get_element_by_id("viewport")
-        .unwrap()
-        .append_child(&canvas)?;
-    let _ = window.request_inner_size(winit::dpi::PhysicalSize::new(960, 640));
-    let render = &resources.imported.render;
-    let select = document.get_element_by_id("block").unwrap();
-    if let Some(items) = resources.builtin.get("minecraft:item") {
-        let mut names: Vec<_> = (0..items.names.len())
-            .filter_map(|id| items.name(id as i32))
-            .filter(|name| {
-                resources
-                    .imported
-                    .assets
-                    .registry
-                    .default_state(name)
-                    .is_some()
-            })
-            .collect();
-        names.sort_unstable();
-        for name in names {
-            let option = document.create_element("option")?;
-            option.set_attribute("value", name)?;
-            option.set_text_content(Some(name.strip_prefix("minecraft:").unwrap_or(name)));
-            select.append_child(&option)?;
+    crate::application::start(crate::application::Startup::World {
+        resources: Box::new(resources),
+        bridge,
+        world_id,
+        name,
+    })
+}
+impl BrowserClient {
+    pub(crate) async fn new(
+        window: Arc<Window>,
+        resources: WorldResources,
+        bridge: String,
+        world_id: String,
+        name: String,
+    ) -> std::result::Result<Self, JsValue> {
+        let document = web_sys::window().unwrap().document().unwrap();
+        let render = &resources.imported.render;
+        let select = document.get_element_by_id("block").unwrap();
+        if let Some(items) = resources.builtin.get("minecraft:item") {
+            let mut names: Vec<_> = (0..items.names.len())
+                .filter_map(|id| items.name(id as i32))
+                .filter(|name| {
+                    resources
+                        .imported
+                        .assets
+                        .registry
+                        .default_state(name)
+                        .is_some()
+                })
+                .collect();
+            names.sort_unstable();
+            for name in names {
+                let option = document.create_element("option")?;
+                option.set_attribute("value", name)?;
+                option.set_text_content(Some(name.strip_prefix("minecraft:").unwrap_or(name)));
+                select.append_child(&option)?;
+            }
+            select
+                .clone()
+                .dyn_into::<web_sys::HtmlSelectElement>()?
+                .set_value("minecraft:stone");
         }
-        select
-            .clone()
-            .dyn_into::<web_sys::HtmlSelectElement>()?
-            .set_value("minecraft:stone");
-    }
-    for id in ["materials", "controls", "crosshair"] {
+        let white = [255u8; 4];
+        let faces = panorama::Faces {
+            size: 1,
+            pixels: [70, 100, 140, 255].repeat(6),
+        };
+        let renderer = Renderer::new(
+            window.clone(),
+            false,
+            &render.pixels,
+            render.sprite_size,
+            render.sprite_minimum_size,
+            render.texture_layers,
+            &render.sprite_mips,
+            &render.animations,
+            (
+                &resources.player_skin.2,
+                resources.player_skin.0,
+                resources.player_skin.1,
+            ),
+            (&white, 1, 1),
+            (&white, 1, 1),
+            (&white, 1),
+            &faces,
+            None,
+            None,
+            GraphicsApi::Auto,
+        )
+        .await
+        .map_err(js_error)?;
+        let environment =
+            Environment::load_dimension_from(&resources.imported.source, "overworld", true)
+                .map_err(js_error)?;
+        let air = resources
+            .imported
+            .assets
+            .registry
+            .default_state("minecraft:air")
+            .ok_or_else(|| js_error("No air state"))?;
+        let connection = ClientConnection::connect(&bridge)?;
+        let (session, start) =
+            ClientSession::begin(world_id, 25565, name, resources.identity).map_err(js_error)?;
+        let mut client = BrowserClient {
+            renderer,
+            window,
+            resources,
+            world: World::new(air, 0),
+            session,
+            connection,
+            registries: Dynamic::default(),
+            format: ChunkFormat::default(),
+            zoom: BiomeZoom::new(0),
+            environment,
+            camera: DVec3::ZERO,
+            yaw: 0.,
+            pitch: 0.,
+            loaded: false,
+            teleported: false,
+            player: None,
+            keys: HashSet::new(),
+            key_presses: HashSet::new(),
+            input: crate::browser_input::BrowserInput::new()?,
+            position_sender: PositionSender::default(),
+            abilities: None,
+            game_type: 0,
+            entity_id: 0,
+            dirty: VecDeque::new(),
+            pending: HashSet::new(),
+            frames: 0,
+            sections: 0,
+            peers: HashMap::new(),
+            sequence: 0,
+            pending_attributes: HashMap::new(),
+            observed_blocks: VecDeque::new(),
+            clock_start: horizon_client_render::time::Instant::now(),
+            timer: horizon_client_physics::timer::Timer::new(20., 0),
+        };
+        for event in start {
+            client.handle(event).map_err(js_error)?;
+        }
+        for id in ["materials", "controls", "crosshair", "touch-controls"] {
+            document
+                .get_element_by_id(id)
+                .unwrap()
+                .remove_attribute("hidden")?;
+        }
         document
-            .get_element_by_id(id)
+            .body()
             .unwrap()
-            .remove_attribute("hidden")?;
+            .set_attribute("data-horizon-ready", "true")?;
+        Ok(client)
     }
-    let white = [255u8; 4];
-    let faces = panorama::Faces {
-        size: 1,
-        pixels: [70, 100, 140, 255].repeat(6),
-    };
-    let renderer = Renderer::new(
-        window.clone(),
-        false,
-        &render.pixels,
-        render.sprite_size,
-        render.sprite_minimum_size,
-        render.texture_layers,
-        &render.sprite_mips,
-        &render.animations,
-        (
-            &resources.player_skin.2,
-            resources.player_skin.0,
-            resources.player_skin.1,
-        ),
-        (&white, 1, 1),
-        (&white, 1, 1),
-        (&white, 1),
-        &faces,
-        None,
-        None,
-        GraphicsApi::Auto,
-    )
-    .await
-    .map_err(js_error)?;
-    let environment =
-        Environment::load_dimension_from(&resources.imported.source, "overworld", true)
-            .map_err(js_error)?;
-    let air = resources
-        .imported
-        .assets
-        .registry
-        .default_state("minecraft:air")
-        .ok_or_else(|| js_error("No air state"))?;
-    let connection = ClientConnection::connect(&bridge)?;
-    let (session, start) =
-        ClientSession::begin(world_id, 25565, name, resources.identity).map_err(js_error)?;
-    let mut client = BrowserClient {
-        renderer,
-        window,
-        resources,
-        world: World::new(air, 0),
-        session,
-        connection,
-        registries: Dynamic::default(),
-        format: ChunkFormat::default(),
-        zoom: BiomeZoom::new(0),
-        environment,
-        camera: DVec3::ZERO,
-        yaw: 0.,
-        pitch: 0.,
-        loaded: false,
-        teleported: false,
-        player: None,
-        keys: HashSet::new(),
-        position_sender: PositionSender::default(),
-        abilities: None,
-        game_type: 0,
-        entity_id: 0,
-        dirty: VecDeque::new(),
-        pending: HashSet::new(),
-        frames: 0,
-        sections: 0,
-        peers: HashMap::new(),
-        sequence: 0,
-        pending_attributes: HashMap::new(),
-        observed_blocks: VecDeque::new(),
-        clock_start: horizon_client_render::time::Instant::now(),
-        timer: horizon_client_physics::timer::Timer::new(20., 0),
-    };
-    for event in start {
-        client.handle(event).map_err(js_error)?;
-    }
-    events.spawn(move |event, events| match event {
-        Event::WindowEvent {
-            event: WindowEvent::CloseRequested,
-            ..
-        } => events.exit(),
-        Event::WindowEvent {
-            event: WindowEvent::Resized(size),
-            ..
-        } => client.renderer.resize(size.width, size.height),
-        Event::WindowEvent {
-            event: WindowEvent::KeyboardInput { event, .. },
-            ..
-        } => {
-            if let PhysicalKey::Code(key) = event.physical_key {
-                if event.state == ElementState::Pressed {
-                    client.keys.insert(key);
-                    if !event.repeat
-                        && matches!(key, KeyCode::KeyF | KeyCode::KeyR)
-                        && let Err(error) = client.interact(key == KeyCode::KeyF)
+}
+impl ApplicationHandler<crate::application::Ready> for BrowserClient {
+    fn resumed(&mut self, _: &ActiveEventLoop) {}
+    fn window_event(&mut self, events: &ActiveEventLoop, _: WindowId, event: WindowEvent) {
+        match event {
+            WindowEvent::CloseRequested => events.exit(),
+            WindowEvent::Resized(size) => self.renderer.resize(size.width, size.height),
+            WindowEvent::KeyboardInput { event, .. } => {
+                if let PhysicalKey::Code(key) = event.physical_key {
+                    if event.state == ElementState::Pressed {
+                        self.keys.insert(key);
+                        if !event.repeat {
+                            self.key_presses.insert(key);
+                            if matches!(key, KeyCode::KeyF | KeyCode::KeyR)
+                                && let Err(error) = self.interact(key == KeyCode::KeyF)
+                            {
+                                show_error(&error.to_string());
+                            }
+                        }
+                    } else {
+                        self.keys.remove(&key);
+                    }
+                }
+            }
+            WindowEvent::Focused(false) => self.reset_input(),
+            WindowEvent::MouseInput {
+                state: ElementState::Pressed,
+                button,
+                ..
+            } => {
+                if button == MouseButton::Right {
+                    if let Err(error) = self.interact(true) {
+                        show_error(&error.to_string());
+                    }
+                } else if button == MouseButton::Left {
+                    if web_sys::window()
+                        .unwrap()
+                        .document()
+                        .unwrap()
+                        .pointer_lock_element()
+                        .is_some()
                     {
-                        show_error(&error.to_string());
+                        if let Err(error) = self.interact(false) {
+                            show_error(&error.to_string());
+                        }
+                    } else {
+                        self.request_pointer_lock();
                     }
-                } else {
-                    client.keys.remove(&key);
                 }
             }
-        }
-        Event::WindowEvent {
-            event: WindowEvent::Focused(false),
-            ..
-        } => {
-            client.keys.clear();
-        }
-        Event::WindowEvent {
-            event:
-                WindowEvent::MouseInput {
-                    state: ElementState::Pressed,
-                    button,
-                    ..
-                },
-            ..
-        } => {
-            if button == MouseButton::Right {
-                if let Err(error) = client.interact(true) {
+            WindowEvent::RedrawRequested => {
+                if let Err(error) = self.draw() {
                     show_error(&error.to_string());
-                }
-            } else if button == MouseButton::Left {
-                if web_sys::window()
-                    .unwrap()
-                    .document()
-                    .unwrap()
-                    .pointer_lock_element()
-                    .is_some()
-                {
-                    if let Err(error) = client.interact(false) {
-                        show_error(&error.to_string());
-                    }
-                } else {
-                    client.request_pointer_lock();
+                    self.reset_input();
+                    events.exit();
                 }
             }
+            _ => {}
         }
-        Event::DeviceEvent {
-            event: DeviceEvent::MouseMotion { delta },
-            ..
-        } => {
-            client.yaw += delta.0 as f32 * 0.15;
-            client.pitch = (client.pitch + delta.1 as f32 * 0.15).clamp(-90., 90.);
+    }
+    fn device_event(&mut self, _: &ActiveEventLoop, _: DeviceId, event: DeviceEvent) {
+        if let DeviceEvent::MouseMotion { delta } = event
+            && web_sys::window()
+                .unwrap()
+                .document()
+                .unwrap()
+                .pointer_lock_element()
+                .is_some()
+        {
+            self.yaw += delta.0 as f32 * 0.15;
+            self.pitch = (self.pitch + delta.1 as f32 * 0.15).clamp(-90., 90.);
         }
-        Event::WindowEvent {
-            event: WindowEvent::RedrawRequested,
-            ..
-        } => {
-            if let Err(error) = client.draw() {
-                show_error(&error.to_string());
-                events.exit();
-            }
-        }
-        Event::AboutToWait => client.window.request_redraw(),
-        _ => {}
-    });
-    Ok(())
+    }
+    fn about_to_wait(&mut self, _: &ActiveEventLoop) {
+        self.window.request_redraw();
+    }
 }
 fn js_error(error: impl std::fmt::Display) -> JsValue {
     JsValue::from_str(&error.to_string())
@@ -324,6 +322,11 @@ fn show_error(error: &str) {
     }
 }
 impl BrowserClient {
+    fn reset_input(&mut self) {
+        self.keys.clear();
+        self.key_presses.clear();
+        self.input.clear();
+    }
     fn request_pointer_lock(&self) {
         let Some(canvas) = self.window.canvas() else {
             return;
@@ -613,6 +616,7 @@ impl BrowserClient {
         Ok(())
     }
     fn dimension(&mut self, spawn: &play::SpawnInfo) -> Result<()> {
+        self.reset_input();
         self.game_type = spawn.game_type;
         self.player = None;
         self.pending_attributes.clear();
@@ -693,17 +697,28 @@ impl BrowserClient {
         if self.keys.contains(&KeyCode::ArrowDown) {
             self.pitch = (self.pitch + 4.).min(90.);
         }
-        let held = |key| self.keys.contains(&key);
+        use crate::input::TouchAction;
+        let mut touch = self.input.touch.borrow_mut();
+        let touch_jump = touch.jump();
+        let held = |key, action| {
+            self.keys.contains(&key) || self.key_presses.contains(&key) || touch.held(action)
+        };
+
         let keys = Keys {
-            forward: held(KeyCode::KeyW),
-            backward: held(KeyCode::KeyS),
-            left: held(KeyCode::KeyA),
-            right: held(KeyCode::KeyD),
-            jump: held(KeyCode::Space),
-            shift: held(KeyCode::ShiftLeft),
-            sprint: held(KeyCode::ControlLeft),
+            forward: held(KeyCode::KeyW, TouchAction::Forward),
+            backward: held(KeyCode::KeyS, TouchAction::Backward),
+            left: held(KeyCode::KeyA, TouchAction::Left),
+            right: held(KeyCode::KeyD, TouchAction::Right),
+            jump: self.keys.contains(&KeyCode::Space)
+                || self.key_presses.contains(&KeyCode::Space)
+                || touch_jump,
+            shift: held(KeyCode::ShiftLeft, TouchAction::Descend),
+            sprint: self.keys.contains(&KeyCode::ControlLeft),
             analog: None,
         };
+        touch.finish_tick();
+        drop(touch);
+        self.key_presses.clear();
         let input = u8::from(keys.forward)
             | (u8::from(keys.backward) << 1)
             | (u8::from(keys.left) << 2)
@@ -907,6 +922,17 @@ impl BrowserClient {
         }
     }
     fn draw(&mut self) -> Result<()> {
+        if std::mem::take(&mut *self.input.reset.borrow_mut()) {
+            self.reset_input();
+        }
+        let look = self.input.touch.borrow_mut().take_look();
+        self.yaw += look[0] * 0.25;
+        self.pitch = (self.pitch + look[1] * 0.25).clamp(-90., 90.);
+        let actions: Vec<_> = self.input.touch.borrow_mut().actions.drain(..).collect();
+        for action in actions {
+            self.interact(action == crate::input::TouchAction::Place)?;
+        }
+
         for _ in 0..16 {
             let Some(bytes) = self.connection.receive()? else {
                 break;
@@ -1010,6 +1036,21 @@ impl BrowserClient {
             .unwrap()
             .body()
             .unwrap();
+        body.set_attribute(
+            "data-horizon-view",
+            &format!("{:.3},{:.3}", self.yaw, self.pitch),
+        )
+        .map_err(|e| format!("{e:?}"))?;
+        body.set_attribute(
+            "data-horizon-flying",
+            &self.player.as_ref().is_some_and(|p| p.flying).to_string(),
+        )
+        .map_err(|e| format!("{e:?}"))?;
+        body.set_attribute(
+            "data-horizon-viewport",
+            &format!("{},{}", size.width, size.height),
+        )
+        .map_err(|e| format!("{e:?}"))?;
         body.set_attribute("data-horizon-mesh-pending", &self.pending.len().to_string())
             .map_err(|e| format!("{e:?}"))?;
         body.set_attribute(
