@@ -495,3 +495,17 @@ atomic browser persistence. The choice and implementation are pending. A scope
 question asks whether to build offline worlds now or defer that follow-on while
 focusing on multiplayer and X. No answer or deferral is assumed. The original
 create/edit/save/reopen acceptance item stays in this ledger.
+
+## Isolated single-origin private staging
+
+A separate `xproof` demo is staged privately on 8493, using a new disposable
+native world and a seven-file browser package. HTTP and WebSocket traffic share
+one TLS origin. The two-client Chrome check passed movement, placement,
+reconnect and removal. Wrong origins/worlds receive 403; the correct WebSocket
+upgrade receives 101. `/resources.zip` is absent and returns 404.
+
+All existing Serve and Funnel routes and the original private world are
+unchanged. Port 8493 is not public. [The staging report](../.audit/public-candidate-preparation.md)
+records package hashes, commands, process ownership and remaining public/X
+validation. It is preparation for an approved public endpoint, not a public
+deployment or X execution claim.

@@ -1,0 +1,45 @@
+{
+  "public": false,
+  "privateOrigin": "https://tests-mac-studio.tail935cc1.ts.net:8493",
+  "world": "xproof",
+  "sameOriginWebSocket": true,
+  "unrelatedServeRoutesUnchanged": true,
+  "resourceZipStatus": 404,
+  "manifest": [
+    {
+      "file": "index.html",
+      "bytes": 5647,
+      "sha256": "6bf71174a4de607a0b5bc4866c895d6e720ec26a36b16a1c8bf11b408492ec5a"
+    },
+    {
+      "file": "pkg/horizon_web.d.ts",
+      "bytes": 6851,
+      "sha256": "ccc389f8102c85d2846bd87cc7aa5e1bcea5ac1e5e725821d9cf5a51e7315636"
+    },
+    {
+      "file": "pkg/horizon_web.js",
+      "bytes": 126799,
+      "sha256": "fb986a1c0d74ece7cd358bd9ffdbc25f746d13649866b79aa2595b6c2e7a7df7"
+    },
+    {
+      "file": "pkg/horizon_web_bg.wasm",
+      "bytes": 21512726,
+      "sha256": "2ab67e89cc87b1eef188fe1e9d57a5b311fb40f721366c3e6c9d92a7de1fb938"
+    },
+    {
+      "file": "pkg/horizon_web_bg.wasm.d.ts",
+      "bytes": 5626,
+      "sha256": "905e69e818416c42151d07d8a7f808c1339d6e6be12108a3b41b0cea260da166"
+    },
+    {
+      "file": "player-card.png",
+      "bytes": 132524,
+      "sha256": "fb3ebdd5387221beefdd6c452de793c39691b30c31f84ac32cbda5082400572c"
+    },
+    {
+      "file": "share.html",
+      "bytes": 1854,
+      "sha256": "84fdd0565201d26418ece88d1b9d4c5ebb4001687cbe9c8de3de621a977c9c8a"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "path": "/world/xproof",
+    "origin": "https://tests-mac-studio.tail935cc1.ts.net:8493",
+    "status": 101
+  },
+  {
+    "path": "/world/xproof",
+    "origin": "https://wrong-origin.invalid",
+    "status": 403
+  },
+  {
+    "path": "/world/wrong",
+    "origin": "https://tests-mac-studio.tail935cc1.ts.net:8493",
+    "status": 403
+  }
+]

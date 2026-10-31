@@ -1,0 +1,31 @@
+{
+  "private": true,
+  "unrelatedRoutesUnchanged": true,
+  "http": [
+    {
+      "file": "share.html",
+      "status": 200,
+      "bytes": 1854
+    },
+    {
+      "file": "pkg/horizon_web.js",
+      "status": 200,
+      "bytes": 126799
+    },
+    {
+      "file": "pkg/horizon_web_bg.wasm",
+      "status": 200,
+      "bytes": 21512726
+    },
+    {
+      "file": "player-card.png",
+      "status": 200,
+      "bytes": 132524
+    },
+    {
+      "file": "resources.zip",
+      "status": 404,
+      "bytes": 0
+    }
+  ]
+}

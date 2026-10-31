@@ -1,0 +1,335 @@
+{
+  "passed": true,
+  "base": "https://tests-mac-studio.tail935cc1.ts.net:8493/?world=xproof",
+  "movement": {
+    "before": "-7.5000,-60.0000,8.5000",
+    "after": "-7.5000,-60.0000,11.6942",
+    "observer": {
+      "position": "0.5000,-60.0000,0.5000",
+      "peers": [
+        [
+          38,
+          [
+            -7.5,
+            -60,
+            11.694091796875
+          ]
+        ]
+      ],
+      "vertices": 288,
+      "target": null,
+      "observed": [],
+      "error": ""
+    }
+  },
+  "placement": {
+    "pos": [
+      0,
+      -60,
+      2
+    ],
+    "a": {
+      "position": "0.5000,-60.0000,0.5000",
+      "peers": [
+        [
+          38,
+          [
+            -7.5,
+            -60,
+            11.949951171875
+          ]
+        ]
+      ],
+      "vertices": 288,
+      "target": [
+        [
+          0,
+          -60,
+          2
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        3830
+      ],
+      "observed": [
+        [
+          [
+            0,
+            -61,
+            2
+          ],
+          9
+        ],
+        [
+          [
+            0,
+            -60,
+            2
+          ],
+          3830
+        ]
+      ],
+      "error": ""
+    },
+    "b": {
+      "position": "-7.5000,-60.0000,11.9500",
+      "peers": [
+        [
+          2,
+          [
+            0.5,
+            -60,
+            0.5
+          ]
+        ]
+      ],
+      "vertices": 288,
+      "target": null,
+      "observed": [
+        [
+          [
+            0,
+            -60,
+            2
+          ],
+          3830
+        ]
+      ],
+      "error": ""
+    }
+  },
+  "reconnect": {
+    "position": "0.5000,-60.0000,0.5000",
+    "peers": [],
+    "vertices": 0,
+    "target": [
+      [
+        0,
+        -60,
+        2
+      ],
+      [
+        0,
+        0,
+        -1
+      ],
+      3830
+    ],
+    "observed": [],
+    "error": ""
+  },
+  "breaking": {
+    "a": {
+      "position": "0.5000,-60.0000,0.5000",
+      "peers": [
+        [
+          38,
+          [
+            -7.5,
+            -60,
+            11.94998993011406
+          ]
+        ]
+      ],
+      "vertices": 288,
+      "target": [
+        [
+          0,
+          -61,
+          2
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        9
+      ],
+      "observed": [
+        [
+          [
+            0,
+            -60,
+            2
+          ],
+          0
+        ]
+      ],
+      "error": ""
+    },
+    "b": {
+      "position": "-7.5000,-60.0000,11.9500",
+      "peers": [
+        [
+          87,
+          [
+            0.5,
+            -60,
+            0.5
+          ]
+        ]
+      ],
+      "vertices": 288,
+      "target": null,
+      "observed": [
+        [
+          [
+            0,
+            -60,
+            2
+          ],
+          3830
+        ],
+        [
+          [
+            0,
+            -60,
+            2
+          ],
+          0
+        ]
+      ],
+      "error": ""
+    }
+  },
+  "logs": [
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer:  (BrowserWebGpu, Other)"
+    },
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)"
+    },
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer: device ready; configuring the surface (1000x630 Bgra8Unorm, Fifo)"
+    },
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer: HDR output not offered by this display"
+    },
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer: creating the pipelines"
+    },
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)"
+    },
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer: acquiring the first frame"
+    },
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer: submitting the first frame"
+    },
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer: presenting the first frame"
+    },
+    {
+      "name": "XStageBeta",
+      "type": "info",
+      "text": "Horizon renderer:  (BrowserWebGpu, Other)"
+    },
+    {
+      "name": "XStageBeta",
+      "type": "info",
+      "text": "Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)"
+    },
+    {
+      "name": "XStageBeta",
+      "type": "info",
+      "text": "Horizon renderer: device ready; configuring the surface (1000x630 Bgra8Unorm, Fifo)"
+    },
+    {
+      "name": "XStageBeta",
+      "type": "info",
+      "text": "Horizon renderer: HDR output not offered by this display"
+    },
+    {
+      "name": "XStageBeta",
+      "type": "info",
+      "text": "Horizon renderer: creating the pipelines"
+    },
+    {
+      "name": "XStageBeta",
+      "type": "info",
+      "text": "Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)"
+    },
+    {
+      "name": "XStageBeta",
+      "type": "info",
+      "text": "Horizon renderer: acquiring the first frame"
+    },
+    {
+      "name": "XStageBeta",
+      "type": "info",
+      "text": "Horizon renderer: submitting the first frame"
+    },
+    {
+      "name": "XStageBeta",
+      "type": "info",
+      "text": "Horizon renderer: presenting the first frame"
+    },
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer:  (BrowserWebGpu, Other)"
+    },
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)"
+    },
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer: device ready; configuring the surface (1000x630 Bgra8Unorm, Fifo)"
+    },
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer: HDR output not offered by this display"
+    },
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer: creating the pipelines"
+    },
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)"
+    },
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer: acquiring the first frame"
+    },
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer: submitting the first frame"
+    },
+    {
+      "name": "XStageAlpha",
+      "type": "info",
+      "text": "Horizon renderer: presenting the first frame"
+    }
+  ]
+}
