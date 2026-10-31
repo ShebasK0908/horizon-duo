@@ -1,0 +1,20 @@
+   Compiling horizon-protocol v0.1.0 (/Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon-web/crates/horizon-protocol)
+   Compiling horizon-command v0.1.0 (/Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon-web/crates/horizon-command)
+   Compiling horizon-server-files v0.1.0 (/Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon-web/crates/horizon-server-files)
+   Compiling horizon-client-render v0.1.0 (/Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon-web/crates/horizon-client-render)
+   Compiling horizon-client-physics v0.1.0 (/Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon-web/crates/horizon-client-physics)
+   Compiling horizon-client v0.1.0 (/Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon-web/crates/horizon-client)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 23.17s
+     Running unittests src/lib.rs (target/debug/deps/horizon_client-0e75e203930ca7a9)
+
+running 8 tests
+test clock::tests::pause_restores_the_residual ... ok
+test clock::tests::timer_carries_fractions_and_caps_nothing_itself ... ok
+test clock::tests::frozen_step_runs_exactly_the_requested_ticks ... ok
+test clock::tests::a_servers_tick_rate_only_slows_its_client_down ... ok
+test clock::tests::the_camera_keeps_interpolating_in_a_frozen_level ... ok
+test clock::tests::only_a_started_or_stopped_step_is_broadcast ... ok
+test clock::tests::a_frame_stops_ticking_after_a_ticks_length ... ok
+test clock::tests::dropped_ticks_warn_once_a_second_behind_and_not_again_for_ten ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 824 filtered out; finished in 0.00s

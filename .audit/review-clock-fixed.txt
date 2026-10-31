@@ -1,0 +1,21 @@
+Owned server PID 56673
+BROWSER RevClockA info Horizon renderer:  (BrowserWebGpu, Other)
+BROWSER RevClockA info Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)
+BROWSER RevClockA info Horizon renderer: device ready; configuring the surface (960x640 Bgra8Unorm, Fifo)
+BROWSER RevClockA info Horizon renderer: HDR output not offered by this display
+BROWSER RevClockA info Horizon renderer: creating the pipelines
+BROWSER RevClockA info Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)
+BROWSER RevClockA info Horizon renderer: acquiring the first frame
+BROWSER RevClockA info Horizon renderer: submitting the first frame
+BROWSER RevClockA info Horizon renderer: presenting the first frame
+BROWSER RevClockB info Horizon renderer:  (BrowserWebGpu, Other)
+BROWSER RevClockB info Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)
+BROWSER RevClockB info Horizon renderer: device ready; configuring the surface (960x640 Bgra8Unorm, Fifo)
+BROWSER RevClockB info Horizon renderer: HDR output not offered by this display
+BROWSER RevClockB info Horizon renderer: creating the pipelines
+BROWSER RevClockB info Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)
+BROWSER RevClockB info Horizon renderer: acquiring the first frame
+BROWSER RevClockB info Horizon renderer: submitting the first frame
+BROWSER RevClockB info Horizon renderer: presenting the first frame
+FRAME_NORMAL {"elapsed":3516,"ticks":70,"before":{"position":"56.5000,-60.0000,0.5000","target":null,"peers":[[2,[0.5,-60,0.5]]],"observed":[],"error":""},"after":{"position":"56.5000,-60.0000,13.4478","target":null,"peers":[[2,[0.5,-60,0.5]]],"observed":[],"error":""},"observer":{"position":"0.5000,-60.0000,0.5000","target":[[0,-59,1],[0,0,-1],3830],"peers":[[101,[56.5,-60,13.44775390625]]],"observed":[],"error":""}}
+FRAME_CAP_250MS {"elapsed":3504,"ticks":72,"before":{"position":"56.5000,-60.0000,0.5000","target":null,"peers":[[2,[0.5,-60,0.5]]],"observed":[],"error":""},"after":{"position":"56.5000,-60.0000,12.8002","target":null,"peers":[[2,[0.5,-60,0.5]]],"observed":[],"error":""},"observer":{"position":"0.5000,-60.0000,0.5000","target":[[0,-59,1],[0,0,-1],3830],"peers":[[101,[56.5,-60,12.80029296875]]],"observed":[],"error":""}}

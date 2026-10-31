@@ -1,0 +1,360 @@
+{
+  "passed": true,
+  "base": "https://tests-mac-studio.tail935cc1.ts.net:8491/?world=webproof&bridge=wss%3A%2F%2Ftests-mac-studio.tail935cc1.ts.net%3A8492",
+  "movement": {
+    "before": "-7.5000,-60.0000,1.5000",
+    "after": "-7.5000,-60.0000,4.8120",
+    "observer": {
+      "position": "0.5000,-60.0000,0.5000",
+      "peers": [
+        [
+          706,
+          [
+            -7.5,
+            -60,
+            4.694091796875
+          ]
+        ]
+      ],
+      "vertices": 288,
+      "target": null,
+      "observed": [],
+      "error": ""
+    }
+  },
+  "placement": {
+    "pos": [
+      0,
+      -60,
+      2
+    ],
+    "a": {
+      "position": "0.5000,-60.0000,0.5000",
+      "peers": [
+        [
+          706,
+          [
+            -7.5,
+            -60,
+            4.949951171875
+          ]
+        ]
+      ],
+      "vertices": 288,
+      "target": [
+        [
+          0,
+          -60,
+          2
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        3830
+      ],
+      "observed": [
+        [
+          [
+            0,
+            -61,
+            2
+          ],
+          9
+        ],
+        [
+          [
+            0,
+            -60,
+            2
+          ],
+          3830
+        ],
+        [
+          [
+            0,
+            -60,
+            2
+          ],
+          3830
+        ]
+      ],
+      "error": ""
+    },
+    "b": {
+      "position": "-7.5000,-60.0000,4.9500",
+      "peers": [
+        [
+          623,
+          [
+            0.5,
+            -60,
+            0.5
+          ]
+        ]
+      ],
+      "vertices": 288,
+      "target": null,
+      "observed": [
+        [
+          [
+            0,
+            -60,
+            2
+          ],
+          3830
+        ]
+      ],
+      "error": ""
+    }
+  },
+  "reconnect": {
+    "position": "0.5000,-60.0000,0.5000",
+    "peers": [
+      [
+        706,
+        [
+          -7.5,
+          -60,
+          4.949989930114065
+        ]
+      ]
+    ],
+    "vertices": 288,
+    "target": [
+      [
+        0,
+        -60,
+        2
+      ],
+      [
+        0,
+        0,
+        -1
+      ],
+      3830
+    ],
+    "observed": [],
+    "error": ""
+  },
+  "breaking": {
+    "a": {
+      "position": "0.5000,-60.0000,0.5000",
+      "peers": [
+        [
+          706,
+          [
+            -7.5,
+            -60,
+            4.949989930114065
+          ]
+        ]
+      ],
+      "vertices": 288,
+      "target": [
+        [
+          0,
+          -61,
+          2
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        10
+      ],
+      "observed": [
+        [
+          [
+            0,
+            -60,
+            2
+          ],
+          0
+        ]
+      ],
+      "error": ""
+    },
+    "b": {
+      "position": "-7.5000,-60.0000,4.9500",
+      "peers": [
+        [
+          712,
+          [
+            0.5,
+            -60,
+            0.5
+          ]
+        ]
+      ],
+      "vertices": 288,
+      "target": null,
+      "observed": [
+        [
+          [
+            0,
+            -60,
+            2
+          ],
+          3830
+        ],
+        [
+          [
+            0,
+            -61,
+            2
+          ],
+          10
+        ],
+        [
+          [
+            0,
+            -60,
+            2
+          ],
+          0
+        ]
+      ],
+      "error": ""
+    }
+  },
+  "logs": [
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer:  (BrowserWebGpu, Other)"
+    },
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)"
+    },
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer: device ready; configuring the surface (960x640 Bgra8Unorm, Fifo)"
+    },
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer: HDR output not offered by this display"
+    },
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer: creating the pipelines"
+    },
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)"
+    },
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer: acquiring the first frame"
+    },
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer: submitting the first frame"
+    },
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer: presenting the first frame"
+    },
+    {
+      "name": "Verify12Beta",
+      "type": "info",
+      "text": "Horizon renderer:  (BrowserWebGpu, Other)"
+    },
+    {
+      "name": "Verify12Beta",
+      "type": "info",
+      "text": "Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)"
+    },
+    {
+      "name": "Verify12Beta",
+      "type": "info",
+      "text": "Horizon renderer: device ready; configuring the surface (960x640 Bgra8Unorm, Fifo)"
+    },
+    {
+      "name": "Verify12Beta",
+      "type": "info",
+      "text": "Horizon renderer: HDR output not offered by this display"
+    },
+    {
+      "name": "Verify12Beta",
+      "type": "info",
+      "text": "Horizon renderer: creating the pipelines"
+    },
+    {
+      "name": "Verify12Beta",
+      "type": "info",
+      "text": "Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)"
+    },
+    {
+      "name": "Verify12Beta",
+      "type": "info",
+      "text": "Horizon renderer: acquiring the first frame"
+    },
+    {
+      "name": "Verify12Beta",
+      "type": "info",
+      "text": "Horizon renderer: submitting the first frame"
+    },
+    {
+      "name": "Verify12Beta",
+      "type": "info",
+      "text": "Horizon renderer: presenting the first frame"
+    },
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer:  (BrowserWebGpu, Other)"
+    },
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)"
+    },
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer: device ready; configuring the surface (960x640 Bgra8Unorm, Fifo)"
+    },
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer: HDR output not offered by this display"
+    },
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer: creating the pipelines"
+    },
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)"
+    },
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer: acquiring the first frame"
+    },
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer: submitting the first frame"
+    },
+    {
+      "name": "Verify12Alpha",
+      "type": "info",
+      "text": "Horizon renderer: presenting the first frame"
+    }
+  ]
+}

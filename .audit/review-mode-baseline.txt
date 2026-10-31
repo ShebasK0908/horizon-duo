@@ -1,0 +1,23 @@
+Owned server PID 37317
+BROWSER RevModeA info Horizon renderer:  (BrowserWebGpu, Other)
+BROWSER RevModeA info Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)
+BROWSER RevModeA info Horizon renderer: device ready; configuring the surface (960x640 Bgra8Unorm, Fifo)
+BROWSER RevModeA info Horizon renderer: HDR output not offered by this display
+BROWSER RevModeA info Horizon renderer: creating the pipelines
+BROWSER RevModeA info Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)
+BROWSER RevModeA info Horizon renderer: acquiring the first frame
+BROWSER RevModeA info Horizon renderer: submitting the first frame
+BROWSER RevModeA info Horizon renderer: presenting the first frame
+BROWSER RevModeB info Horizon renderer:  (BrowserWebGpu, Other)
+BROWSER RevModeB info Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)
+BROWSER RevModeB info Horizon renderer: device ready; configuring the surface (960x640 Bgra8Unorm, Fifo)
+BROWSER RevModeB info Horizon renderer: HDR output not offered by this display
+BROWSER RevModeB info Horizon renderer: creating the pipelines
+BROWSER RevModeB info Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)
+BROWSER RevModeB info Horizon renderer: acquiring the first frame
+BROWSER RevModeB info Horizon renderer: submitting the first frame
+BROWSER RevModeB info Horizon renderer: presenting the first frame
+CREATIVE_WALL {"position":"8.5000,-60.0000,2.7000","target":[[8,-59,3],[0,0,-1],1],"peers":[[2,[0.5,-60,0.5]]],"observed":[[[6,-60,3],1],[[6,-59,3],1],[[6,-58,3],1],[[6,-57,3],1],[[6,-56,3],1],[[7,-60,3],1],[[7,-59,3],1],[[7,-58,3],1],[[7,-57,3],1],[[7,-56,3],1],[[8,-60,3],1],[[8,-59,3],1],[[8,-58,3],1],[[8,-57,3],1],[[8,-56,3],1],[[9,-60,3],1],[[9,-59,3],1],[[9,-58,3],1],[[9,-57,3],1],[[9,-56,3],1],[[10,-60,3],1],[[10,-59,3],1],[[10,-58,3],1],[[10,-57,3],1],[[10,-56,3],1]],"error":""}
+SPECTATOR_WALL {"position":"8.5000,-60.0000,2.7000","target":[[8,-59,3],[0,0,-1],1],"peers":[[2,[0.5,-60,0.5]]],"observed":[[[6,-60,3],1],[[6,-59,3],1],[[6,-58,3],1],[[6,-57,3],1],[[6,-56,3],1],[[7,-60,3],1],[[7,-59,3],1],[[7,-58,3],1],[[7,-57,3],1],[[7,-56,3],1],[[8,-60,3],1],[[8,-59,3],1],[[8,-58,3],1],[[8,-57,3],1],[[8,-56,3],1],[[9,-60,3],1],[[9,-59,3],1],[[9,-58,3],1],[[9,-57,3],1],[[9,-56,3],1],[[10,-60,3],1],[[10,-59,3],1],[[10,-58,3],1],[[10,-57,3],1],[[10,-56,3],1]],"error":""}
+MODE_CONSOLE [16:46:31] [Server thread/INFO]: System chat: Set RevModeB's game mode to Spectator Mode
+[16:46:35] [Server thread/INFO]: System chat: RevModeB has the following entity data: 3

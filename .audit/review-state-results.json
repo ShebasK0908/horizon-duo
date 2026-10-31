@@ -1,0 +1,159 @@
+{
+  "R1": {
+    "passed": true,
+    "speed_0_5_travel": 63.672799999999995,
+    "speed_0_1_travel": 12.9478
+  },
+  "R2": {
+    "passed": true,
+    "creative_position": "8.5000,-60.0000,2.7000",
+    "spectator_position": "8.5000,-60.0000,20.1834"
+  },
+  "R3": {
+    "passed": true,
+    "same_selection_after_clear": [
+      [
+        0,
+        -59,
+        1
+      ],
+      [
+        0,
+        0,
+        -1
+      ],
+      3830
+    ]
+  },
+  "R4": {
+    "passed": true,
+    "normal": {
+      "elapsed": 3516,
+      "ticks": 70,
+      "before": {
+        "position": "56.5000,-60.0000,0.5000",
+        "target": null,
+        "peers": [
+          [
+            2,
+            [
+              0.5,
+              -60,
+              0.5
+            ]
+          ]
+        ],
+        "observed": [],
+        "error": ""
+      },
+      "after": {
+        "position": "56.5000,-60.0000,13.4478",
+        "target": null,
+        "peers": [
+          [
+            2,
+            [
+              0.5,
+              -60,
+              0.5
+            ]
+          ]
+        ],
+        "observed": [],
+        "error": ""
+      },
+      "observer": {
+        "position": "0.5000,-60.0000,0.5000",
+        "target": [
+          [
+            0,
+            -59,
+            1
+          ],
+          [
+            0,
+            0,
+            -1
+          ],
+          3830
+        ],
+        "peers": [
+          [
+            101,
+            [
+              56.5,
+              -60,
+              13.44775390625
+            ]
+          ]
+        ],
+        "observed": [],
+        "error": ""
+      }
+    },
+    "delayed": {
+      "elapsed": 3504,
+      "ticks": 72,
+      "before": {
+        "position": "56.5000,-60.0000,0.5000",
+        "target": null,
+        "peers": [
+          [
+            2,
+            [
+              0.5,
+              -60,
+              0.5
+            ]
+          ]
+        ],
+        "observed": [],
+        "error": ""
+      },
+      "after": {
+        "position": "56.5000,-60.0000,12.8002",
+        "target": null,
+        "peers": [
+          [
+            2,
+            [
+              0.5,
+              -60,
+              0.5
+            ]
+          ]
+        ],
+        "observed": [],
+        "error": ""
+      },
+      "observer": {
+        "position": "0.5000,-60.0000,0.5000",
+        "target": [
+          [
+            0,
+            -59,
+            1
+          ],
+          [
+            0,
+            0,
+            -1
+          ],
+          3830
+        ],
+        "peers": [
+          [
+            101,
+            [
+              56.5,
+              -60,
+              12.80029296875
+            ]
+          ]
+        ],
+        "observed": [],
+        "error": ""
+      }
+    }
+  }
+}

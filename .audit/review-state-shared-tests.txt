@@ -1,0 +1,46 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.37s
+     Running unittests src/lib.rs (target/debug/deps/horizon_client_physics-3b8ebd958d026efc)
+
+running 40 tests
+test auto_jump::tests::sneaking_or_standing_still_cannot_auto_jump ... ok
+test landing::tests::fall_sounds_map_to_player_events ... ok
+test motion::environment::fire_ignition_tests::fire_hurts_before_twenty_tick_ignition_and_scales_duration ... ok
+test health::tests::hurt_sounds_follow_damage_effects ... ok
+test motion::tests::a_clients_own_fall_does_not_hurt_it ... ok
+test motion::tests::a_server_copy_takes_its_new_scale_box_the_next_tick ... ok
+test motion::tests::a_server_copy_of_a_riptide_spin_counts_down_and_stands_again ... ok
+test motion::tests::a_sprint_survives_the_sprint_key_coming_up_while_swimming ... ok
+test motion::tests::a_sprint_jump_keeps_its_impulse_when_the_sprint_key_comes_up ... ok
+test motion::tests::a_riptide_spin_lies_flat_and_ends_on_the_first_entity_it_touches ... ok
+test motion::tests::a_landing_glide_lasts_a_tick_so_a_jump_keeps_its_speed ... ok
+test motion::tests::a_glide_that_is_not_diving_keeps_the_fall_distance_at_one ... ok
+test health::tests::an_arrow_kills_a_player_at_one_health ... ok
+test motion::tests::a_player_lands_on_a_block_a_piston_is_moving ... ok
+test motion::tests::a_passenger_stops_swimming_and_stands ... ok
+test health::tests::a_hit_in_the_hurt_cooldown_knocks_nobody_back ... ok
+test motion::tests::an_item_in_use_stops_a_sprint_from_starting_unless_it_allows_sprinting ... ok
+test motion::tests::footsteps_follow_the_walked_distance_not_the_tick ... ok
+test motion::tests::resident_mixed_fluids_use_lava_height_for_ground_jumps ... ok
+test motion::tests::resident_fire_precedes_first_tick_lava_and_water_extinguishing ... ok
+test motion::tests::resident_bubble_columns_and_nautilus_preserve_their_air_rules ... ok
+test motion::tests::resident_spectator_flight_ignores_solid_and_climbable_blocks ... ok
+test motion::tests::resident_swimming_uses_previous_eyes_and_requires_water_at_the_feet ... ok
+test motion::tests::resident_water_landing_cancels_a_preset_fall ... ok
+test motion::tests::server_travel_moves_only_the_velocity ... ok
+test motion::tests::slow_falling_clears_the_fall_distance_so_landing_does_not_hurt ... ok
+test motion::tests::spectator_scroll_speed_controls_horizontal_and_vertical_flight ... ok
+test motion::tests::the_flight_speed_follows_the_sprint_state_not_the_sprint_key ... ok
+test network_attributes::tests::modifiers_replace_by_id_and_instances_are_created_once ... ok
+test sprint::tests::sprint_survives_releasing_the_key_through_a_jump ... ok
+test motion::tests::horizontal_collision_minor_by_angle ... ok
+test auto_jump::tests::walking_into_a_one_block_step_jumps ... ok
+test motion::tests::player_fire_damage_queues_hurt_sound_only_for_fresh_hits ... ok
+test motion::tests::creative_and_spectator_preserve_hunger_when_switching_from_survival ... ok
+test motion::tests::sword_sweep_requires_charge_ground_and_slow_horizontal_movement ... ok
+test motion::tests::a_water_cauldron_puts_out_a_burning_player ... ok
+test motion::tests::resident_water_and_lava_are_not_treated_as_air ... ok
+test motion::tests::player_stands_walks_sneaks_and_jumps_on_ghast ... ok
+test motion::tests::a_lava_cauldron_burns_the_player_inside_it ... ok
+test motion::tests::standing_in_a_wither_rose_asks_for_its_effect ... ok
+
+test result: ok. 40 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.76s

@@ -304,3 +304,47 @@ deprecation allowances remain in browser window startup. Migration to winit's
 current application lifecycle remains open; no runtime failure was reproduced
 for that concern. Claude's independent review attempt failed with a rate limit.
 Neither the parent check nor the remaining Codex review is a cross-family verdict.
+
+## Runtime review findings
+
+The first correctness review reproduced four browser bugs. All four remain
+required fixes. [The report](../.audit/adversarial-round1.md) preserves its exact
+commands, observations, and artifact provenance.
+
+| Finding | State | Required verification |
+| --- | --- | --- |
+| R1. Authoritative attributes | End-to-end verified in Chrome | A saved movement-speed update reaches player physics, including the initial synchronization path. Updates received before player construction are retained. |
+| R2. Game-mode changes | End-to-end verified in Chrome | Creative mode collides with a test wall, then server-selected spectator mode crosses it. |
+| R3. Creative selection after inventory edits | End-to-end verified in Chrome | Clearing the inventory does not require changing the visible material before another successful placement. |
+| R4. Rendering-dependent tick rate | End-to-end verified in Chrome | Delayed render callbacks preserve elapsed fixed simulation ticks and comparable input travel. |
+
+The fixes reuse native attribute synchronization and the native tick timer.
+Creative placement supplies the selected stack each time. The selected-item
+cache is removed. The server remains authoritative over accepted edits.
+
+[The four assertions](../.audit/review-state-results.json) compare actual browser
+observations from the reviewer's isolated native-server fixtures. Saved movement
+speed values `0.5` and `0.1` now produce distinct travel. Creative movement stops
+at the wall while spectator movement crosses it. Gold placement after an inventory
+clear produces state `3830` without changing the selection. The delayed-frame
+probe observes comparable simulation ticks and travel. These are correctness
+checks with synthetic inputs, not performance benchmarks.
+
+The new `tools/web_tick_check.cjs` checks actual outgoing `ClientTickEnd` frames
+against elapsed time at normal rendering cadence and with 250 ms callback delays.
+Run it against the default compression-enabled test server:
+
+```sh
+HORIZON_PLAYWRIGHT=PATH_TO_PLAYWRIGHT node tools/web_tick_check.cjs
+```
+
+`HORIZON_WEB_URL`, `HORIZON_WEB_BUNDLE`, and `HORIZON_WEB_PROOF` select the world,
+owned resources, and output directory. [The tick receipt](../.audit/review-tick-check.txt)
+records both observation windows. Long stalls retain the native client's cap of
+ten catch-up ticks per frame.
+
+All 40 shared physics tests ran with an absolute owned-resource path. None reported
+missing resources. The eight native clock tests passed after moving `Timer` into
+the shared crate. The native binary compiles, the WebAssembly build passes, and
+scoped WebAssembly Clippy passes with the same documented baseline lint excluded.
+The fix diff still needs a fresh review. Cross-family review remains blocked.

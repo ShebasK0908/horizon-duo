@@ -78,9 +78,10 @@ struct BrowserClient {
     sections: u64,
     peers: HashMap<i32, Peer>,
     sequence: i32,
-    selected_item: Option<String>,
+    pending_attributes: HashMap<i32, play::AttributeSnapshot>,
     observed_blocks: VecDeque<([i32; 3], u32)>,
-    last_tick: horizon_client_render::time::Instant,
+    clock_start: horizon_client_render::time::Instant,
+    timer: horizon_client_physics::timer::Timer,
 }
 #[wasm_bindgen]
 #[allow(deprecated)]
@@ -217,9 +218,10 @@ pub async fn connect_world(
         sections: 0,
         peers: HashMap::new(),
         sequence: 0,
-        selected_item: None,
+        pending_attributes: HashMap::new(),
         observed_blocks: VecDeque::new(),
-        last_tick: horizon_client_render::time::Instant::now(),
+        clock_start: horizon_client_render::time::Instant::now(),
+        timer: horizon_client_physics::timer::Timer::new(20., 0),
     };
     for event in start {
         client.handle(event).map_err(js_error)?;
@@ -509,6 +511,14 @@ impl BrowserClient {
                 );
                 player.client_side = true;
                 player.spectator = self.game_type == 3;
+                horizon_client_physics::network_attributes::apply(
+                    &mut player.attributes,
+                    &self
+                        .pending_attributes
+                        .drain()
+                        .map(|(_, value)| value)
+                        .collect::<Vec<_>>(),
+                );
                 self.player = Some(player);
                 self.apply_abilities();
                 self.teleported = true;
@@ -525,6 +535,25 @@ impl BrowserClient {
             }
             C::PlayerAbilities(packet) => {
                 self.abilities = Some(packet);
+                self.apply_abilities();
+            }
+            C::UpdateAttributes(packet) if packet.id == self.entity_id => {
+                if let Some(player) = &mut self.player {
+                    horizon_client_physics::network_attributes::apply(
+                        &mut player.attributes,
+                        &packet.values,
+                    );
+                } else {
+                    self.pending_attributes.extend(
+                        packet
+                            .values
+                            .into_iter()
+                            .map(|value| (value.attribute, value)),
+                    );
+                }
+            }
+            C::GameEvent(packet) if packet.event == 3 => {
+                self.game_type = packet.param as i32;
                 self.apply_abilities();
             }
             C::SetHealth(packet) => {
@@ -586,6 +615,7 @@ impl BrowserClient {
     fn dimension(&mut self, spawn: &play::SpawnInfo) -> Result<()> {
         self.game_type = spawn.game_type;
         self.player = None;
+        self.pending_attributes.clear();
         self.peers.clear();
         self.teleported = false;
         self.position_sender = PositionSender::default();
@@ -632,6 +662,9 @@ impl BrowserClient {
         Ok(())
     }
     fn apply_abilities(&mut self) {
+        if let Some(player) = &mut self.player {
+            player.spectator = self.game_type == 3;
+        }
         if let (Some(player), Some(abilities)) = (&mut self.player, &self.abilities) {
             player.invulnerable = abilities.flags & 1 != 0;
             player.flying = abilities.flags & 2 != 0;
@@ -794,7 +827,7 @@ impl BrowserClient {
         )
     }
     fn interact(&mut self, place: bool) -> Result<()> {
-        if !self.loaded {
+        if !self.loaded || self.game_type == 3 {
             return Ok(());
         }
         let Some(hit) = self.pick() else {
@@ -823,24 +856,21 @@ impl BrowserClient {
                     .dyn_into::<web_sys::HtmlSelectElement>()
                     .unwrap()
                     .value();
-                if self.selected_item.as_ref() != Some(&name) {
-                    let item = self
-                        .resources
-                        .builtin
-                        .get("minecraft:item")
-                        .and_then(|items| items.id(&name))
-                        .ok_or("Unknown creative block")?;
-                    self.send(play::Serverbound::SetCreativeModeSlot(
-                        play::SetCreativeModeSlot {
-                            slot: 36,
-                            item: Some(horizon_protocol::item::Stack::new(item, 64)),
-                        },
-                    ))?;
-                    self.send(play::Serverbound::SetCarriedItem(play::SetCarriedItem {
-                        slot: 0,
-                    }))?;
-                    self.selected_item = Some(name);
-                }
+                let item = self
+                    .resources
+                    .builtin
+                    .get("minecraft:item")
+                    .and_then(|items| items.id(&name))
+                    .ok_or("Unknown creative block")?;
+                self.send(play::Serverbound::SetCreativeModeSlot(
+                    play::SetCreativeModeSlot {
+                        slot: 36,
+                        item: Some(horizon_protocol::item::Stack::new(item, 64)),
+                    },
+                ))?;
+                self.send(play::Serverbound::SetCarriedItem(play::SetCarriedItem {
+                    slot: 0,
+                }))?;
             }
             self.send(play::Serverbound::UseItemOn(play::UseItemOn {
                 hand: 0,
@@ -928,15 +958,21 @@ impl BrowserClient {
             self.send(play::Serverbound::PlayerLoaded(Empty))?;
             self.loaded = true;
         }
-        if self.last_tick.elapsed().as_millis() >= 50
-            && matches!(
-                self.session.phase,
-                horizon_protocol::client_session::Phase::Play
+        let ticks = self
+            .timer
+            .advance_game_time(
+                self.clock_start.elapsed().as_millis() as i64,
+                |milliseconds| milliseconds,
             )
-        {
-            self.tick_player()?;
-            self.send(play::Serverbound::ClientTickEnd(Empty))?;
-            self.last_tick = horizon_client_render::time::Instant::now();
+            .clamp(0, 10);
+        if matches!(
+            self.session.phase,
+            horizon_protocol::client_session::Phase::Play
+        ) {
+            for _ in 0..ticks {
+                self.tick_player()?;
+                self.send(play::Serverbound::ClientTickEnd(Empty))?;
+            }
         }
         let size = self.window.inner_size();
         let hud = HudBatch::new([size.width, size.height]);

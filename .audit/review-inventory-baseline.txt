@@ -1,0 +1,25 @@
+Owned server PID 39955
+BROWSER RevOctA info Horizon renderer:  (BrowserWebGpu, Other)
+BROWSER RevOctA info Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)
+BROWSER RevOctA info Horizon renderer: device ready; configuring the surface (960x640 Bgra8Unorm, Fifo)
+BROWSER RevOctA info Horizon renderer: HDR output not offered by this display
+BROWSER RevOctA info Horizon renderer: creating the pipelines
+BROWSER RevOctA info Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)
+BROWSER RevOctA info Horizon renderer: acquiring the first frame
+BROWSER RevOctA info Horizon renderer: submitting the first frame
+BROWSER RevOctA info Horizon renderer: presenting the first frame
+BROWSER RevOctB info Horizon renderer:  (BrowserWebGpu, Other)
+BROWSER RevOctB info Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)
+BROWSER RevOctB info Horizon renderer: device ready; configuring the surface (960x640 Bgra8Unorm, Fifo)
+BROWSER RevOctB info Horizon renderer: HDR output not offered by this display
+BROWSER RevOctB info Horizon renderer: creating the pipelines
+BROWSER RevOctB info Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)
+BROWSER RevOctB info Horizon renderer: acquiring the first frame
+BROWSER RevOctB info Horizon renderer: submitting the first frame
+BROWSER RevOctB info Horizon renderer: presenting the first frame
+BASELINE_PLACE {"position":"0.5000,-60.0000,0.5000","target":[[0,-60,1],[0,1,0],3830],"peers":[[85,[8.5,-60,0.5]]],"observed":[[[0,-60,2],6865],[[0,-60,1],3830],[[0,-60,1],3830],[[6,-61,3],9]],"error":""}
+AFTER_CLEAR_SAME_SELECTION {"position":"0.5000,-60.0000,0.5000","target":[[0,-60,2],[0,0,-1],6865],"peers":[[85,[8.5,-60,0.5]]],"observed":[[[0,-60,2],6865],[[0,-60,1],3830],[[0,-60,1],3830],[[6,-61,3],9],[[0,-60,1],0],[[0,-60,2],6865],[[0,-60,1],0]],"error":""}
+AFTER_CHANGE_SELECTION {"position":"0.5000,-60.0000,0.5000","target":[[0,-60,1],[0,1,0],6865],"peers":[[85,[8.5,-60,0.5]]],"observed":[[[0,-60,2],6865],[[0,-60,1],3830],[[0,-60,1],3830],[[6,-61,3],9],[[0,-60,1],0],[[0,-60,2],6865],[[0,-60,1],0],[[0,-60,2],6865],[[0,-60,1],6865],[[0,-60,1],6865]],"error":""}
+NORMAL_SPEED {"before":{"position":"8.5000,-60.0000,0.5000","target":null,"peers":[[2,[0.5,-60,0.5]]],"observed":[[[0,-60,1],3830],[[6,-61,3],9],[[0,-60,1],0],[[0,-60,1],6865]],"error":""},"after":{"position":"8.5000,-60.0000,7.6196","target":null,"peers":[[2,[0.5,-60,0.5]]],"observed":[[[0,-60,1],3830],[[6,-61,3],9],[[0,-60,1],0],[[0,-60,1],6865]],"error":""},"observer":{"position":"0.5000,-60.0000,0.5000","target":[[0,-60,1],[0,1,0],6865],"peers":[[85,[8.5,-60,7.61962890625]]],"observed":[[[0,-60,2],6865],[[0,-60,1],3830],[[0,-60,1],3830],[[6,-61,3],9],[[0,-60,1],0],[[0,-60,2],6865],[[0,-60,1],0],[[0,-60,2],6865],[[0,-60,1],6865],[[0,-60,1],6865]],"error":""}}
+SERVER_SPEED_0_5 {"before":{"position":"8.5000,-60.0000,0.5000","target":null,"peers":[[2,[0.5,-60,0.5]]],"observed":[[[0,-60,1],3830],[[6,-61,3],9],[[0,-60,1],0],[[0,-60,1],6865]],"error":""},"after":{"position":"8.5000,-60.0000,7.4037","target":null,"peers":[[2,[0.5,-60,0.5]]],"observed":[[[0,-60,1],3830],[[6,-61,3],9],[[0,-60,1],0],[[0,-60,1],6865]],"error":""},"observer":{"position":"0.5000,-60.0000,0.5000","target":[[0,-60,1],[0,1,0],6865],"peers":[[85,[8.5,-60,7.40380859375]]],"observed":[[[0,-60,2],6865],[[0,-60,1],3830],[[0,-60,1],3830],[[6,-61,3],9],[[0,-60,1],0],[[0,-60,2],6865],[[0,-60,1],0],[[0,-60,2],6865],[[0,-60,1],6865],[[0,-60,1],6865]],"error":""}}
+SPECTATOR_SPACE {"position":"8.5000,-50.6687,0.5000","target":null,"peers":[[2,[0.5,-60,0.5]]],"observed":[[[0,-60,1],3830],[[6,-61,3],9],[[0,-60,1],0],[[0,-60,1],6865]],"error":""}

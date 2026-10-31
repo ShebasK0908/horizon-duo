@@ -12,3 +12,5 @@ pub mod sprint;
 pub mod attribute_updates;
 
 pub mod hunger;
+pub mod network_attributes;
+pub mod timer;

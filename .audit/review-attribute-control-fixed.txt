@@ -1,0 +1,21 @@
+OWNED_SAVED_MOVEMENT_SPEED 0.5 -> 0.1
+Owned server PID 52287
+BROWSER RevAttrA info Horizon renderer:  (BrowserWebGpu, Other)
+BROWSER RevAttrA info Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)
+BROWSER RevAttrA info Horizon renderer: device ready; configuring the surface (960x640 Bgra8Unorm, Fifo)
+BROWSER RevAttrA info Horizon renderer: HDR output not offered by this display
+BROWSER RevAttrA info Horizon renderer: creating the pipelines
+BROWSER RevAttrA info Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)
+BROWSER RevAttrA info Horizon renderer: acquiring the first frame
+BROWSER RevAttrA info Horizon renderer: submitting the first frame
+BROWSER RevAttrA info Horizon renderer: presenting the first frame
+BROWSER RevOctB info Horizon renderer:  (BrowserWebGpu, Other)
+BROWSER RevOctB info Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)
+BROWSER RevOctB info Horizon renderer: device ready; configuring the surface (960x640 Bgra8Unorm, Fifo)
+BROWSER RevOctB info Horizon renderer: HDR output not offered by this display
+BROWSER RevOctB info Horizon renderer: creating the pipelines
+BROWSER RevOctB info Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)
+BROWSER RevOctB info Horizon renderer: acquiring the first frame
+BROWSER RevOctB info Horizon renderer: submitting the first frame
+BROWSER RevOctB info Horizon renderer: presenting the first frame
+SAVED_ATTRIBUTE_WALK {"speed":"0.1","before":{"position":"40.5000,-60.0000,0.5000","target":null,"peers":[[2,[0.5,-60,0.5]]],"observed":[],"error":""},"after":{"position":"40.5000,-60.0000,13.4478","target":null,"peers":[[2,[0.5,-60,0.5]]],"observed":[],"error":""},"observer":{"position":"0.5000,-60.0000,0.5000","target":null,"peers":[[99,[40.5,-60,13.44775390625]]],"observed":[],"error":""}}

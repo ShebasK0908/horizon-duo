@@ -6,7 +6,6 @@
 //! world that is not open to the network pays nothing.
 mod advancements;
 pub mod anticheat;
-pub mod attributes;
 pub mod border;
 pub mod chunks;
 pub mod code_of_conduct;
@@ -28,6 +27,7 @@ pub mod tracking;
 pub mod waypoints;
 
 pub use conn::{Holding, PlayerSender, flush_all};
+pub use horizon_client_physics::network_attributes as attributes;
 use horizon_protocol::packets::play;
 use horizon_protocol::{
     GAME_VERSION, PROTOCOL_VERSION, crypto::uuid_string, packets::configuration::ClientInformation,
