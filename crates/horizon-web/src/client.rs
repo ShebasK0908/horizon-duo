@@ -68,8 +68,6 @@ pub(crate) struct BrowserClient {
     loaded: bool,
     teleported: bool,
     player: Option<PlayerMotion>,
-    keys: HashSet<KeyCode>,
-    key_presses: HashSet<KeyCode>,
     input: crate::browser_input::BrowserInput,
     position_sender: PositionSender,
     abilities: Option<play::PlayerAbilities>,
@@ -197,8 +195,6 @@ impl BrowserClient {
             loaded: false,
             teleported: false,
             player: None,
-            keys: HashSet::new(),
-            key_presses: HashSet::new(),
             input: crate::browser_input::BrowserInput::new()?,
             position_sender: PositionSender::default(),
             abilities: None,
@@ -239,18 +235,14 @@ impl ApplicationHandler<crate::application::Ready> for BrowserClient {
             WindowEvent::Resized(size) => self.renderer.resize(size.width, size.height),
             WindowEvent::KeyboardInput { event, .. } => {
                 if let PhysicalKey::Code(key) = event.physical_key {
-                    if event.state == ElementState::Pressed {
-                        self.keys.insert(key);
-                        if !event.repeat {
-                            self.key_presses.insert(key);
-                            if matches!(key, KeyCode::KeyF | KeyCode::KeyR)
-                                && let Err(error) = self.interact(key == KeyCode::KeyF)
-                            {
-                                show_error(&error.to_string());
-                            }
-                        }
-                    } else {
-                        self.keys.remove(&key);
+                    self.input
+                        .key(key, event.state == ElementState::Pressed, event.repeat);
+                    if event.state == ElementState::Pressed
+                        && !event.repeat
+                        && matches!(key, KeyCode::KeyF | KeyCode::KeyR)
+                        && let Err(error) = self.interact(key == KeyCode::KeyF)
+                    {
+                        show_error(&error.to_string());
                     }
                 }
             }
@@ -323,8 +315,6 @@ fn show_error(error: &str) {
 }
 impl BrowserClient {
     fn reset_input(&mut self) {
-        self.keys.clear();
-        self.key_presses.clear();
         self.input.clear();
     }
     fn request_pointer_lock(&self) {
@@ -685,23 +675,25 @@ impl BrowserClient {
         if !self.loaded {
             return Ok(());
         }
-        if self.keys.contains(&KeyCode::ArrowLeft) {
+        let held_keys = self.input.keys.borrow();
+        let mut key_presses = self.input.key_presses.borrow_mut();
+        if held_keys.contains(&KeyCode::ArrowLeft) {
             self.yaw -= 4.;
         }
-        if self.keys.contains(&KeyCode::ArrowRight) {
+        if held_keys.contains(&KeyCode::ArrowRight) {
             self.yaw += 4.;
         }
-        if self.keys.contains(&KeyCode::ArrowUp) {
+        if held_keys.contains(&KeyCode::ArrowUp) {
             self.pitch = (self.pitch - 4.).max(-90.);
         }
-        if self.keys.contains(&KeyCode::ArrowDown) {
+        if held_keys.contains(&KeyCode::ArrowDown) {
             self.pitch = (self.pitch + 4.).min(90.);
         }
         use crate::input::TouchAction;
         let mut touch = self.input.touch.borrow_mut();
         let touch_jump = touch.jump();
         let held = |key, action| {
-            self.keys.contains(&key) || self.key_presses.contains(&key) || touch.held(action)
+            held_keys.contains(&key) || key_presses.contains(&key) || touch.held(action)
         };
 
         let keys = Keys {
@@ -709,16 +701,16 @@ impl BrowserClient {
             backward: held(KeyCode::KeyS, TouchAction::Backward),
             left: held(KeyCode::KeyA, TouchAction::Left),
             right: held(KeyCode::KeyD, TouchAction::Right),
-            jump: self.keys.contains(&KeyCode::Space)
-                || self.key_presses.contains(&KeyCode::Space)
-                || touch_jump,
+            jump: touch_jump.held,
             shift: held(KeyCode::ShiftLeft, TouchAction::Descend),
-            sprint: self.keys.contains(&KeyCode::ControlLeft),
+            sprint: held_keys.contains(&KeyCode::ControlLeft),
             analog: None,
         };
         touch.finish_tick();
         drop(touch);
-        self.key_presses.clear();
+        key_presses.clear();
+        drop(key_presses);
+        drop(held_keys);
         let input = u8::from(keys.forward)
             | (u8::from(keys.backward) << 1)
             | (u8::from(keys.left) << 2)
@@ -729,6 +721,10 @@ impl BrowserClient {
         let Some(player) = &mut self.player else {
             return Ok(());
         };
+        if touch_jump.new_sequence {
+            player.jump_trigger_time = 0;
+            player.was_jumping = false;
+        }
         player.yaw = self.yaw;
         player.pitch = self.pitch;
         let was_flying = player.flying;
@@ -922,9 +918,6 @@ impl BrowserClient {
         }
     }
     fn draw(&mut self) -> Result<()> {
-        if std::mem::take(&mut *self.input.reset.borrow_mut()) {
-            self.reset_input();
-        }
         let look = self.input.touch.borrow_mut().take_look();
         self.yaw += look[0] * 0.25;
         self.pitch = (self.pitch + look[1] * 0.25).clamp(-90., 90.);

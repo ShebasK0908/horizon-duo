@@ -1,0 +1,385 @@
+{
+  "passed": true,
+  "base": "http://127.0.0.1:8766/?world=webproof&bridge=ws://127.0.0.1:18787",
+  "movement": {
+    "before": "8.5000,-60.0000,-5.5000",
+    "after": "8.5000,-60.0000,-2.1880",
+    "observer": {
+      "position": "-4.5000,-60.0000,8.5000",
+      "peers": [
+        [
+          424,
+          [
+            8.5,
+            -60,
+            -2.305908203125
+          ]
+        ]
+      ],
+      "vertices": 288,
+      "target": null,
+      "observed": [
+        [
+          [
+            -4,
+            -60,
+            21
+          ],
+          3830
+        ],
+        [
+          [
+            -4,
+            -60,
+            21
+          ],
+          0
+        ]
+      ],
+      "error": ""
+    }
+  },
+  "placement": {
+    "pos": [
+      -5,
+      -60,
+      10
+    ],
+    "a": {
+      "position": "-4.5000,-60.0000,8.5000",
+      "peers": [
+        [
+          424,
+          [
+            8.5,
+            -60,
+            -2.050048828125
+          ]
+        ]
+      ],
+      "vertices": 288,
+      "target": [
+        [
+          -5,
+          -60,
+          10
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        3830
+      ],
+      "observed": [
+        [
+          [
+            -4,
+            -60,
+            21
+          ],
+          3830
+        ],
+        [
+          [
+            -4,
+            -60,
+            21
+          ],
+          0
+        ],
+        [
+          [
+            -5,
+            -61,
+            10
+          ],
+          9
+        ],
+        [
+          [
+            -5,
+            -60,
+            10
+          ],
+          3830
+        ],
+        [
+          [
+            -5,
+            -60,
+            10
+          ],
+          3830
+        ]
+      ],
+      "error": ""
+    },
+    "b": {
+      "position": "8.5000,-60.0000,-2.0500",
+      "peers": [
+        [
+          423,
+          [
+            -4.5,
+            -60,
+            8.5
+          ]
+        ]
+      ],
+      "vertices": 288,
+      "target": null,
+      "observed": [
+        [
+          [
+            -5,
+            -60,
+            10
+          ],
+          3830
+        ]
+      ],
+      "error": ""
+    }
+  },
+  "reconnect": {
+    "position": "-4.5000,-60.0000,8.5000",
+    "peers": [
+      [
+        424,
+        [
+          8.5,
+          -60,
+          -2.050010069885936
+        ]
+      ]
+    ],
+    "vertices": 288,
+    "target": [
+      [
+        -5,
+        -60,
+        10
+      ],
+      [
+        0,
+        0,
+        -1
+      ],
+      3830
+    ],
+    "observed": [],
+    "error": ""
+  },
+  "breaking": {
+    "a": {
+      "position": "-4.5000,-60.0000,8.5000",
+      "peers": [
+        [
+          424,
+          [
+            8.5,
+            -60,
+            -2.050010069885936
+          ]
+        ]
+      ],
+      "vertices": 288,
+      "target": [
+        [
+          -5,
+          -61,
+          10
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        9
+      ],
+      "observed": [
+        [
+          [
+            -5,
+            -60,
+            10
+          ],
+          0
+        ]
+      ],
+      "error": ""
+    },
+    "b": {
+      "position": "8.5000,-60.0000,-2.0500",
+      "peers": [
+        [
+          426,
+          [
+            -4.5,
+            -60,
+            8.5
+          ]
+        ]
+      ],
+      "vertices": 288,
+      "target": null,
+      "observed": [
+        [
+          [
+            -5,
+            -60,
+            10
+          ],
+          3830
+        ],
+        [
+          [
+            -5,
+            -60,
+            10
+          ],
+          0
+        ]
+      ],
+      "error": ""
+    }
+  },
+  "logs": [
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer:  (BrowserWebGpu, Other)"
+    },
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)"
+    },
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer: device ready; configuring the surface (1000x630 Bgra8Unorm, Fifo)"
+    },
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer: HDR output not offered by this display"
+    },
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer: creating the pipelines"
+    },
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)"
+    },
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer: acquiring the first frame"
+    },
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer: submitting the first frame"
+    },
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer: presenting the first frame"
+    },
+    {
+      "name": "FixMob1Beta",
+      "type": "info",
+      "text": "Horizon renderer:  (BrowserWebGpu, Other)"
+    },
+    {
+      "name": "FixMob1Beta",
+      "type": "info",
+      "text": "Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)"
+    },
+    {
+      "name": "FixMob1Beta",
+      "type": "info",
+      "text": "Horizon renderer: device ready; configuring the surface (1000x630 Bgra8Unorm, Fifo)"
+    },
+    {
+      "name": "FixMob1Beta",
+      "type": "info",
+      "text": "Horizon renderer: HDR output not offered by this display"
+    },
+    {
+      "name": "FixMob1Beta",
+      "type": "info",
+      "text": "Horizon renderer: creating the pipelines"
+    },
+    {
+      "name": "FixMob1Beta",
+      "type": "info",
+      "text": "Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)"
+    },
+    {
+      "name": "FixMob1Beta",
+      "type": "info",
+      "text": "Horizon renderer: acquiring the first frame"
+    },
+    {
+      "name": "FixMob1Beta",
+      "type": "info",
+      "text": "Horizon renderer: submitting the first frame"
+    },
+    {
+      "name": "FixMob1Beta",
+      "type": "info",
+      "text": "Horizon renderer: presenting the first frame"
+    },
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer:  (BrowserWebGpu, Other)"
+    },
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer: requesting the device (driver unnamed) with features [TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE | RG11B10UFLOAT_RENDERABLE] and the adapter's limits (buffers up to 4294967292 bytes, storage bindings up to 4294967292 bytes, 2048 texture layers)"
+    },
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer: device ready; configuring the surface (1000x630 Bgra8Unorm, Fifo)"
+    },
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer: HDR output not offered by this display"
+    },
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer: creating the pipelines"
+    },
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU timer on)"
+    },
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer: acquiring the first frame"
+    },
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer: submitting the first frame"
+    },
+    {
+      "name": "FixMob1Alpha",
+      "type": "info",
+      "text": "Horizon renderer: presenting the first frame"
+    }
+  ]
+}

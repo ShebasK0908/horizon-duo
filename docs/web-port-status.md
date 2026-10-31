@@ -421,3 +421,25 @@ device session. This phase did not drive any device. Independent review remains
 blocked by unavailable Claude providers and belongs to the parent. Offline
 browser worlds, full native parity, X embedding, and public deployment retain
 their existing unfinished status.
+
+## Mobile input corrections
+
+The Codex adversarial mobile review proved two P2 input bugs after the initial
+mobile checkpoint. A stalled frame could replay widely separated Jump presses
+as a double tap. Deferred blur cleanup could erase a new touch or key press after
+focus returned. The parent reproduced both against the existing artifact.
+
+Jump transitions now retain their event times and share ownership between the
+keyboard and touch pointers. A new press after the 350 ms flight gesture window
+starts a new sequence in the existing motion kernel. Blur and visibility handlers
+clear keyboard and pointer state at the boundary. The redraw reset flag is gone.
+
+The expanded touch driver verifies separate taps during stalled rendering and
+fresh touch and W input after trusted Chrome blur and focus events. It also
+preserves the existing movement, valid double-tap flight, block action, and resize
+checks. Six input unit tests, the WebAssembly build, scoped Clippy, the expanded
+touch driver, desktop multiplayer, and the fixed-tick check pass. No shared native
+engine source changed. [The first fix-round report](../.audit/mobile-input-fix-round1.md)
+preserves commands and before/after evidence. Fresh review remains pending.
+Cross-family review, actual phone evidence, offline worlds, native parity, and X
+execution retain their existing unfinished status.

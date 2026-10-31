@@ -1,10 +1,12 @@
-use crate::input::{PointerRole, TouchAction, TouchInput};
-use std::{cell::RefCell, rc::Rc};
+use crate::input::{PlayerInput, PointerRole, TouchAction};
+use std::{cell::RefCell, collections::HashSet, rc::Rc};
 use wasm_bindgen::{JsCast, prelude::*};
+use winit::keyboard::KeyCode;
 
 pub(crate) struct BrowserInput {
-    pub(crate) touch: Rc<RefCell<TouchInput>>,
-    pub(crate) reset: Rc<RefCell<bool>>,
+    pub(crate) touch: Rc<RefCell<PlayerInput>>,
+    pub(crate) keys: Rc<RefCell<HashSet<KeyCode>>>,
+    pub(crate) key_presses: Rc<RefCell<HashSet<KeyCode>>>,
     listeners: Vec<(
         web_sys::EventTarget,
         &'static str,
@@ -15,7 +17,8 @@ impl BrowserInput {
     pub(crate) fn new() -> Result<Self, JsValue> {
         let mut input = Self {
             touch: Rc::default(),
-            reset: Rc::default(),
+            keys: Rc::default(),
+            key_presses: Rc::default(),
             listeners: Vec::new(),
         };
         let window = web_sys::window().unwrap();
@@ -62,7 +65,7 @@ impl BrowserInput {
                             event.prevent_default();
                             let owner = button.as_ref().unwrap_or(&target);
                             let _ = owner.set_pointer_capture(id);
-                            touch.borrow_mut().press(id, role);
+                            touch.borrow_mut().press(id, role, event.time_stamp());
                         }
                     }
                     "pointermove" => touch.borrow_mut().move_pointer(
@@ -70,7 +73,9 @@ impl BrowserInput {
                         event.client_x() as f64,
                         event.client_y() as f64,
                     ),
-                    _ => touch.borrow_mut().release(id, kind != "pointerup"),
+                    _ => touch
+                        .borrow_mut()
+                        .release(id, kind != "pointerup", event.time_stamp()),
                 }
             })?;
         }
@@ -79,10 +84,12 @@ impl BrowserInput {
             (document.into(), "visibilitychange"),
         ] {
             let touch = input.touch.clone();
-            let reset = input.reset.clone();
+            let keys = input.keys.clone();
+            let key_presses = input.key_presses.clone();
             input.listen(target, kind, move |_| {
                 touch.borrow_mut().reset();
-                *reset.borrow_mut() = true;
+                keys.borrow_mut().clear();
+                key_presses.borrow_mut().clear();
             })?;
         }
         Ok(input)
@@ -100,6 +107,24 @@ impl BrowserInput {
     }
     pub(crate) fn clear(&self) {
         self.touch.borrow_mut().reset();
+        self.keys.borrow_mut().clear();
+        self.key_presses.borrow_mut().clear();
+    }
+    pub(crate) fn key(&self, key: KeyCode, pressed: bool, repeat: bool) {
+        if pressed {
+            self.keys.borrow_mut().insert(key);
+            if !repeat {
+                self.key_presses.borrow_mut().insert(key);
+            }
+        } else {
+            self.keys.borrow_mut().remove(&key);
+        }
+        if key == KeyCode::Space {
+            self.touch.borrow_mut().jump_key(
+                pressed,
+                web_sys::window().unwrap().performance().unwrap().now(),
+            );
+        }
     }
 }
 impl Drop for BrowserInput {

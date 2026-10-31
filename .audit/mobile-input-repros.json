@@ -1,0 +1,882 @@
+{
+  "before": {
+    "jump": [
+      {
+        "name": "separated-normal",
+        "expected": "Two jump taps 700ms apart must not enable flight",
+        "before": {
+          "position": [
+            -2.5,
+            -60,
+            1.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "3",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            -2.5,
+            -60,
+            1.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "5",
+          "error": ""
+        },
+        "serverPeers": [
+          [
+            40,
+            [
+              -2.5,
+              -60,
+              1.5
+            ]
+          ]
+        ]
+      },
+      {
+        "name": "separated-stalled",
+        "expected": "Two jump taps 700ms apart must not enable flight",
+        "before": {
+          "position": [
+            -2.5,
+            -60,
+            1.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "5",
+          "error": ""
+        },
+        "beforeResume": {
+          "position": [
+            -2.5,
+            -60,
+            1.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "5",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            -2.5,
+            -58.2575,
+            1.5
+          ],
+          "flying": "true",
+          "view": "0.000,0.000",
+          "frames": "6",
+          "error": ""
+        },
+        "events": [
+          {
+            "type": "pointerdown",
+            "id": 2,
+            "target": "jump",
+            "t": 7424.600000023842
+          },
+          {
+            "type": "pointerup",
+            "id": 2,
+            "target": "jump",
+            "t": 7449
+          },
+          {
+            "type": "lostpointercapture",
+            "id": 2,
+            "target": "jump",
+            "t": 7449.200000047684
+          },
+          {
+            "type": "pointerdown",
+            "id": 3,
+            "target": "jump",
+            "t": 8184.200000047684
+          },
+          {
+            "type": "pointerup",
+            "id": 3,
+            "target": "jump",
+            "t": 8217.399999976158
+          },
+          {
+            "type": "lostpointercapture",
+            "id": 3,
+            "target": "jump",
+            "t": 8217.399999976158
+          },
+          {
+            "type": "pointerdown",
+            "id": 4,
+            "target": "jump",
+            "t": 9148.299999952316
+          },
+          {
+            "type": "pointerup",
+            "id": 4,
+            "target": "jump",
+            "t": 9164.100000023842
+          },
+          {
+            "type": "lostpointercapture",
+            "id": 4,
+            "target": "jump",
+            "t": 9164.100000023842
+          },
+          {
+            "type": "pointerdown",
+            "id": 5,
+            "target": "jump",
+            "t": 9871.100000023842
+          },
+          {
+            "type": "pointerup",
+            "id": 5,
+            "target": "jump",
+            "t": 9879
+          },
+          {
+            "type": "lostpointercapture",
+            "id": 5,
+            "target": "jump",
+            "t": 9879.100000023842
+          }
+        ],
+        "serverPeers": [
+          [
+            40,
+            [
+              -2.5,
+              -58.257568359375,
+              1.5
+            ]
+          ]
+        ]
+      },
+      {
+        "name": "held-jump-after-stall",
+        "expected": "Observe whether a single hold now rises in flight",
+        "before": {
+          "position": [
+            -2.5,
+            -58.2575,
+            1.5
+          ],
+          "flying": "true",
+          "view": "0.000,0.000",
+          "frames": "6",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            -2.5,
+            -53.7631,
+            1.5
+          ],
+          "flying": "true",
+          "view": "0.000,0.000",
+          "frames": "7",
+          "error": ""
+        },
+        "serverPeers": [
+          [
+            40,
+            [
+              -2.5,
+              -53.766845703125,
+              1.5
+            ]
+          ]
+        ]
+      },
+      {
+        "name": "fresh-profile",
+        "expected": "Clean new profile",
+        "state": {
+          "position": [
+            0.5,
+            -60,
+            1.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "1",
+          "error": ""
+        },
+        "serverPeers": [
+          [
+            86,
+            [
+              0.5,
+              -60,
+              1.5
+            ]
+          ]
+        ]
+      }
+    ],
+    "focus": [
+      {
+        "name": "trusted-focus-new-touch",
+        "expected": "Fresh held touch after returning to Chrome tab should move",
+        "before": {
+          "position": [
+            10.5,
+            -60,
+            -5.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "3",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            10.5,
+            -60,
+            -5.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "6",
+          "error": ""
+        },
+        "events": [
+          {
+            "type": "blur",
+            "trusted": true,
+            "t": 7089.600000023842
+          },
+          {
+            "type": "focus",
+            "trusted": true,
+            "t": 7099.300000071526
+          },
+          {
+            "type": "blur",
+            "trusted": true,
+            "t": 7632.200000047684
+          },
+          {
+            "type": "focus",
+            "trusted": true,
+            "t": 7739.300000071526
+          },
+          {
+            "type": "pointerdown",
+            "id": 2,
+            "target": "forward",
+            "t": 7759
+          }
+        ],
+        "serverPeers": [
+          [
+            170,
+            [
+              10.5,
+              -60,
+              -5.5
+            ]
+          ]
+        ],
+        "focus": {
+          "hasFocus": true,
+          "visibility": "visible"
+        },
+        "distance": 0.0
+      },
+      {
+        "name": "trusted-focus-repress-control",
+        "expected": "Repressing the same control moves",
+        "before": {
+          "position": [
+            10.5,
+            -60,
+            -5.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "7",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            10.5,
+            -60,
+            -2.2659
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "12",
+          "error": ""
+        },
+        "serverPeers": [
+          [
+            170,
+            [
+              10.5,
+              -60,
+              -2.265869140625
+            ]
+          ]
+        ]
+      },
+      {
+        "name": "trusted-focus-new-key",
+        "expected": "Fresh held W after returning to Chrome tab should move",
+        "before": {
+          "position": [
+            10.5,
+            -60,
+            -2.2659
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "12",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            10.5,
+            -60,
+            -2.2659
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "13",
+          "error": ""
+        },
+        "events": [
+          {
+            "type": "blur",
+            "trusted": true,
+            "t": 7089.600000023842
+          },
+          {
+            "type": "focus",
+            "trusted": true,
+            "t": 7099.300000071526
+          },
+          {
+            "type": "blur",
+            "trusted": true,
+            "t": 7632.200000047684
+          },
+          {
+            "type": "focus",
+            "trusted": true,
+            "t": 7739.300000071526
+          },
+          {
+            "type": "pointerdown",
+            "id": 2,
+            "target": "forward",
+            "t": 7759
+          },
+          {
+            "type": "pointerup",
+            "id": 2,
+            "target": "forward",
+            "t": 8508.899999976158
+          },
+          {
+            "type": "lostpointercapture",
+            "id": 2,
+            "target": "forward",
+            "t": 8509
+          },
+          {
+            "type": "pointerdown",
+            "id": 3,
+            "target": "forward",
+            "t": 9040.800000071526
+          },
+          {
+            "type": "pointerup",
+            "id": 3,
+            "target": "forward",
+            "t": 9778
+          },
+          {
+            "type": "lostpointercapture",
+            "id": 3,
+            "target": "forward",
+            "t": 9778.100000023842
+          },
+          {
+            "type": "blur",
+            "trusted": true,
+            "t": 10314.399999976158
+          },
+          {
+            "type": "focus",
+            "trusted": true,
+            "t": 10421.200000047684
+          },
+          {
+            "type": "keydown",
+            "key": "KeyW",
+            "target": "horizon-canvas",
+            "t": 10430.300000071526
+          }
+        ],
+        "serverPeers": [
+          [
+            170,
+            [
+              10.5,
+              -60,
+              -2.265869140625
+            ]
+          ]
+        ],
+        "distance": 0.0
+      }
+    ]
+  },
+  "after": {
+    "jump": [
+      {
+        "name": "separated-normal",
+        "expected": "Two jump taps 700ms apart must not enable flight",
+        "before": {
+          "position": [
+            9.5,
+            -60,
+            2.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "2",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            9.5,
+            -60,
+            2.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "5",
+          "error": ""
+        },
+        "serverPeers": [
+          [
+            254,
+            [
+              9.5,
+              -60,
+              2.5
+            ]
+          ]
+        ]
+      },
+      {
+        "name": "separated-stalled",
+        "expected": "Two jump taps 700ms apart must not enable flight",
+        "before": {
+          "position": [
+            9.5,
+            -60,
+            2.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "5",
+          "error": ""
+        },
+        "beforeResume": {
+          "position": [
+            9.5,
+            -60,
+            2.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "5",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            9.5,
+            -60,
+            2.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "6",
+          "error": ""
+        },
+        "events": [
+          {
+            "type": "pointerdown",
+            "id": 2,
+            "target": "jump",
+            "t": 7187.200000047684
+          },
+          {
+            "type": "pointerup",
+            "id": 2,
+            "target": "jump",
+            "t": 7214.100000023842
+          },
+          {
+            "type": "lostpointercapture",
+            "id": 2,
+            "target": "jump",
+            "t": 7214.200000047684
+          },
+          {
+            "type": "pointerdown",
+            "id": 3,
+            "target": "jump",
+            "t": 7947
+          },
+          {
+            "type": "pointerup",
+            "id": 3,
+            "target": "jump",
+            "t": 7979.899999976158
+          },
+          {
+            "type": "lostpointercapture",
+            "id": 3,
+            "target": "jump",
+            "t": 7980
+          },
+          {
+            "type": "pointerdown",
+            "id": 4,
+            "target": "jump",
+            "t": 8910.100000023842
+          },
+          {
+            "type": "pointerup",
+            "id": 4,
+            "target": "jump",
+            "t": 8926.700000047684
+          },
+          {
+            "type": "lostpointercapture",
+            "id": 4,
+            "target": "jump",
+            "t": 8926.799999952316
+          },
+          {
+            "type": "pointerdown",
+            "id": 5,
+            "target": "jump",
+            "t": 9632.100000023842
+          },
+          {
+            "type": "pointerup",
+            "id": 5,
+            "target": "jump",
+            "t": 9643.5
+          },
+          {
+            "type": "lostpointercapture",
+            "id": 5,
+            "target": "jump",
+            "t": 9643.5
+          }
+        ],
+        "serverPeers": [
+          [
+            254,
+            [
+              9.5,
+              -60,
+              2.5
+            ]
+          ]
+        ]
+      },
+      {
+        "name": "held-jump-after-stall",
+        "expected": "Observe whether a single hold now rises in flight",
+        "before": {
+          "position": [
+            9.5,
+            -60,
+            2.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "6",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            9.5,
+            -60,
+            2.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "7",
+          "error": ""
+        },
+        "serverPeers": [
+          [
+            254,
+            [
+              9.5,
+              -60,
+              2.5
+            ]
+          ]
+        ]
+      },
+      {
+        "name": "fresh-profile",
+        "expected": "Clean new profile",
+        "state": {
+          "position": [
+            1.5,
+            -60,
+            10.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "1",
+          "error": ""
+        },
+        "serverPeers": [
+          [
+            255,
+            [
+              1.5,
+              -60,
+              10.5
+            ]
+          ]
+        ]
+      }
+    ],
+    "focus": [
+      {
+        "name": "trusted-focus-new-touch",
+        "expected": "Fresh held touch after returning to Chrome tab should move",
+        "before": {
+          "position": [
+            7.5,
+            -60,
+            -7.5
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "3",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            7.5,
+            -60,
+            -4.09
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "5",
+          "error": ""
+        },
+        "events": [
+          {
+            "type": "blur",
+            "trusted": true,
+            "t": 7418.899999976158
+          },
+          {
+            "type": "focus",
+            "trusted": true,
+            "t": 7425.100000023842
+          },
+          {
+            "type": "blur",
+            "trusted": true,
+            "t": 7960.399999976158
+          },
+          {
+            "type": "focus",
+            "trusted": true,
+            "t": 8067
+          },
+          {
+            "type": "pointerdown",
+            "id": 2,
+            "target": "forward",
+            "t": 8077.100000023842
+          }
+        ],
+        "serverPeers": [
+          [
+            339,
+            [
+              7.5,
+              -60,
+              -4.305908203125
+            ]
+          ]
+        ],
+        "focus": {
+          "hasFocus": true,
+          "visibility": "visible"
+        },
+        "distance": 3.41
+      },
+      {
+        "name": "trusted-focus-repress-control",
+        "expected": "Repressing the same control moves",
+        "before": {
+          "position": [
+            7.5,
+            -60,
+            -3.6183
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "6",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            7.5,
+            -60,
+            -0.3842
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "11",
+          "error": ""
+        },
+        "serverPeers": [
+          [
+            339,
+            [
+              7.5,
+              -60,
+              -0.38427734375
+            ]
+          ]
+        ]
+      },
+      {
+        "name": "trusted-focus-new-key",
+        "expected": "Fresh held W after returning to Chrome tab should move",
+        "before": {
+          "position": [
+            7.5,
+            -60,
+            -0.3842
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "11",
+          "error": ""
+        },
+        "after": {
+          "position": [
+            7.5,
+            -60,
+            3.0259
+          ],
+          "flying": "false",
+          "view": "0.000,0.000",
+          "frames": "10",
+          "error": ""
+        },
+        "events": [
+          {
+            "type": "blur",
+            "trusted": true,
+            "t": 7418.899999976158
+          },
+          {
+            "type": "focus",
+            "trusted": true,
+            "t": 7425.100000023842
+          },
+          {
+            "type": "blur",
+            "trusted": true,
+            "t": 7960.399999976158
+          },
+          {
+            "type": "focus",
+            "trusted": true,
+            "t": 8067
+          },
+          {
+            "type": "pointerdown",
+            "id": 2,
+            "target": "forward",
+            "t": 8077.100000023842
+          },
+          {
+            "type": "pointerup",
+            "id": 2,
+            "target": "forward",
+            "t": 8819.5
+          },
+          {
+            "type": "lostpointercapture",
+            "id": 2,
+            "target": "forward",
+            "t": 8819.700000047684
+          },
+          {
+            "type": "pointerdown",
+            "id": 3,
+            "target": "forward",
+            "t": 9355.299999952316
+          },
+          {
+            "type": "pointerup",
+            "id": 3,
+            "target": "forward",
+            "t": 10087.200000047684
+          },
+          {
+            "type": "lostpointercapture",
+            "id": 3,
+            "target": "forward",
+            "t": 10087.399999976158
+          },
+          {
+            "type": "blur",
+            "trusted": true,
+            "t": 10593
+          },
+          {
+            "type": "focus",
+            "trusted": true,
+            "t": 10700.700000047684
+          },
+          {
+            "type": "keydown",
+            "key": "KeyW",
+            "target": "horizon-canvas",
+            "t": 10709.200000047684
+          }
+        ],
+        "serverPeers": [
+          [
+            339,
+            [
+              7.5,
+              -60,
+              2.81005859375
+            ]
+          ]
+        ],
+        "distance": 3.4101
+      }
+    ]
+  }
+}
