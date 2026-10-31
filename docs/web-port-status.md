@@ -23,7 +23,7 @@ client parity, offline browser worlds, and in-X execution remain unfinished.
 | Touch controls and responsive viewport | End-to-end verified in desktop Chrome with CDP emulated touch | Chrome GPU with emulated touch must verify movement, simultaneous look, actions, cleanup, and live viewport changes. |
 | Browser application lifecycle | Implemented and browser-tested in Chrome | Both startup callers use active-event-loop window creation and asynchronous renderer startup without deprecated APIs. |
 | Phone and Duo runtime | Blocked | Device session is owned by another session; no phone, Safari, or actual fold proof is claimed. |
-| Review and synchronization | Pushed checkpoints; parent runtime check passed; cross-family review blocked by Claude rate limit | Inspect the real diff, obtain independent review, and push coherent tested commits to a dedicated fork branch. |
+| Review and synchronization | Pushed checkpoints; Codex runtime and card reviews pass; BLOCKED: cross-family independent review because Claude is unavailable | Inspect the real diff, obtain independent review, and push coherent tested commits to a dedicated fork branch. |
 
 Compilation, a blank canvas, a triangle, a network echo, and a different voxel
 game do not satisfy the gameplay requirements. A partial checkpoint keeps every
@@ -466,7 +466,13 @@ pointer IDs. Nine input tests, the WebAssembly build, scoped Clippy, all six foc
 browser probes, and the expanded full touch driver pass. Matching server-delivered
 observer ascent confirms the corrected keyboard jump. [The second fix-round
 report](../.audit/mobile-input-fix-round2.md) preserves evidence and commands.
-Fresh review of this latest correction remains pending.
+Fresh Codex review passed the latest correction with no additional runtime-proven
+finding. It passed 31 primary browser probes, the full committed touch driver,
+and nine input unit tests. [The fresh review](../.audit/mobile-final-runtime-review.md)
+records exact scope and limits. A supplementary reused-ID Look capture-loss probe
+could not run because Chrome rejected the harness's capture request; it is not
+counted as passing runtime coverage. Physical phone/Safari/Duo and cross-family
+review remain unverified.
 
 ## Offline architecture investigation
 
@@ -509,3 +515,20 @@ unchanged. Port 8493 is not public. [The staging report](../.audit/public-candid
 records package hashes, commands, process ownership and remaining public/X
 validation. It is preparation for an approved public endpoint, not a public
 deployment or X execution claim.
+
+## Current review reconciliation
+
+The latest runtime reviewer pinned `4ad4970aa436f2783b8f53ff2dd81645230b86ac`
+and reviewed input correction `3277bb981..d4317cd74`. The parent subsequently
+verified that all Horizon web input/client source and the touch harness remain
+identical through `2dfdbee7e`. Later changes record review and private staging
+evidence only. The review does not retroactively verify those operational
+changes. The parent separately ran the two-client check through staged 8493.
+
+No runtime-proven mobile finding remains open. This does not establish exhaustive
+input coverage, actual phone execution, full native parity, or a cross-family
+verdict. Claude providers remain unavailable, so shipping is still blocked by
+the invoked skill's independent-review gate. The original private multiplayer
+build and isolated private staging demo remain live. Public hosting and actual
+X execution have not occurred. Offline implementation remains unstarted, with
+the earlier scope question unanswered.

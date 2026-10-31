@@ -1,0 +1,16 @@
+{
+  "head": "4ad4970aa436f2783b8f53ff2dd81645230b86ac",
+  "status": "## codex/horizon-web...fork/codex/horizon-web\n",
+  "worktrees": "/Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon                    fcc9c084b [ios-iphone-duo]\n/Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon-web                4ad4970aa [codex/horizon-web]\n/Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon/wt/touch-deal      867574391 [touch-deal]\n/Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon/wt/touch-deal-fix  a1d4f3763 [touch-deal-fix]\n/Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon/wt/touch-deal-fix2 892500756 [touch-deal-fix2]\n/Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon/wt/touch-deal-fix3 fcc9c084b [touch-deal-fix3]\n",
+  "divergence": "0\t0\n",
+  "changedInputHarnessPathsSinceReviewHead": "",
+  "hashChangesDuringReview": [],
+  "ownedServerAlive": false,
+  "ownedBridgeAlive": false,
+  "ownedPortsListening": {
+    "25591": false,
+    "18791": false
+  },
+  "protected": " 9771 target/debug/horizon-web-bridge --bind 127.0.0.1:18767 --world webproof --upstream 127.0.0.1:25575 --origin https://tests-mac-studio.tail935cc1.ts.net:8491\n55502 /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -m http.server 8766 --bind 127.0.0.1 --directory web\n88366 target/debug/horizon-web-bridge --world webproof --upstream 127.0.0.1:25575 --origin http://127.0.0.1:8766\n88504 /Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon-web/target/debug/horizon-client --resources /Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon-web/.local/web-owned/26.3 --dedicated --nogui\n",
+  "artifactIdentityUnchanged": true
+}

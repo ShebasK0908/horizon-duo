@@ -1,0 +1,38 @@
+Repository: /Users/test/.t3/scratch/2026-10-25-compile-this-for-the-iphone-cf98d4f8/src/horizon-web
+Evidence: /tmp/horizon-fresh-round2.EHji2eyi
+Review mode: fixed-scope, read-only review; no agents.
+
+# Initial pin
+pwd
+git rev-parse --show-toplevel
+git branch --show-current
+git status --short --branch
+git worktree list
+git rev-parse HEAD
+git rev-list --left-right --count HEAD...@{upstream}
+git diff --name-status d4317cd74b45e80798afafc733272178979427e6 HEAD
+git diff 3277bb98164804f8cc00bf7468493df71d6cf455 d4317cd74b45e80798afafc733272178979427e6
+
+# Owned fixture (stdin kept open); ROOT remains repository; local output moved under evidence/fixture
+python3 /tmp/horizon-fresh-round2.EHji2eyi/run_server.py --resources .local/web-owned/26.3 --port 25591
+target/debug/horizon-web-bridge --bind 127.0.0.1:18791 --world webproof --upstream 127.0.0.1:25591 --origin http://127.0.0.1:8766 > /tmp/horizon-fresh-round2.EHji2eyi/bridge.log 2>&1
+
+# Exact input source copy; no Cargo target writes or source rebuild
+/Users/test/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc --edition=2024 --test /tmp/horizon-fresh-round2.EHji2eyi/input.rs -o /tmp/horizon-fresh-round2.EHji2eyi/input-tests
+/tmp/horizon-fresh-round2.EHji2eyi/input-tests > /tmp/horizon-fresh-round2.EHji2eyi/input-tests.log
+
+# Fresh Chrome/CDP test runners. Original cancellation repro adapted only for owned bridge port.
+node /tmp/horizon-fresh-round2.EHji2eyi/cancellation-confirm.cjs > /tmp/horizon-fresh-round2.EHji2eyi/cancellation-confirm.log 2>&1
+HORIZON_PLAYWRIGHT=/Users/test/.npm/_npx/705bc6b22212b352/node_modules/playwright HORIZON_WEB_BUNDLE=.local/web-owned/play-resources.zip HORIZON_WEB_URL='http://127.0.0.1:8766/?world=webproof&bridge=ws://127.0.0.1:18791' HORIZON_WEB_PROOF=/tmp/horizon-fresh-round2.EHji2eyi/baseline node tools/web_touch_check.cjs > /tmp/horizon-fresh-round2.EHji2eyi/baseline.log 2>&1
+node /tmp/horizon-fresh-round2.EHji2eyi/expanded.cjs > /tmp/horizon-fresh-round2.EHji2eyi/expanded.log 2>&1
+node /tmp/horizon-fresh-round2.EHji2eyi/flight-owners.cjs > /tmp/horizon-fresh-round2.EHji2eyi/flight-owners.log 2>&1
+node /tmp/horizon-fresh-round2.EHji2eyi/reuse-look.cjs > /tmp/horizon-fresh-round2.EHji2eyi/reuse-look.log 2>&1
+
+# Browser contexts close in finally. Server receives stop on its owned stdin; bridge receives Ctrl-C.
+
+# Supplementary harness attempt (COULD NOT RUN, not product finding):
+node /tmp/horizon-fresh-round2.EHji2eyi/reuse-look-capture.cjs > /tmp/horizon-fresh-round2.EHji2eyi/reuse-look-capture.log 2>&1
+python3 /tmp/horizon-fresh-round2.EHji2eyi/artifact_identity.py > /tmp/horizon-fresh-round2.EHji2eyi/artifact-final.json
+# Cleanup: stop then EOF on server stdin; server exit 0.
+kill -TERM 77174
+# bridge exit 143, owned ports closed.

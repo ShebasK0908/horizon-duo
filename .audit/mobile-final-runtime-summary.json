@@ -1,0 +1,41 @@
+{
+  "cancellation-confirm": {
+    "cases": 6,
+    "allPass": true,
+    "failure": null,
+    "errors": []
+  },
+  "expanded": {
+    "cases": 19,
+    "allPass": true,
+    "failure": null,
+    "errors": []
+  },
+  "flight-owners": {
+    "cases": 6,
+    "allPass": true,
+    "failure": null,
+    "errors": []
+  },
+  "reuse-look": {
+    "cases": 3,
+    "allPass": true,
+    "failure": null,
+    "countAsCaptureCancellationProof": false
+  },
+  "reuse-look-capture": {
+    "cases": 0,
+    "allPass": true,
+    "failure": "page.evaluate: InvalidStateError: Failed to execute 'setPointerCapture' on 'Element': InvalidStateError\n    at eval (eval at evaluate (:370:30), <anonymous>:1:130)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at penLookCancel (/private/tmp/horizon-fresh-round2.EHji2eyi/reuse-look-capture.cjs:56:14)\n    at async /private/tmp/horizon-fresh-round2.EHji2eyi/reuse-look-capture.cjs:63:74\n    at async /private/tmp/horizon-fresh-round2.EHji2eyi/reuse-look-capture.cjs:71:3",
+    "countAsCaptureCancellationProof": false
+  },
+  "baseline": {
+    "passed": true
+  },
+  "unitTests": {
+    "passed": 9,
+    "failed": 0,
+    "method": "rustc --test on byte-identical temp copy of input.rs; no Cargo rebuild"
+  },
+  "remainingPlaywrightChromeOrOwnNode": []
+}

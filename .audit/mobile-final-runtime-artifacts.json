@@ -1,0 +1,44 @@
+{
+  "index.html": {
+    "local": {
+      "status": 200,
+      "bytes": 5647,
+      "sha256": "6bf71174a4de607a0b5bc4866c895d6e720ec26a36b16a1c8bf11b408492ec5a",
+      "matchesDisk": true
+    },
+    "tailscale": {
+      "status": 200,
+      "bytes": 5647,
+      "sha256": "6bf71174a4de607a0b5bc4866c895d6e720ec26a36b16a1c8bf11b408492ec5a",
+      "matchesDisk": true
+    }
+  },
+  "pkg/horizon_web.js": {
+    "local": {
+      "status": 200,
+      "bytes": 126799,
+      "sha256": "fb986a1c0d74ece7cd358bd9ffdbc25f746d13649866b79aa2595b6c2e7a7df7",
+      "matchesDisk": true
+    },
+    "tailscale": {
+      "status": 200,
+      "bytes": 126799,
+      "sha256": "fb986a1c0d74ece7cd358bd9ffdbc25f746d13649866b79aa2595b6c2e7a7df7",
+      "matchesDisk": true
+    }
+  },
+  "pkg/horizon_web_bg.wasm": {
+    "local": {
+      "status": 200,
+      "bytes": 21512726,
+      "sha256": "2ab67e89cc87b1eef188fe1e9d57a5b311fb40f721366c3e6c9d92a7de1fb938",
+      "matchesDisk": true
+    },
+    "tailscale": {
+      "status": 200,
+      "bytes": 21512726,
+      "sha256": "2ab67e89cc87b1eef188fe1e9d57a5b311fb40f721366c3e6c9d92a7de1fb938",
+      "matchesDisk": true
+    }
+  }
+}
