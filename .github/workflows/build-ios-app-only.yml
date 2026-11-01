@@ -1,0 +1,35 @@
+name: Build iOS IPA
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: xcode-27
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rust toolchain
+        run: |
+          rustup update stable
+          rustup default stable
+          rustup target add aarch64-apple-ios aarch64-apple-ios-sim
+          which cargo
+          cargo --version
+          xcodebuild -version
+
+      - name: Prepare empty resources folder
+        run: mkdir -p .local/horizon-client/26.3
+
+      - name: Build IPA
+        run: packaging/ios/package.sh device .local/horizon-client/26.3 .local/ios
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Horizon-ipa-app-only
+          path: .local/ios/device/Horizon.ipa
