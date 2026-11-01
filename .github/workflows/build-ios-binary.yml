@@ -24,9 +24,9 @@ jobs:
       - name: Package IPA (app only, no game resources)
         run: |
           mkdir -p .local/ios/Payload/Horizon.app
-          cp target/aarch64-apple-ios/fast/horizon-client .local/ios/Payload/Horizon.app/Horizon
+          cp target/aarch64-apple-ios/fast/horizon-client .local/ios/Payload/Horizon.app/horizon-client
           cp packaging/ios/Info.plist .local/ios/Payload/Horizon.app/Info.plist
-          chmod +x .local/ios/Payload/Horizon.app/Horizon
+          chmod +x .local/ios/Payload/Horizon.app/horizon-client
           cd .local/ios
           zip -qry Horizon.ipa Payload
           ls -la
